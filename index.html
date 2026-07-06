@@ -303,10 +303,185 @@
     </form>
   </div>
 
+  <!-- ===================== SYNC STATUS TOAST ===================== -->
+  <div id="syncToast" class="fixed top-4 inset-x-0 mx-auto z-50 hidden" style="max-width:480px">
+    <div class="mx-5 rounded-full px-4 py-2 flex items-center gap-2 text-xs font-semibold" id="syncToastInner" style="background:var(--surface); border:1px solid var(--line)">
+      <span class="status-dot" id="syncDot" style="background:var(--amber)"></span>
+      <span id="syncText">غير متصل — التغييرات تتزامن كي يرجع الأنترنت</span>
+    </div>
+  </div>
+
+  <!-- ===================== AUTH GATE ===================== -->
+  <div id="authGate" class="fixed inset-0 z-[60] flex items-center justify-center px-6" style="background:var(--bg-deep)">
+    <div class="w-full" style="max-width:400px">
+      <div class="flex flex-col items-center mb-8">
+        <svg width="52" height="52" viewBox="0 0 40 40" fill="none">
+          <rect x="3" y="10" width="34" height="14" rx="4" stroke="var(--copper)" stroke-width="2"/>
+          <path d="M8 27c0 4 2 6 2 6M14 27c0 5 2 7 2 7M20 27c0 4 2 6 2 6M26 27c0 5 2 7 2 7" stroke="var(--mint)" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="31" cy="17" r="2" fill="var(--copper)"/>
+          <line x1="9" y1="17" x2="24" y2="17" stroke="var(--line)" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <h1 class="font-display font-black text-xl mt-3">تبريد</h1>
+        <p class="text-xs mt-1" style="color:var(--text-dim)" id="authSubtitle">سجل الدخول لمتابعة زبائنك</p>
+      </div>
+
+      <form id="authForm" class="flex flex-col gap-3">
+        <div>
+          <label class="text-xs font-semibold" style="color:var(--text-dim)">البريد الإلكتروني</label>
+          <input required id="authEmail" type="email" placeholder="you@example.com" class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm" style="direction:ltr; text-align:right">
+        </div>
+        <div>
+          <label class="text-xs font-semibold" style="color:var(--text-dim)">كلمة السر</label>
+          <input required id="authPassword" type="password" placeholder="••••••••" minlength="6" class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm" style="direction:ltr; text-align:right">
+        </div>
+        <p id="authError" class="hidden text-xs font-semibold" style="color:var(--danger)"></p>
+        <button type="submit" id="authSubmitBtn" class="rounded-xl py-3 font-bold text-sm mt-2" style="background:var(--copper); color:#1A1006">دخول</button>
+      </form>
+    </div>
+  </div>
+
 </div>
 
-<script>
-/* ============ MOCK DATA (Stage 1 — replaced by Firestore in Stage 2) ============ */
+<script type="module">
+/* ============ FIREBASE SETUP ============ */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  initializeFirestore, persistentLocalCache, persistentMultipleTabManager,
+  collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot,
+  serverTimestamp, query, orderBy
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// ⚠️ نفس مشروع MotoTrack (mototrack-9c47c) — البيانات تحت users/{uid}/customers، تتماشى مع الـ rule العامة الموجودة (users/{userId}/{document=**})
+const firebaseConfig = {
+  apiKey: "AIzaSyBmQqqvfJui-COVWd4fHpBaDwIHDusyPG0",
+  authDomain: "mototrack-9c47c.firebaseapp.com",
+  projectId: "mototrack-9c47c",
+  storageBucket: "mototrack-9c47c.firebasestorage.app",
+  messagingSenderId: "976211973529",
+  appId: "1:976211973529:web:91ad6b7a915276fe71ef08"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+// Offline persistence — يخزن البيانات محلياً كي يقص الأنترنت ويزامن أوتوماتيكياً كي يرجع
+const db = initializeFirestore(app, {
+  localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+});
+
+let unsubscribeCustomers = null;
+let currentUid = null;
+
+/* ============ AUTH GATE LOGIC (دخول فقط — بلا إنشاء حساب من الواجهة) ============ */
+const authGate = document.getElementById('authGate');
+const authForm = document.getElementById('authForm');
+const authError = document.getElementById('authError');
+const authSubmitBtn = document.getElementById('authSubmitBtn');
+
+authForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('authEmail').value.trim();
+  const password = document.getElementById('authPassword').value;
+  authError.classList.add('hidden');
+  authSubmitBtn.disabled = true;
+  authSubmitBtn.textContent = '...';
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+  } catch(err){
+    authError.textContent = mapAuthError(err.code);
+    authError.classList.remove('hidden');
+    authSubmitBtn.disabled = false;
+    authSubmitBtn.textContent = 'دخول';
+  }
+});
+
+function mapAuthError(code){
+  const map = {
+    'auth/invalid-email': 'البريد الإلكتروني غير صحيح',
+    'auth/user-not-found': 'ما فماش حساب بهذا البريد',
+    'auth/wrong-password': 'كلمة السر غالطة',
+    'auth/invalid-credential': 'بيانات الدخول غالطة',
+    'auth/email-already-in-use': 'هذا البريد مستعمل من قبل',
+    'auth/weak-password': 'كلمة السر لازم أكثر من 6 خانات',
+  };
+  return map[code] || 'صار خطأ، عاود جرب';
+}
+
+onAuthStateChanged(auth, (user) => {
+  if(user){
+    currentUid = user.uid;
+    authGate.classList.add('hidden');
+    authSubmitBtn.disabled = false;
+    subscribeToCustomers();
+  } else {
+    currentUid = null;
+    authGate.classList.remove('hidden');
+    if(unsubscribeCustomers){ unsubscribeCustomers(); unsubscribeCustomers = null; }
+    customers = [];
+  }
+});
+
+/* ============ ONLINE / OFFLINE STATUS ============ */
+function updateSyncStatus(){
+  const toast = document.getElementById('syncToast');
+  const dot = document.getElementById('syncDot');
+  const text = document.getElementById('syncText');
+  if(navigator.onLine){
+    toast.classList.add('hidden');
+  } else {
+    toast.classList.remove('hidden');
+    dot.style.background = 'var(--amber)';
+    text.textContent = 'غير متصل — التغييرات تتخزن وتتزامن كي يرجع الأنترنت';
+  }
+}
+window.addEventListener('online', () => {
+  updateSyncStatus();
+  const toast = document.getElementById('syncToast');
+  const dot = document.getElementById('syncDot');
+  const text = document.getElementById('syncText');
+  dot.style.background = 'var(--mint)';
+  text.textContent = 'تم الاتصال — جاري المزامنة...';
+  toast.classList.remove('hidden');
+  setTimeout(()=> toast.classList.add('hidden'), 2500);
+});
+window.addEventListener('offline', updateSyncStatus);
+updateSyncStatus();
+
+/* ============ FIRESTORE CRUD ============ */
+function customersCol(){
+  return collection(db, 'users', currentUid, 'customers');
+}
+
+function subscribeToCustomers(){
+  if(unsubscribeCustomers) unsubscribeCustomers();
+  const q = query(customersCol(), orderBy('date', 'asc'));
+  unsubscribeCustomers = onSnapshot(q,
+    (snap) => {
+      customers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderList();
+    },
+    (err) => {
+      console.error('Firestore sync error:', err);
+    }
+  );
+}
+
+async function saveCustomer(data){
+  if(editingId){
+    await updateDoc(doc(customersCol(), editingId), { ...data, updatedAt: serverTimestamp() });
+  } else {
+    await addDoc(customersCol(), { ...data, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
+  }
+}
+
+async function removeCustomer(id){
+  await deleteDoc(doc(customersCol(), id));
+}
+
+/* ============ STATE (now populated live from Firestore) ============ */
 const SERVICE_COLORS = { 'تركيب':'var(--mint)', 'صيانة':'var(--amber)', 'إصلاح':'var(--danger)' };
 const STATUS_LABEL = { pending:'قيد الانتظار', done:'منجز', cancelled:'ملغى' };
 const STATUS_COLOR = { pending:'var(--amber)', done:'var(--mint)', cancelled:'var(--danger)' };
@@ -316,12 +491,7 @@ function todayStr(offset=0){
   return d.toISOString().slice(0,10);
 }
 
-let customers = [
-  { id: crypto.randomUUID(), name:'سامي بن علي', phone:'+21620123456', address:'حي النور، قليبية', serviceType:'صيانة', status:'pending', date: todayStr(0), price:80, notes:'مكيف سبليت 12000 BTU، صوت غريب' },
-  { id: crypto.randomUUID(), name:'منى الشارني', phone:'+21698765432', address:'وسط المدينة، قليبية', serviceType:'تركيب', status:'pending', date: todayStr(1), price:250, notes:'تركيب وحدتين، ضمان سنة' },
-  { id: crypto.randomUUID(), name:'وليد الطرابلسي', phone:'+21655112233', address:'المرسى', serviceType:'إصلاح', status:'done', date: todayStr(-2), price:60, notes:'تسريب غاز، تم الإصلاح' },
-  { id: crypto.randomUUID(), name:'إيمان بوعزيزي', phone:'+21692445566', address:'نابل', serviceType:'صيانة', status:'done', date: todayStr(-5), price:70, notes:'' },
-];
+let customers = []; // يتعمر مباشرة (real-time) من Firestore onSnapshot
 
 let activeView = 'home';
 let activeFilter = 'all';
@@ -495,7 +665,7 @@ document.getElementById('btnAdd').addEventListener('click', () => {
 document.getElementById('btnCloseSheet').addEventListener('click', closeSheet);
 overlay.addEventListener('click', closeSheet);
 
-function openEdit(id){
+window.openEdit = function openEdit(id){
   const c = customers.find(x => x.id === id);
   if(!c) return;
   editingId = id;
@@ -512,28 +682,33 @@ function openEdit(id){
   openSheet();
 }
 
-form.addEventListener('submit', e => {
+const submitBtn = form.querySelector('button[type="submit"]');
+
+form.addEventListener('submit', async e => {
   e.preventDefault();
   const fd = new FormData(form);
   const data = Object.fromEntries(fd.entries());
   data.price = data.price ? +data.price : 0;
 
-  if(editingId){
-    const idx = customers.findIndex(c => c.id === editingId);
-    customers[idx] = { ...customers[idx], ...data };
-  } else {
-    customers.push({ id: crypto.randomUUID(), ...data });
+  submitBtn.disabled = true;
+  const originalLabel = submitBtn.textContent;
+  submitBtn.textContent = 'جاري الحفظ...';
+  try {
+    // saveCustomer يكتب في Firestore؛ لو الجهاز أوفلاين، الكتابة تتخزن محلياً (persistentLocalCache)
+    // وتتزامن أوتوماتيكياً كي يرجع الأنترنت — لهذا السبب ما ننتظروش رد السيرفر باش نسكرو الشيت.
+    saveCustomer(data).catch(err => console.error('Save error:', err));
+    closeSheet();
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalLabel;
   }
-  closeSheet();
-  renderList();
 });
 
 document.getElementById('btnDelete').addEventListener('click', () => {
   if(!editingId) return;
   if(confirm('تأكد الحذف؟')){
-    customers = customers.filter(c => c.id !== editingId);
+    removeCustomer(editingId).catch(err => console.error('Delete error:', err));
     closeSheet();
-    renderList();
   }
 });
 
