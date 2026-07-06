@@ -119,6 +119,15 @@
     body{ display:flex; justify-content:center; }
     #app{ max-width: 480px; width:100%; min-height:100vh; box-shadow: 0 0 60px rgba(0,0,0,.4); }
   }
+
+  @media print{
+    body{ background:#fff !important; }
+    #app > *{ display:none !important; }
+    #viewStats{ display:block !important; padding:0 !important; max-width:100% !important; }
+    #viewStats, #viewStats *{ color:#111 !important; background:transparent !important; border-color:#ccc !important; }
+    #btnPrintReport{ display:none !important; }
+    .chip{ border:1px solid #ccc !important; }
+  }
 </style>
 </head>
 <body>
@@ -212,16 +221,65 @@
     </div>
   </main>
 
-  <!-- ===================== STATS VIEW ===================== -->
+  <!-- ===================== CALENDAR VIEW ===================== -->
+  <main class="flex-1 px-5 pt-2 pb-28 hidden" id="viewCalendar">
+    <div class="flex items-center justify-between mb-4">
+      <button id="calPrev" class="w-9 h-9 rounded-full flex items-center justify-center" style="background:var(--surface); border:1px solid var(--line)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <h2 class="font-display font-black text-base" id="calMonthLabel">—</h2>
+      <button id="calNext" class="w-9 h-9 rounded-full flex items-center justify-center" style="background:var(--surface); border:1px solid var(--line)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+
+    <div class="grid grid-cols-7 gap-y-2 text-center mb-1">
+      <span class="text-[11px] font-semibold" style="color:var(--text-dim)">أحد</span>
+      <span class="text-[11px] font-semibold" style="color:var(--text-dim)">إثنين</span>
+      <span class="text-[11px] font-semibold" style="color:var(--text-dim)">ثلاثاء</span>
+      <span class="text-[11px] font-semibold" style="color:var(--text-dim)">أربعاء</span>
+      <span class="text-[11px] font-semibold" style="color:var(--text-dim)">خميس</span>
+      <span class="text-[11px] font-semibold" style="color:var(--text-dim)">جمعة</span>
+      <span class="text-[11px] font-semibold" style="color:var(--text-dim)">سبت</span>
+    </div>
+    <div id="calGrid" class="grid grid-cols-7 gap-y-2 text-center"></div>
+
+    <div class="pipe-divider">
+      <span class="joint"></span><span class="seg"></span>
+      <span class="font-display font-bold text-sm" id="calSelectedLabel" style="color:var(--text-dim)">اختار يوم</span>
+      <span class="seg"></span><span class="joint"></span>
+    </div>
+
+    <div id="calDayList" class="flex flex-col gap-4"></div>
+    <div id="calEmptyState" class="hidden text-center py-12">
+      <p class="font-display font-bold text-sm" style="color:var(--text-dim)">لا مواعيد في هذا اليوم</p>
+    </div>
+  </main>
+
+  <!-- ===================== STATS / REPORTS VIEW ===================== -->
   <main class="flex-1 px-5 pt-4 pb-28 hidden" id="viewStats">
-    <h2 class="font-display font-black text-lg mb-4">الإحصائيات المالية</h2>
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="font-display font-black text-lg">التقارير</h2>
+      <button id="btnPrintReport" class="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold" style="background:var(--surface); border:1px solid var(--line)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+        طباعة
+      </button>
+    </div>
+
+    <div class="flex gap-2 mb-4 overflow-x-auto pb-1">
+      <button class="chip range-chip chip-active" data-range="today">اليوم</button>
+      <button class="chip range-chip" data-range="week">هذا الأسبوع</button>
+      <button class="chip range-chip" data-range="month">هذا الشهر</button>
+      <button class="chip range-chip" data-range="year">هذي السنة</button>
+      <button class="chip range-chip" data-range="all">الكل</button>
+    </div>
 
     <div class="grid grid-cols-2 gap-3 mb-5">
       <div class="ticket-top"><div class="ticket-perf"></div></div>
     </div>
 
     <div class="rounded-2xl p-5 mb-4" style="background:var(--surface); border:1px solid var(--line)">
-      <p class="text-xs" style="color:var(--text-dim)">مجموع المداخيل (كل الوقت)</p>
+      <p class="text-xs" style="color:var(--text-dim)" id="statPeriodLabel">مجموع المداخيل</p>
       <p class="font-mono font-black text-3xl mt-1" style="color:var(--mint)" id="statTotalIncome">0 د.ت</p>
     </div>
 
@@ -246,23 +304,27 @@
   </main>
 
   <!-- ===================== BOTTOM NAV ===================== -->
-  <nav class="fixed bottom-0 inset-x-0 mx-auto px-6 py-3 flex items-center justify-between" style="max-width:480px; background: var(--bg-deep); border-top:1px solid var(--line)">
+  <nav class="fixed bottom-0 inset-x-0 mx-auto px-4 py-3 flex items-center justify-between" style="max-width:480px; background: var(--bg-deep); border-top:1px solid var(--line)">
     <button class="tab-btn tab-active flex flex-col items-center gap-1 flex-1" data-view="home">
-      <svg class="tab-icon" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7"/><path d="M5 10v9a1 1 0 001 1h4v-6h4v6h4a1 1 0 001-1v-9"/></svg>
-      <span class="text-[11px] font-semibold">الرئيسية</span>
+      <svg class="tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7"/><path d="M5 10v9a1 1 0 001 1h4v-6h4v6h4a1 1 0 001-1v-9"/></svg>
+      <span class="text-[10.5px] font-semibold">الرئيسية</span>
     </button>
-    <button class="tab-btn flex flex-col items-center gap-1 flex-1" data-view="stats" style="color:var(--text-dim)">
-      <svg class="tab-icon" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>
-      <span class="text-[11px] font-semibold">الإحصائيات</span>
+    <button class="tab-btn flex flex-col items-center gap-1 flex-1" data-view="calendar" style="color:var(--text-dim)">
+      <svg class="tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+      <span class="text-[10.5px] font-semibold">التقويم</span>
     </button>
     <div class="flex-1 flex justify-center">
       <button id="btnAdd" class="fab w-14 h-14 rounded-full flex items-center justify-center -mt-8" style="background:var(--copper)">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1A1006" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
       </button>
     </div>
+    <button class="tab-btn flex flex-col items-center gap-1 flex-1" data-view="stats" style="color:var(--text-dim)">
+      <svg class="tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>
+      <span class="text-[10.5px] font-semibold">التقارير</span>
+    </button>
     <button class="tab-btn flex flex-col items-center gap-1 flex-1" data-view="settings" style="color:var(--text-dim)">
-      <svg class="tab-icon" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1 1.55V21a2 2 0 11-4 0v-.09a1.7 1.7 0 00-1-1.55 1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.7 1.7 0 00.34-1.87 1.7 1.7 0 00-1.55-1H3a2 2 0 110-4h.09a1.7 1.7 0 001.55-1 1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06a1.7 1.7 0 001.87.34H9a1.7 1.7 0 001-1.55V3a2 2 0 114 0v.09a1.7 1.7 0 001 1.55 1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06.06a1.7 1.7 0 00-.34 1.87V9a1.7 1.7 0 001.55 1H21a2 2 0 110 4h-.09a1.7 1.7 0 00-1.55 1z"/></svg>
-      <span class="text-[11px] font-semibold">الإعدادات</span>
+      <svg class="tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1 1.55V21a2 2 0 11-4 0v-.09a1.7 1.7 0 00-1-1.55 1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.7 1.7 0 00.34-1.87 1.7 1.7 0 00-1.55-1H3a2 2 0 110-4h.09a1.7 1.7 0 001.55-1 1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06a1.7 1.7 0 001.87.34H9a1.7 1.7 0 001-1.55V3a2 2 0 114 0v.09a1.7 1.7 0 001 1.55 1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06.06a1.7 1.7 0 00-.34 1.87V9a1.7 1.7 0 001.55 1H21a2 2 0 110 4h-.09a1.7 1.7 0 00-1.55 1z"/></svg>
+      <span class="text-[10.5px] font-semibold">الإعدادات</span>
     </button>
   </nav>
 
@@ -573,7 +635,10 @@ function renderList(){
     empty.classList.add('hidden');
     items.forEach(c => list.appendChild(renderCard(c)));
   }
-  renderStats();
+  updateHomeStats();
+  renderCalendar();
+  renderCalDayList();
+  renderReport();
 }
 
 function renderCard(c){
@@ -614,9 +679,8 @@ function renderCard(c){
   return wrap;
 }
 
-function renderStats(){
-  const now = new Date();
-  const monthKey = now.toISOString().slice(0,7);
+function updateHomeStats(){
+  const monthKey = todayStr().slice(0,7);
   const monthIncome = customers.filter(c => c.status==='done' && c.date.startsWith(monthKey)).reduce((s,c)=>s+(+c.price||0),0);
   const todayCount = customers.filter(c => c.date === todayStr() && c.status==='pending').length;
   const pendingCount = customers.filter(c => c.status==='pending').length;
@@ -624,8 +688,38 @@ function renderStats(){
   document.getElementById('statIncome').textContent = monthIncome + ' د.ت';
   document.getElementById('statToday').textContent = todayCount;
   document.getElementById('statPending').textContent = pendingCount;
+}
 
-  const doneList = customers.filter(c => c.status==='done');
+/* ============ REPORTS (بتصفية حسب الفترة) ============ */
+let activeRange = 'today';
+const RANGE_LABEL = { today:'مداخيل اليوم', week:'مداخيل هذا الأسبوع', month:'مداخيل هذا الشهر', year:'مداخيل هذي السنة', all:'مجموع المداخيل (كل الوقت)' };
+
+function getRangeBounds(range){
+  const now = new Date();
+  if(range === 'today'){ const t = todayStr(); return {start:t, end:t}; }
+  if(range === 'week'){
+    const start = new Date(now); start.setDate(now.getDate() - now.getDay());
+    const end = new Date(start); end.setDate(start.getDate() + 6);
+    return {start: start.toISOString().slice(0,10), end: end.toISOString().slice(0,10)};
+  }
+  if(range === 'month'){
+    const start = new Date(now.getFullYear(), now.getMonth(), 1);
+    const end = new Date(now.getFullYear(), now.getMonth()+1, 0);
+    return {start: start.toISOString().slice(0,10), end: end.toISOString().slice(0,10)};
+  }
+  if(range === 'year'){
+    return {start: `${now.getFullYear()}-01-01`, end: `${now.getFullYear()}-12-31`};
+  }
+  return {start:null, end:null}; // all
+}
+
+function renderReport(){
+  const { start, end } = getRangeBounds(activeRange);
+  const inRange = c => !start || (c.date >= start && c.date <= end);
+
+  document.getElementById('statPeriodLabel').textContent = RANGE_LABEL[activeRange];
+
+  const doneList = customers.filter(c => c.status==='done' && inRange(c));
   const total = doneList.reduce((s,c)=>s+(+c.price||0),0);
   document.getElementById('statTotalIncome').textContent = total + ' د.ت';
   document.getElementById('statDoneCount').textContent = doneList.length;
@@ -651,6 +745,109 @@ function renderStats(){
   });
 }
 
+document.querySelectorAll('.range-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.range-chip').forEach(c => c.classList.remove('chip-active'));
+    chip.classList.add('chip-active');
+    activeRange = chip.dataset.range;
+    renderReport();
+  });
+});
+
+document.getElementById('btnPrintReport').addEventListener('click', () => window.print());
+
+/* ============ CALENDAR ============ */
+const MONTH_NAMES_TN = ['جانفي','فيفري','مارس','أفريل','ماي','جوان','جويلية','أوت','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+let calViewDate = new Date();
+let selectedDate = null;
+
+function renderCalendar(){
+  const y = calViewDate.getFullYear();
+  const m = calViewDate.getMonth();
+  document.getElementById('calMonthLabel').textContent = `${MONTH_NAMES_TN[m]} ${y}`;
+
+  const firstDay = new Date(y, m, 1);
+  const daysInMonth = new Date(y, m+1, 0).getDate();
+  const leading = firstDay.getDay(); // 0=أحد
+
+  // اليوم الحالي بصيغة ISO
+  const todayIso = todayStr();
+
+  // نجمعو المواعيد حسب اليوم لهذا الشهر (باش ما نمشيوش على القائمة كاملة لكل خانة)
+  const monthPrefix = `${y}-${String(m+1).padStart(2,'0')}`;
+  const byDay = {};
+  customers.forEach(c => {
+    if(c.date && c.date.startsWith(monthPrefix)){
+      (byDay[c.date] = byDay[c.date] || []).push(c);
+    }
+  });
+
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+
+  for(let i=0; i<leading; i++){
+    grid.appendChild(document.createElement('div'));
+  }
+
+  for(let d=1; d<=daysInMonth; d++){
+    const iso = `${monthPrefix}-${String(d).padStart(2,'0')}`;
+    const dayItems = byDay[iso] || [];
+    const isToday = iso === todayIso;
+    const isSelected = iso === selectedDate;
+
+    let dotColor = null;
+    if(dayItems.some(c => c.status==='pending')) dotColor = 'var(--amber)';
+    else if(dayItems.some(c => c.status==='done')) dotColor = 'var(--mint)';
+
+    const cell = document.createElement('button');
+    cell.className = 'flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl';
+    cell.style.background = isSelected ? 'var(--copper)' : (isToday ? 'var(--surface-2)' : 'transparent');
+    cell.style.border = isToday && !isSelected ? '1px solid var(--copper)' : '1px solid transparent';
+    cell.innerHTML = `
+      <span class="text-xs font-mono font-semibold" style="color:${isSelected ? '#1A1006' : 'var(--text)'}">${d}</span>
+      <span style="width:5px; height:5px; border-radius:50%; background:${dotColor || 'transparent'}"></span>
+    `;
+    cell.addEventListener('click', () => {
+      selectedDate = iso;
+      renderCalendar();
+      renderCalDayList();
+    });
+    grid.appendChild(cell);
+  }
+}
+
+function renderCalDayList(){
+  const list = document.getElementById('calDayList');
+  const empty = document.getElementById('calEmptyState');
+  const label = document.getElementById('calSelectedLabel');
+
+  if(!selectedDate){
+    label.textContent = 'اختار يوم';
+    list.innerHTML = '';
+    empty.classList.add('hidden');
+    return;
+  }
+
+  label.textContent = fmtDate(selectedDate);
+  const items = customers.filter(c => c.date === selectedDate);
+  list.innerHTML = '';
+  if(items.length === 0){
+    empty.classList.remove('hidden');
+  } else {
+    empty.classList.add('hidden');
+    items.forEach(c => list.appendChild(renderCard(c)));
+  }
+}
+
+document.getElementById('calPrev').addEventListener('click', () => {
+  calViewDate.setMonth(calViewDate.getMonth() - 1);
+  renderCalendar();
+});
+document.getElementById('calNext').addEventListener('click', () => {
+  calViewDate.setMonth(calViewDate.getMonth() + 1);
+  renderCalendar();
+});
+
 /* ============ NAV ============ */
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -658,7 +855,10 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.classList.add('tab-active'); btn.style.color='';
     const view = btn.dataset.view;
     document.getElementById('viewHome').classList.toggle('hidden', view!=='home');
+    document.getElementById('viewCalendar').classList.toggle('hidden', view!=='calendar');
     document.getElementById('viewStats').classList.toggle('hidden', view!=='stats');
+    if(view==='calendar') renderCalendar();
+    if(view==='stats') renderReport();
     if(view==='settings'){
       if(confirm('تسجيل الخروج من الحساب؟')){
         signOut(auth);
