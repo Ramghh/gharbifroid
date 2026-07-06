@@ -622,7 +622,14 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     const view = btn.dataset.view;
     document.getElementById('viewHome').classList.toggle('hidden', view!=='home');
     document.getElementById('viewStats').classList.toggle('hidden', view!=='stats');
-    if(view==='settings'){ alert('الإعدادات: قريبا (مزامنة Firebase، النسخ الاحتياطي...)'); }
+    if(view==='settings'){
+      if(confirm('تسجيل الخروج من الحساب؟')){
+        signOut(auth);
+      } else {
+        // نرجع لآخر تبويب فعلي (الرئيسية) باش الزر ما يبقاش نشيط بلا سبب
+        document.querySelector('.tab-btn[data-view="home"]').click();
+      }
+    }
   });
 });
 
