@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>تبريد | متابعة الصيانة والتركيب</title>
 <meta name="theme-color" content="#0A2E2C">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="./favicon-16.png" sizes="16x16" type="image/png">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="تبريد">
+<meta name="mobile-web-app-capable" content="yes">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800;900&family=Cairo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
@@ -113,6 +121,24 @@
 </style>
 </head>
 <body>
+
+<!-- ===================== SPLASH SCREEN ===================== -->
+<div id="splash" style="position:fixed; inset:0; z-index:999; display:flex; flex-direction:column; align-items:center; justify-content:center; background:var(--bg-deep); transition:opacity .45s ease, visibility .45s ease;">
+  <svg id="splashLogo" width="72" height="72" viewBox="0 0 40 40" fill="none" style="animation: splashPulse 1.6s ease-in-out infinite;">
+    <rect x="3" y="10" width="34" height="14" rx="4" stroke="var(--copper)" stroke-width="2"/>
+    <path d="M8 27c0 4 2 6 2 6M14 27c0 5 2 7 2 7M20 27c0 4 2 6 2 6M26 27c0 5 2 7 2 7" stroke="var(--mint)" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="31" cy="17" r="2" fill="var(--copper)"/>
+    <line x1="9" y1="17" x2="24" y2="17" stroke="var(--line)" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+  <h1 class="font-display font-black text-2xl mt-4" style="color:var(--text)">تبريد</h1>
+  <p class="text-xs mt-1" style="color:var(--text-dim)">متابعة الصيانة والتركيب</p>
+  <div style="margin-top:28px; width:28px; height:28px; border-radius:50%; border:2.5px solid var(--line); border-top-color:var(--copper); animation: splashSpin .8s linear infinite;"></div>
+</div>
+<style>
+  @keyframes splashPulse{ 0%,100%{ transform:scale(1); opacity:1; } 50%{ transform:scale(1.08); opacity:.85; } }
+  @keyframes splashSpin{ to{ transform:rotate(360deg); } }
+  #splash.splash-hidden{ opacity:0; visibility:hidden; pointer-events:none; }
+</style>
 <div id="app" class="min-h-screen flex flex-col" style="background:var(--bg)">
 
   <!-- ===================== HEADER ===================== -->
@@ -410,7 +436,17 @@ function mapAuthError(code){
   return map[code] || 'صار خطأ، عاود جرب';
 }
 
+const splashShownAt = Date.now();
+function hideSplash(){
+  const splash = document.getElementById('splash');
+  const minDuration = 700; // أقل مدة عرض بالميلي ثانية باش الأنيميشن ما يبانش مقطوع
+  const elapsed = Date.now() - splashShownAt;
+  const wait = Math.max(0, minDuration - elapsed);
+  setTimeout(() => splash.classList.add('splash-hidden'), wait);
+}
+
 onAuthStateChanged(auth, (user) => {
+  hideSplash();
   if(user){
     currentUid = user.uid;
     authGate.classList.add('hidden');
@@ -721,6 +757,18 @@ document.getElementById('btnDelete').addEventListener('click', () => {
 
 /* ============ INIT ============ */
 renderList();
+
+// حماية: إذا لأي سبب auth تاخر برشا (نات ضعيف جداً)، ما نخليوش السبلاش تبقى واقفة
+setTimeout(hideSplash, 4000);
+</script>
+
+<script>
+  // تسجيل الـ Service Worker (بلا type=module باش يخدم في كل المتصفحات)
+  if('serviceWorker' in navigator){
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(err => console.error('SW registration failed:', err));
+    });
+  }
 </script>
 </body>
 </html>
