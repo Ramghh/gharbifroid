@@ -67,6 +67,7 @@
     border: 1px solid var(--line);
     border-top: none;
     border-radius: 0 0 14px 14px;
+    padding-top: 6px;
   }
 
   .pipe-divider{
@@ -581,7 +582,7 @@ function renderCard(c){
   wrap.className = 'card-press cursor-pointer';
   wrap.innerHTML = `
     <div class="ticket-top px-4 pt-4"><div class="ticket-perf"></div></div>
-    <div class="ticket-bottom px-4 pb-4 -mt-3">
+    <div class="ticket-bottom px-4 pb-4 -mt-2">
       <div class="flex items-start justify-between">
         <div>
           <p class="font-display font-bold text-[15px]">${c.name}</p>
