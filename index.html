@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>تبريد | متابعة الصيانة والتركيب</title>
+<meta name="theme-color" content="#0A2E2C">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800;900&family=Cairo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root{
+    --bg: #0A2E2C;
+    --bg-deep: #071F1D;
+    --surface: #0F3D3A;
+    --surface-2: #124743;
+    --line: #1D5450;
+    --copper: #E08A3C;
+    --copper-dim: #B5691F;
+    --mint: #4FD1AE;
+    --amber: #F2C14E;
+    --danger: #E8674A;
+    --text: #EAF3F1;
+    --text-dim: #8FADA9;
+  }
+  *{ -webkit-tap-highlight-color: transparent; }
+  html,body{ background: var(--bg-deep); color: var(--text); font-family:'Cairo',sans-serif; overscroll-behavior-y: none; }
+  .font-display{ font-family:'Tajawal',sans-serif; }
+  .font-mono{ font-family:'IBM Plex Mono',monospace; font-variant-numeric: tabular-nums; direction: ltr; }
+  ::-webkit-scrollbar{ display:none; }
+  * { scrollbar-width:none; }
+
+  /* Signature element: perforated service-ticket edge on cards */
+  .ticket-top{
+    position:relative;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-bottom: none;
+    border-radius: 14px 14px 0 0;
+  }
+  .ticket-perf{
+    height:14px;
+    background:
+      radial-gradient(circle 5px at 12px 0, transparent 5px, var(--surface) 5.5px) top,
+      var(--surface);
+    background-repeat: repeat-x;
+    background-size: 24px 14px;
+    position:relative;
+    margin-top:-1px;
+  }
+  .ticket-perf::before{
+    content:"";
+    position:absolute; inset:0 10px 0 10px;
+    top:6px; height:1px;
+    background-image: repeating-linear-gradient(to left, var(--line) 0 5px, transparent 5px 10px);
+  }
+  .ticket-bottom{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-top: none;
+    border-radius: 0 0 14px 14px;
+  }
+
+  .pipe-divider{
+    display:flex; align-items:center; gap:6px; margin: 22px 0 14px;
+  }
+  .pipe-divider .seg{ flex:1; height:2px; background: repeating-linear-gradient(to left, var(--copper-dim) 0 8px, transparent 8px 14px); border-radius:2px; opacity:.6;}
+  .pipe-divider .joint{ width:7px; height:7px; border-radius:50%; background: var(--copper); box-shadow:0 0 0 3px rgba(224,138,60,.15); }
+
+  .status-dot{ width:8px; height:8px; border-radius:50%; display:inline-block; }
+  .badge{ font-size:12px; padding:3px 10px; border-radius:999px; font-weight:600; }
+
+  .tab-active{ color: var(--copper); }
+  .tab-active .tab-icon{ transform: translateY(-2px); }
+  .tab-icon{ transition: transform .18s ease; }
+
+  .fab{
+    box-shadow: 0 8px 24px -6px rgba(224,138,60,.55), 0 0 0 1px rgba(224,138,60,.25);
+  }
+  .fab:active{ transform: scale(.94); }
+
+  .sheet{
+    transition: transform .28s cubic-bezier(.32,.72,0,1);
+  }
+  .sheet.hidden-sheet{ transform: translateY(100%); }
+
+  .card-press:active{ transform: scale(.985); }
+  .card-press{ transition: transform .12s ease; }
+
+  input, select, textarea{
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    color: var(--text);
+  }
+  input::placeholder, textarea::placeholder{ color: var(--text-dim); }
+  input:focus, select:focus, textarea:focus{
+    outline: none;
+    border-color: var(--copper);
+    box-shadow: 0 0 0 3px rgba(224,138,60,.18);
+  }
+
+  .chip{
+    white-space:nowrap; font-size:13px; font-weight:600;
+    padding:8px 14px; border-radius:999px; border:1px solid var(--line);
+    background: var(--surface);
+  }
+  .chip.chip-active{ background: var(--copper); border-color: var(--copper); color:#1A1006; }
+
+  @media (min-width:640px){
+    body{ display:flex; justify-content:center; }
+    #app{ max-width: 480px; width:100%; min-height:100vh; box-shadow: 0 0 60px rgba(0,0,0,.4); }
+  }
+</style>
+</head>
+<body>
+<div id="app" class="min-h-screen flex flex-col" style="background:var(--bg)">
+
+  <!-- ===================== HEADER ===================== -->
+  <header class="px-5 pt-6 pb-4" style="background: linear-gradient(180deg, var(--bg-deep), var(--bg));">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <!-- Custom AC unit mark -->
+        <svg width="38" height="38" viewBox="0 0 40 40" fill="none">
+          <rect x="3" y="10" width="34" height="14" rx="4" stroke="var(--copper)" stroke-width="2"/>
+          <path d="M8 27c0 4 2 6 2 6M14 27c0 5 2 7 2 7M20 27c0 4 2 6 2 6M26 27c0 5 2 7 2 7" stroke="var(--mint)" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="31" cy="17" r="2" fill="var(--copper)"/>
+          <line x1="9" y1="17" x2="24" y2="17" stroke="var(--line)" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <div>
+          <h1 class="font-display font-black text-lg leading-none">تبريد</h1>
+          <p class="text-xs mt-1" style="color:var(--text-dim)">متابعة الصيانة والتركيب</p>
+        </div>
+      </div>
+      <button id="btnSearch" class="w-10 h-10 rounded-full flex items-center justify-center" style="background:var(--surface); border:1px solid var(--line)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      </button>
+    </div>
+
+    <!-- Quick stats strip -->
+    <div class="flex gap-3 mt-5 overflow-x-auto pb-1" style="scrollbar-width:none">
+      <div class="ticket-top-mini rounded-2xl px-4 py-3 shrink-0" style="background:var(--surface); border:1px solid var(--line); min-width:132px">
+        <p class="text-[11px]" style="color:var(--text-dim)">مداخيل الشهر</p>
+        <p class="font-mono font-semibold text-lg mt-1" style="color:var(--mint)" id="statIncome">0 د.ت</p>
+      </div>
+      <div class="rounded-2xl px-4 py-3 shrink-0" style="background:var(--surface); border:1px solid var(--line); min-width:110px">
+        <p class="text-[11px]" style="color:var(--text-dim)">مواعيد اليوم</p>
+        <p class="font-mono font-semibold text-lg mt-1" style="color:var(--amber)" id="statToday">0</p>
+      </div>
+      <div class="rounded-2xl px-4 py-3 shrink-0" style="background:var(--surface); border:1px solid var(--line); min-width:110px">
+        <p class="text-[11px]" style="color:var(--text-dim)">قيد الانتظار</p>
+        <p class="font-mono font-semibold text-lg mt-1" style="color:var(--copper)" id="statPending">0</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================== SEARCH / FILTER BAR ===================== -->
+  <div id="searchBar" class="px-5 hidden">
+    <div class="relative">
+      <input id="searchInput" type="text" placeholder="ابحث بالاسم أو الهاتف..." class="w-full rounded-xl px-4 py-2.5 text-sm">
+    </div>
+    <div class="flex gap-2 mt-3 overflow-x-auto pb-1">
+      <button class="chip chip-active" data-filter="all">الكل</button>
+      <button class="chip" data-filter="تركيب">تركيب</button>
+      <button class="chip" data-filter="صيانة">صيانة</button>
+      <button class="chip" data-filter="إصلاح">إصلاح</button>
+      <button class="chip" data-filter="pending">قيد الانتظار</button>
+      <button class="chip" data-filter="done">منجز</button>
+    </div>
+  </div>
+
+  <!-- ===================== MAIN CONTENT ===================== -->
+  <main class="flex-1 px-5 pt-2 pb-28" id="viewHome">
+
+    <div class="pipe-divider">
+      <span class="joint"></span><span class="seg"></span>
+      <span class="font-display font-bold text-sm" style="color:var(--text-dim)">مواعيد قادمة</span>
+      <span class="seg"></span><span class="joint"></span>
+    </div>
+
+    <div id="customerList" class="flex flex-col gap-4"></div>
+
+    <div id="emptyState" class="hidden text-center py-16">
+      <p class="font-display font-bold text-base" style="color:var(--text-dim)">ما فماش زبائن توة</p>
+      <p class="text-xs mt-1" style="color:var(--text-dim)">اضغط على + باش تزيد أول زبون</p>
+    </div>
+  </main>
+
+  <!-- ===================== STATS VIEW ===================== -->
+  <main class="flex-1 px-5 pt-4 pb-28 hidden" id="viewStats">
+    <h2 class="font-display font-black text-lg mb-4">الإحصائيات المالية</h2>
+
+    <div class="grid grid-cols-2 gap-3 mb-5">
+      <div class="ticket-top"><div class="ticket-perf"></div></div>
+    </div>
+
+    <div class="rounded-2xl p-5 mb-4" style="background:var(--surface); border:1px solid var(--line)">
+      <p class="text-xs" style="color:var(--text-dim)">مجموع المداخيل (كل الوقت)</p>
+      <p class="font-mono font-black text-3xl mt-1" style="color:var(--mint)" id="statTotalIncome">0 د.ت</p>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3">
+      <div class="rounded-2xl p-4" style="background:var(--surface); border:1px solid var(--line)">
+        <p class="text-xs" style="color:var(--text-dim)">عدد الخدمات المنجزة</p>
+        <p class="font-mono font-bold text-2xl mt-1" id="statDoneCount">0</p>
+      </div>
+      <div class="rounded-2xl p-4" style="background:var(--surface); border:1px solid var(--line)">
+        <p class="text-xs" style="color:var(--text-dim)">متوسط السعر</p>
+        <p class="font-mono font-bold text-2xl mt-1" id="statAvgPrice">0</p>
+      </div>
+    </div>
+
+    <div class="pipe-divider">
+      <span class="joint"></span><span class="seg"></span>
+      <span class="font-display font-bold text-sm" style="color:var(--text-dim)">حسب نوع الخدمة</span>
+      <span class="seg"></span><span class="joint"></span>
+    </div>
+
+    <div id="statsByType" class="flex flex-col gap-2"></div>
+  </main>
+
+  <!-- ===================== BOTTOM NAV ===================== -->
+  <nav class="fixed bottom-0 inset-x-0 mx-auto px-6 py-3 flex items-center justify-between" style="max-width:480px; background: var(--bg-deep); border-top:1px solid var(--line)">
+    <button class="tab-btn tab-active flex flex-col items-center gap-1 flex-1" data-view="home">
+      <svg class="tab-icon" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7"/><path d="M5 10v9a1 1 0 001 1h4v-6h4v6h4a1 1 0 001-1v-9"/></svg>
+      <span class="text-[11px] font-semibold">الرئيسية</span>
+    </button>
+    <button class="tab-btn flex flex-col items-center gap-1 flex-1" data-view="stats" style="color:var(--text-dim)">
+      <svg class="tab-icon" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>
+      <span class="text-[11px] font-semibold">الإحصائيات</span>
+    </button>
+    <div class="flex-1 flex justify-center">
+      <button id="btnAdd" class="fab w-14 h-14 rounded-full flex items-center justify-center -mt-8" style="background:var(--copper)">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1A1006" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+    </div>
+    <button class="tab-btn flex flex-col items-center gap-1 flex-1" data-view="settings" style="color:var(--text-dim)">
+      <svg class="tab-icon" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1 1.55V21a2 2 0 11-4 0v-.09a1.7 1.7 0 00-1-1.55 1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.7 1.7 0 00.34-1.87 1.7 1.7 0 00-1.55-1H3a2 2 0 110-4h.09a1.7 1.7 0 001.55-1 1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06a1.7 1.7 0 001.87.34H9a1.7 1.7 0 001-1.55V3a2 2 0 114 0v.09a1.7 1.7 0 001 1.55 1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06.06a1.7 1.7 0 00-.34 1.87V9a1.7 1.7 0 001.55 1H21a2 2 0 110 4h-.09a1.7 1.7 0 00-1.55 1z"/></svg>
+      <span class="text-[11px] font-semibold">الإعدادات</span>
+    </button>
+  </nav>
+
+  <!-- ===================== ADD/EDIT BOTTOM SHEET ===================== -->
+  <div id="sheetOverlay" class="fixed inset-0 bg-black/60 hidden z-40"></div>
+  <div id="sheet" class="sheet hidden-sheet fixed bottom-0 inset-x-0 mx-auto z-50 rounded-t-3xl px-5 pt-5 pb-8 max-h-[88vh] overflow-y-auto" style="max-width:480px; background:var(--bg-deep); border:1px solid var(--line); border-bottom:none">
+    <div class="w-10 h-1.5 rounded-full mx-auto mb-4" style="background:var(--line)"></div>
+    <div class="flex items-center justify-between mb-5">
+      <h3 class="font-display font-black text-lg" id="sheetTitle">زبون جديد</h3>
+      <button id="btnCloseSheet" class="w-8 h-8 rounded-full flex items-center justify-center" style="background:var(--surface)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <form id="customerForm" class="flex flex-col gap-4">
+      <div>
+        <label class="text-xs font-semibold" style="color:var(--text-dim)">اسم الحريف</label>
+        <input required name="name" type="text" placeholder="مثال: سامي بن علي" class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm">
+      </div>
+      <div>
+        <label class="text-xs font-semibold" style="color:var(--text-dim)">رقم الهاتف</label>
+        <input required name="phone" type="tel" placeholder="+216 XX XXX XXX" class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm font-mono" style="direction:ltr; text-align:right">
+      </div>
+      <div>
+        <label class="text-xs font-semibold" style="color:var(--text-dim)">العنوان</label>
+        <input name="address" type="text" placeholder="الحي، المدينة" class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm">
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-xs font-semibold" style="color:var(--text-dim)">نوع الخدمة</label>
+          <select name="serviceType" class="w-full rounded-xl px-3 py-3 mt-1.5 text-sm">
+            <option value="تركيب">تركيب</option>
+            <option value="صيانة">صيانة</option>
+            <option value="إصلاح">إصلاح</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-xs font-semibold" style="color:var(--text-dim)">الحالة</label>
+          <select name="status" class="w-full rounded-xl px-3 py-3 mt-1.5 text-sm">
+            <option value="pending">قيد الانتظار</option>
+            <option value="done">منجز</option>
+            <option value="cancelled">ملغى</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-xs font-semibold" style="color:var(--text-dim)">تاريخ الموعد</label>
+          <input required name="date" type="date" class="w-full rounded-xl px-3 py-3 mt-1.5 text-sm font-mono">
+        </div>
+        <div>
+          <label class="text-xs font-semibold" style="color:var(--text-dim)">السعر (د.ت)</label>
+          <input name="price" type="number" step="0.5" placeholder="0" class="w-full rounded-xl px-3 py-3 mt-1.5 text-sm font-mono">
+        </div>
+      </div>
+      <div>
+        <label class="text-xs font-semibold" style="color:var(--text-dim)">ملاحظات</label>
+        <textarea name="notes" rows="2" placeholder="نوع المكيف، الضمان، تفاصيل أخرى..." class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm resize-none"></textarea>
+      </div>
+
+      <div class="flex gap-3 mt-2">
+        <button type="button" id="btnDelete" class="hidden flex-1 rounded-xl py-3 font-bold text-sm" style="background:rgba(232,103,74,.12); color:var(--danger); border:1px solid rgba(232,103,74,.3)">حذف</button>
+        <button type="submit" class="flex-1 rounded-xl py-3 font-bold text-sm" style="background:var(--copper); color:#1A1006">حفظ</button>
+      </div>
+    </form>
+  </div>
+
+</div>
+
+<script>
+/* ============ MOCK DATA (Stage 1 — replaced by Firestore in Stage 2) ============ */
+const SERVICE_COLORS = { 'تركيب':'var(--mint)', 'صيانة':'var(--amber)', 'إصلاح':'var(--danger)' };
+const STATUS_LABEL = { pending:'قيد الانتظار', done:'منجز', cancelled:'ملغى' };
+const STATUS_COLOR = { pending:'var(--amber)', done:'var(--mint)', cancelled:'var(--danger)' };
+
+function todayStr(offset=0){
+  const d = new Date(); d.setDate(d.getDate()+offset);
+  return d.toISOString().slice(0,10);
+}
+
+let customers = [
+  { id: crypto.randomUUID(), name:'سامي بن علي', phone:'+21620123456', address:'حي النور، قليبية', serviceType:'صيانة', status:'pending', date: todayStr(0), price:80, notes:'مكيف سبليت 12000 BTU، صوت غريب' },
+  { id: crypto.randomUUID(), name:'منى الشارني', phone:'+21698765432', address:'وسط المدينة، قليبية', serviceType:'تركيب', status:'pending', date: todayStr(1), price:250, notes:'تركيب وحدتين، ضمان سنة' },
+  { id: crypto.randomUUID(), name:'وليد الطرابلسي', phone:'+21655112233', address:'المرسى', serviceType:'إصلاح', status:'done', date: todayStr(-2), price:60, notes:'تسريب غاز، تم الإصلاح' },
+  { id: crypto.randomUUID(), name:'إيمان بوعزيزي', phone:'+21692445566', address:'نابل', serviceType:'صيانة', status:'done', date: todayStr(-5), price:70, notes:'' },
+];
+
+let activeView = 'home';
+let activeFilter = 'all';
+let searchQuery = '';
+let editingId = null;
+
+/* ============ RENDER ============ */
+function fmtDate(iso){
+  const d = new Date(iso+'T00:00:00');
+  return d.toLocaleDateString('ar-TN',{ day:'2-digit', month:'2-digit', year:'numeric' });
+}
+function dateBadge(iso){
+  const diff = Math.round((new Date(iso) - new Date(todayStr()))/86400000);
+  if(diff === 0) return {text:'اليوم', color:'var(--amber)'};
+  if(diff < 0) return {text:'متأخر', color:'var(--danger)'};
+  if(diff === 1) return {text:'غدا', color:'var(--mint)'};
+  return {text: fmtDate(iso), color:'var(--text-dim)'};
+}
+
+function renderList(){
+  const list = document.getElementById('customerList');
+  const empty = document.getElementById('emptyState');
+  let items = [...customers];
+
+  if(activeFilter !== 'all'){
+    if(activeFilter === 'pending' || activeFilter === 'done'){
+      items = items.filter(c => c.status === activeFilter);
+    } else {
+      items = items.filter(c => c.serviceType === activeFilter);
+    }
+  }
+  if(searchQuery.trim()){
+    const q = searchQuery.trim();
+    items = items.filter(c => c.name.includes(q) || c.phone.includes(q));
+  }
+  items.sort((a,b) => a.date.localeCompare(b.date));
+
+  list.innerHTML = '';
+  if(items.length === 0){
+    empty.classList.remove('hidden');
+  } else {
+    empty.classList.add('hidden');
+    items.forEach(c => list.appendChild(renderCard(c)));
+  }
+  renderStats();
+}
+
+function renderCard(c){
+  const badge = dateBadge(c.date);
+  const wrap = document.createElement('div');
+  wrap.className = 'card-press cursor-pointer';
+  wrap.innerHTML = `
+    <div class="ticket-top px-4 pt-4"><div class="ticket-perf"></div></div>
+    <div class="ticket-bottom px-4 pb-4 -mt-3">
+      <div class="flex items-start justify-between">
+        <div>
+          <p class="font-display font-bold text-[15px]">${c.name}</p>
+          <p class="text-xs font-mono mt-0.5" style="color:var(--text-dim)">${c.phone}</p>
+        </div>
+        <span class="badge" style="background:${badge.color}22; color:${badge.color}">${badge.text}</span>
+      </div>
+      <div class="flex items-center gap-2 mt-3 flex-wrap">
+        <span class="badge" style="background:${SERVICE_COLORS[c.serviceType]}22; color:${SERVICE_COLORS[c.serviceType]}">${c.serviceType}</span>
+        <span class="flex items-center gap-1 text-xs" style="color:var(--text-dim)">
+          <span class="status-dot" style="background:${STATUS_COLOR[c.status]}"></span>${STATUS_LABEL[c.status]}
+        </span>
+        ${c.address ? `<span class="text-xs" style="color:var(--text-dim)">· ${c.address}</span>` : ''}
+      </div>
+      <div class="flex items-center justify-between mt-4">
+        <p class="font-mono font-bold text-base" style="color:var(--mint)">${c.price ? c.price+' د.ت' : '—'}</p>
+        <div class="flex gap-2">
+          <a href="tel:${c.phone}" onclick="event.stopPropagation()" class="w-9 h-9 rounded-full flex items-center justify-center" style="background:rgba(79,209,174,.14)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--mint)" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          </a>
+          <button onclick="event.stopPropagation(); openEdit('${c.id}')" class="w-9 h-9 rounded-full flex items-center justify-center" style="background:var(--surface-2)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+  wrap.addEventListener('click', () => openEdit(c.id));
+  return wrap;
+}
+
+function renderStats(){
+  const now = new Date();
+  const monthKey = now.toISOString().slice(0,7);
+  const monthIncome = customers.filter(c => c.status==='done' && c.date.startsWith(monthKey)).reduce((s,c)=>s+(+c.price||0),0);
+  const todayCount = customers.filter(c => c.date === todayStr() && c.status==='pending').length;
+  const pendingCount = customers.filter(c => c.status==='pending').length;
+
+  document.getElementById('statIncome').textContent = monthIncome + ' د.ت';
+  document.getElementById('statToday').textContent = todayCount;
+  document.getElementById('statPending').textContent = pendingCount;
+
+  const doneList = customers.filter(c => c.status==='done');
+  const total = doneList.reduce((s,c)=>s+(+c.price||0),0);
+  document.getElementById('statTotalIncome').textContent = total + ' د.ت';
+  document.getElementById('statDoneCount').textContent = doneList.length;
+  document.getElementById('statAvgPrice').textContent = doneList.length ? Math.round(total/doneList.length) : 0;
+
+  const byType = {};
+  doneList.forEach(c => { byType[c.serviceType] = (byType[c.serviceType]||0) + (+c.price||0); });
+  const box = document.getElementById('statsByType');
+  box.innerHTML = '';
+  Object.keys(SERVICE_COLORS).forEach(type => {
+    const val = byType[type] || 0;
+    const row = document.createElement('div');
+    row.className = 'flex items-center justify-between rounded-xl px-4 py-3';
+    row.style.background = 'var(--surface)';
+    row.style.border = '1px solid var(--line)';
+    row.innerHTML = `
+      <span class="flex items-center gap-2 text-sm font-semibold">
+        <span class="status-dot" style="background:${SERVICE_COLORS[type]}"></span>${type}
+      </span>
+      <span class="font-mono font-bold" style="color:${SERVICE_COLORS[type]}">${val} د.ت</span>
+    `;
+    box.appendChild(row);
+  });
+}
+
+/* ============ NAV ============ */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('tab-active'); b.style.color='var(--text-dim)'; });
+    btn.classList.add('tab-active'); btn.style.color='';
+    const view = btn.dataset.view;
+    document.getElementById('viewHome').classList.toggle('hidden', view!=='home');
+    document.getElementById('viewStats').classList.toggle('hidden', view!=='stats');
+    if(view==='settings'){ alert('الإعدادات: قريبا (مزامنة Firebase، النسخ الاحتياطي...)'); }
+  });
+});
+
+/* ============ SEARCH / FILTER ============ */
+document.getElementById('btnSearch').addEventListener('click', () => {
+  document.getElementById('searchBar').classList.toggle('hidden');
+});
+document.getElementById('searchInput').addEventListener('input', e => { searchQuery = e.target.value; renderList(); });
+document.querySelectorAll('.chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('chip-active'));
+    chip.classList.add('chip-active');
+    activeFilter = chip.dataset.filter;
+    renderList();
+  });
+});
+
+/* ============ SHEET (Add / Edit) ============ */
+const sheet = document.getElementById('sheet');
+const overlay = document.getElementById('sheetOverlay');
+const form = document.getElementById('customerForm');
+
+function openSheet(){
+  overlay.classList.remove('hidden');
+  sheet.classList.remove('hidden-sheet');
+  requestAnimationFrame(()=> sheet.classList.remove('hidden-sheet'));
+}
+function closeSheet(){
+  sheet.classList.add('hidden-sheet');
+  setTimeout(()=> overlay.classList.add('hidden'), 280);
+}
+document.getElementById('btnAdd').addEventListener('click', () => {
+  editingId = null;
+  form.reset();
+  document.getElementById('sheetTitle').textContent = 'زبون جديد';
+  document.getElementById('btnDelete').classList.add('hidden');
+  form.date.value = todayStr();
+  openSheet();
+});
+document.getElementById('btnCloseSheet').addEventListener('click', closeSheet);
+overlay.addEventListener('click', closeSheet);
+
+function openEdit(id){
+  const c = customers.find(x => x.id === id);
+  if(!c) return;
+  editingId = id;
+  form.name.value = c.name;
+  form.phone.value = c.phone;
+  form.address.value = c.address || '';
+  form.serviceType.value = c.serviceType;
+  form.status.value = c.status;
+  form.date.value = c.date;
+  form.price.value = c.price || '';
+  form.notes.value = c.notes || '';
+  document.getElementById('sheetTitle').textContent = 'تعديل الزبون';
+  document.getElementById('btnDelete').classList.remove('hidden');
+  openSheet();
+}
+
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  const fd = new FormData(form);
+  const data = Object.fromEntries(fd.entries());
+  data.price = data.price ? +data.price : 0;
+
+  if(editingId){
+    const idx = customers.findIndex(c => c.id === editingId);
+    customers[idx] = { ...customers[idx], ...data };
+  } else {
+    customers.push({ id: crypto.randomUUID(), ...data });
+  }
+  closeSheet();
+  renderList();
+});
+
+document.getElementById('btnDelete').addEventListener('click', () => {
+  if(!editingId) return;
+  if(confirm('تأكد الحذف؟')){
+    customers = customers.filter(c => c.id !== editingId);
+    closeSheet();
+    renderList();
+  }
+});
+
+/* ============ INIT ============ */
+renderList();
+</script>
+</body>
+</html>
