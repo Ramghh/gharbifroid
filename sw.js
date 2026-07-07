@@ -1,6 +1,6 @@
 // ⚠️ لازم نزيدو CACHE_NAME (نبدلو الرقم) كل مرة نبدلو فيها index.html أو أي ملف من app-shell
 // هذا يجبر الأجهزة تجيب النسخة الجديدة بدل ما تخدم بالقديمة المخزنة (cache).
-const CACHE_NAME = 'tabrid-cache-v8';
+const CACHE_NAME = 'tabrid-cache-v10';
 
 const APP_SHELL = [
   './',

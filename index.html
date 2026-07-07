@@ -340,8 +340,12 @@
     </div>
 
     <div class="rounded-2xl p-5 mb-4" style="background:var(--surface); border:1px solid var(--line)">
-      <p class="text-xs" style="color:var(--text-dim)" id="statPeriodLabel">مجموع المداخيل</p>
+      <div class="flex items-center justify-between">
+        <p class="text-xs" style="color:var(--text-dim)" id="statPeriodLabel">مجموع المداخيل</p>
+        <span id="statCompareBadge" class="hidden badge flex items-center gap-1 font-mono"></span>
+      </div>
       <p class="font-mono font-black text-3xl mt-1" style="color:var(--mint)" id="statTotalIncome">0 د.ت</p>
+      <p class="text-[11px] mt-1 hidden" id="statCompareLabel" style="color:var(--text-dim)"></p>
     </div>
 
     <div class="grid grid-cols-2 gap-3">
@@ -791,7 +795,9 @@ function renderCard(c){
   const badge = dateBadge(c.date);
   const wrap = document.createElement('div');
   wrap.className = 'card-press cursor-pointer';
+  wrap.style.position = 'relative';
   wrap.innerHTML = `
+    <div style="position:absolute; top:2px; bottom:2px; right:0; width:5px; border-radius:0 12px 12px 0; background:${SERVICE_COLORS[c.serviceType]}; z-index:1"></div>
     <div class="ticket-top px-4 pt-4"><div class="ticket-perf"></div></div>
     <div class="ticket-bottom px-4 pb-4 -mt-2">
       <div class="flex items-start justify-between">
@@ -864,6 +870,34 @@ function getRangeBounds(range){
   return {start:null, end:null}; // all
 }
 
+// ============ حدود الفترة السابقة (لمقارنة النسبة المئوية) ============
+const PREV_LABEL = { today:'مقارنة بالأمس', week:'مقارنة بالأسبوع الفارط', month:'مقارنة بالشهر الفارط', year:'مقارنة بالسنة الفارطة' };
+
+function getPreviousRangeBounds(range){
+  const now = new Date();
+  if(range === 'today'){
+    const y = new Date(now); y.setDate(y.getDate()-1);
+    const iso = y.toISOString().slice(0,10);
+    return {start: iso, end: iso};
+  }
+  if(range === 'week'){
+    const { start } = getRangeBounds('week');
+    const prevStart = new Date(start + 'T00:00:00'); prevStart.setDate(prevStart.getDate()-7);
+    const prevEnd = new Date(prevStart); prevEnd.setDate(prevStart.getDate()+6);
+    return {start: prevStart.toISOString().slice(0,10), end: prevEnd.toISOString().slice(0,10)};
+  }
+  if(range === 'month'){
+    const d = new Date(now.getFullYear(), now.getMonth()-1, 1);
+    const start = new Date(d.getFullYear(), d.getMonth(), 1);
+    const end = new Date(d.getFullYear(), d.getMonth()+1, 0);
+    return {start: start.toISOString().slice(0,10), end: end.toISOString().slice(0,10)};
+  }
+  if(range === 'year'){
+    return {start: `${now.getFullYear()-1}-01-01`, end: `${now.getFullYear()-1}-12-31`};
+  }
+  return null; // 'all' — ما فماش فترة سابقة تتقارن بيها
+}
+
 function renderReport(){
   const { start, end } = getRangeBounds(activeRange);
   const inRange = c => !start || (c.date >= start && c.date <= end);
@@ -875,6 +909,39 @@ function renderReport(){
   document.getElementById('statTotalIncome').textContent = total + ' د.ت';
   document.getElementById('statDoneCount').textContent = doneList.length;
   document.getElementById('statAvgPrice').textContent = doneList.length ? Math.round(total/doneList.length) : 0;
+
+  // ============ مقارنة بالفترة السابقة ============
+  const compareBadge = document.getElementById('statCompareBadge');
+  const compareLabel = document.getElementById('statCompareLabel');
+  const prevBounds = getPreviousRangeBounds(activeRange);
+
+  if(!prevBounds){
+    compareBadge.classList.add('hidden');
+    compareLabel.classList.add('hidden');
+  } else {
+    const prevTotal = customers
+      .filter(c => c.status==='done' && c.date >= prevBounds.start && c.date <= prevBounds.end)
+      .reduce((s,c)=>s+(+c.price||0), 0);
+
+    let text, color, arrow;
+    if(prevTotal === 0 && total === 0){
+      text = '—'; color = 'var(--text-dim)'; arrow = '';
+    } else if(prevTotal === 0){
+      text = 'جديد'; color = 'var(--mint)'; arrow = '↑';
+    } else {
+      const pct = Math.round(((total - prevTotal) / prevTotal) * 100);
+      color = pct > 0 ? 'var(--mint)' : (pct < 0 ? 'var(--danger)' : 'var(--text-dim)');
+      arrow = pct > 0 ? '↑' : (pct < 0 ? '↓' : '');
+      text = `${arrow} ${Math.abs(pct)}%`;
+    }
+    compareBadge.textContent = text;
+    compareBadge.style.background = color + '22';
+    compareBadge.style.color = color;
+    compareBadge.classList.remove('hidden');
+
+    compareLabel.textContent = PREV_LABEL[activeRange];
+    compareLabel.classList.remove('hidden');
+  }
 
   const byType = {};
   doneList.forEach(c => { byType[c.serviceType] = (byType[c.serviceType]||0) + (+c.price||0); });
