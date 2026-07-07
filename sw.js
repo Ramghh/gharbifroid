@@ -1,6 +1,6 @@
 // ⚠️ لازم نزيدو CACHE_NAME (نبدلو الرقم) كل مرة نبدلو فيها index.html أو أي ملف من app-shell
 // هذا يجبر الأجهزة تجيب النسخة الجديدة بدل ما تخدم بالقديمة المخزنة (cache).
-const CACHE_NAME = 'tabrid-cache-v10';
+const CACHE_NAME = 'tabrid-cache-v11';
 
 const APP_SHELL = [
   './',
@@ -57,6 +57,19 @@ self.addEventListener('fetch', (event) => {
 
       // نرجعو النسخة المخزنة فوراً إذا موجودة (سريع)، ونحدثوها في الخلفية
       return cached || networkFetch;
+    })
+  );
+});
+
+// ============ NOTIFICATIONCLICK: نفتحو أو نفوكسيو التطبيق كي يضغط المستخدم على التنبيه ============
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      for (const client of clientList) {
+        if ('focus' in client) return client.focus();
+      }
+      if (clients.openWindow) return clients.openWindow('./index.html');
     })
   );
 });

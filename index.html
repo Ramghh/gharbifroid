@@ -415,6 +415,18 @@
       <p class="text-[11px]" style="color:var(--text-dim)">البيانات متزامنة أوتوماتيكياً مع Firebase — هذا الملف نسخة إضافية تحفظها إنت.</p>
     </div>
 
+    <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)">التنبيهات</p>
+    <div class="rounded-2xl p-4 mb-5 flex flex-col gap-3" style="background:var(--surface); border:1px solid var(--line)">
+      <button id="btnEnableNotif" class="w-full flex items-center justify-between rounded-xl px-4 py-3" style="background:var(--surface-2)">
+        <span class="flex items-center gap-2 text-sm font-semibold">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          تفعيل تنبيهات المواعيد
+        </span>
+        <span class="text-xs font-semibold" id="notifStatus" style="color:var(--text-dim)">غير مفعلة</span>
+      </button>
+      <p class="text-[11px]" style="color:var(--text-dim)">كي تفتح التطبيق صباحاً، يعلمك بمواعيد اليوم وأي موعد "قيد الانتظار" فات وقتو. ⚠️ لازم تفتح التطبيق مرة على الأقل كل يوم باش التنبيه يخدم — التطبيق ما ينجمش يبعث تنبيه وهو مسكر كامل بلا سيرفر خاص بيه.</p>
+    </div>
+
     <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)">عن التطبيق</p>
     <div class="rounded-2xl p-4 flex items-center gap-3" style="background:var(--surface); border:1px solid var(--line)">
       <svg width="30" height="30" viewBox="0 0 40 40" fill="none">
@@ -786,6 +798,7 @@ function renderList(){
     items.forEach(c => list.appendChild(renderCard(c)));
   }
   updateHomeStats();
+  checkAndNotify();
   renderCalendar();
   renderCalDayList();
   renderReport();
@@ -1246,6 +1259,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 function renderSettings(){
   document.getElementById('settingsEmail').textContent = auth.currentUser ? auth.currentUser.email : '—';
   document.getElementById('backupCount').textContent = customers.length + ' زبون';
+  updateNotifStatusUI();
 }
 
 document.getElementById('btnLogout').addEventListener('click', () => {
@@ -1408,6 +1422,90 @@ document.getElementById('btnDelete').addEventListener('click', () => {
     removeCustomer(editingId).catch(err => console.error('Delete error:', err));
     closeSheet();
   }
+});
+
+/* ============ التنبيهات المحلية (بلا سيرفر) ============ */
+const NOTIF_LAST_KEY = 'tabrid-last-notif-date';
+const MORNING_HOUR = 7; // نستنو الساعة 7 صباحاً قبل ما نبعثو تنبيه اليوم
+
+function updateNotifStatusUI(){
+  const statusEl = document.getElementById('notifStatus');
+  if(!('Notification' in window)){
+    statusEl.textContent = 'غير مدعومة';
+    statusEl.style.color = 'var(--text-dim)';
+    return;
+  }
+  if(Notification.permission === 'granted'){
+    statusEl.textContent = 'مفعلة ✓';
+    statusEl.style.color = 'var(--mint)';
+  } else if(Notification.permission === 'denied'){
+    statusEl.textContent = 'مرفوضة (فعلها من إعدادات المتصفح)';
+    statusEl.style.color = 'var(--danger)';
+  } else {
+    statusEl.textContent = 'غير مفعلة';
+    statusEl.style.color = 'var(--text-dim)';
+  }
+}
+
+document.getElementById('btnEnableNotif').addEventListener('click', async () => {
+  if(!('Notification' in window)){
+    alert('هذا المتصفح ما يدعمش التنبيهات.');
+    return;
+  }
+  if(Notification.permission === 'denied'){
+    alert('التنبيهات مرفوضة من إعدادات المتصفح متاع الهاتف. لازم تفعلها يدوياً من هناك.');
+    return;
+  }
+  const perm = await Notification.requestPermission();
+  updateNotifStatusUI();
+  if(perm === 'granted'){
+    // نجربو تنبيه فوري باش يتأكد إنو خدامة
+    navigator.serviceWorker.ready.then(reg => {
+      reg.showNotification('تبريد', {
+        body: 'التنبيهات مفعلة! باش تتوصل بملخص المواعيد كي تفتح التطبيق صباحاً.',
+        icon: './icon-192.png',
+        dir: 'rtl', lang: 'ar'
+      });
+    });
+    localStorage.removeItem(NOTIF_LAST_KEY); // نخليو الفحص يعاود يجري توة
+    checkAndNotify();
+  }
+});
+
+function checkAndNotify(){
+  if(!('Notification' in window) || Notification.permission !== 'granted') return;
+  if(!currentUid) return; // ما نبعثوش تنبيه قبل ما نعرفو الزبائن متاع المستخدم
+
+  const today = todayStr();
+  if(localStorage.getItem(NOTIF_LAST_KEY) === today) return; // تنبهنا اليوم مرة، كافي
+
+  const now = new Date();
+  if(now.getHours() < MORNING_HOUR) return;
+
+  const todays = customers.filter(c => c.date === today && c.status === 'pending');
+  const overdue = customers.filter(c => c.date < today && c.status === 'pending');
+  if(todays.length === 0 && overdue.length === 0) return;
+
+  const parts = [];
+  if(todays.length) parts.push(`${todays.length} موعد اليوم`);
+  if(overdue.length) parts.push(`${overdue.length} موعد متأخر`);
+
+  navigator.serviceWorker.ready.then(reg => {
+    reg.showNotification('تبريد — ملخص اليوم', {
+      body: parts.join(' · '),
+      icon: './icon-192.png',
+      badge: './icon-192.png',
+      tag: 'tabrid-daily-summary',
+      dir: 'rtl', lang: 'ar'
+    });
+  });
+
+  localStorage.setItem(NOTIF_LAST_KEY, today);
+}
+
+// نتحقاو كي تفتح التطبيق، وكي يرجع للواجهة الأمامية بعد ما كان في الخلفية
+document.addEventListener('visibilitychange', () => {
+  if(document.visibilityState === 'visible') checkAndNotify();
 });
 
 /* ============ INIT ============ */
