@@ -2,6 +2,16 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
+<script>
+  // نطبقو الثيم قبل ما الصفحة تترسم باش ما يصيرش "ومضة" بلون غالط (FOUC)
+  (function(){
+    try{
+      var pref = localStorage.getItem('tabrid-theme-pref') || 'auto';
+      var wantsLight = pref === 'light' || (pref === 'auto' && !window.matchMedia('(prefers-color-scheme: dark)').matches);
+      if(wantsLight) document.documentElement.setAttribute('data-theme', 'light');
+    }catch(e){}
+  })();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>تبريد | متابعة الصيانة والتركيب</title>
 <meta name="theme-color" content="#0A2E2C">
@@ -30,6 +40,21 @@
     --danger: #E8674A;
     --text: #EAF3F1;
     --text-dim: #8FADA9;
+  }
+  /* ============ وضع فاتح (Light Mode) ============ */
+  :root[data-theme="light"]{
+    --bg: #F5F1E8;
+    --bg-deep: #ECE5D5;
+    --surface: #FFFFFF;
+    --surface-2: #F1ECDF;
+    --line: #DDD4BE;
+    --copper: #C2701F;
+    --copper-dim: #A85F17;
+    --mint: #1E9A80;
+    --amber: #B5860F;
+    --danger: #C6462F;
+    --text: #1D2926;
+    --text-dim: #6C7B76;
   }
   *{ -webkit-tap-highlight-color: transparent; }
   html,body{ background: var(--bg-deep); color: var(--text); font-family:'Cairo',sans-serif; overscroll-behavior-y: none; }
@@ -263,7 +288,7 @@
       <span class="text-[11px] font-semibold" style="color:var(--text-dim)">جمعة</span>
       <span class="text-[11px] font-semibold" style="color:var(--text-dim)">سبت</span>
     </div>
-    <div id="calGrid" class="grid grid-cols-7 gap-y-2 text-center"></div>
+    <div id="calGrid" class="grid grid-cols-7 gap-y-2 gap-x-1 text-center"></div>
 
     <div class="flex items-center justify-center gap-4 mt-4 flex-wrap">
       <span class="flex items-center gap-1.5 text-[11px]" style="color:var(--text-dim)">
@@ -339,6 +364,13 @@
   <!-- ===================== SETTINGS VIEW ===================== -->
   <main class="flex-1 px-5 pt-4 pb-28 hidden" id="viewSettings">
     <h2 class="font-display font-black text-lg mb-4">الإعدادات</h2>
+
+    <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)">المظهر</p>
+    <div class="flex gap-2 mb-5">
+      <button class="chip theme-chip" data-theme-pref="auto">تلقائي</button>
+      <button class="chip theme-chip" data-theme-pref="light">فاتح</button>
+      <button class="chip theme-chip" data-theme-pref="dark">داكن</button>
+    </div>
 
     <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)">الحساب</p>
     <div class="rounded-2xl p-4 mb-5" style="background:var(--surface); border:1px solid var(--line)">
@@ -886,7 +918,7 @@ function renderCalendar(){
     const dayIncome = dayItems.filter(c => c.status==='done').reduce((s,c)=>s+(+c.price||0),0);
 
     // ============ درجة اللون حسب عدد المواعيد (heatmap) ============
-    let bg = 'transparent';
+    let bg = 'var(--surface)';
     if(count >= 4) bg = 'var(--copper)';
     else if(count >= 2) bg = 'rgba(224,138,60,.42)';
     else if(count === 1) bg = 'rgba(224,138,60,.18)';
@@ -897,7 +929,7 @@ function renderCalendar(){
     const cell = document.createElement('button');
     cell.className = 'flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl';
     cell.style.background = finalBg;
-    cell.style.border = isToday && !isSelected ? '1.5px solid var(--copper)' : '1px solid transparent';
+    cell.style.border = isToday && !isSelected ? '1.5px solid var(--copper)' : '1px solid var(--line)';
     cell.innerHTML = `
       <span class="text-xs font-mono font-bold" style="color:${textColor}">${d}</span>
       ${count > 0 ? `<span class="font-mono" style="font-size:9px; color:${textColor}; opacity:.85">${count}م</span>` : '<span style="height:11px"></span>'}
@@ -983,6 +1015,44 @@ document.getElementById('btnExportBackup').addEventListener('click', () => {
   a.remove();
   URL.revokeObjectURL(url);
 });
+
+/* ============ الوضع الفاتح / الداكن ============ */
+const THEME_KEY = 'tabrid-theme-pref';
+
+function resolveTheme(pref){
+  if(pref === 'light' || pref === 'dark') return pref;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
+function applyTheme(){
+  const pref = localStorage.getItem(THEME_KEY) || 'auto';
+  const resolved = resolveTheme(pref);
+  if(resolved === 'light'){
+    document.documentElement.setAttribute('data-theme', 'light');
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+  }
+  document.querySelector('meta[name="theme-color"]').setAttribute('content', resolved === 'light' ? '#F5F1E8' : '#0A2E2C');
+  document.querySelectorAll('.theme-chip').forEach(chip => {
+    chip.classList.toggle('chip-active', chip.dataset.themePref === pref);
+  });
+}
+
+function setThemePref(pref){
+  localStorage.setItem(THEME_KEY, pref);
+  applyTheme();
+}
+
+document.querySelectorAll('.theme-chip').forEach(chip => {
+  chip.addEventListener('click', () => setThemePref(chip.dataset.themePref));
+});
+
+// كي النظام (الهاتف) يبدل بين فاتح/داكن أوتوماتيكياً ونحنا في وضع "تلقائي"، نتبعوه فوراً
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+  if((localStorage.getItem(THEME_KEY) || 'auto') === 'auto') applyTheme();
+});
+
+applyTheme();
 
 /* ============ SEARCH / FILTER ============ */
 document.getElementById('btnSearch').addEventListener('click', () => {
