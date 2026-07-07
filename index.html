@@ -580,9 +580,13 @@
           <input required name="date" type="date" class="w-full rounded-xl px-3 py-3 mt-1.5 text-sm font-mono">
         </div>
         <div>
-          <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="price_label">السعر (د.ت)</label>
-          <input name="price" type="number" step="0.5" placeholder="0" class="w-full rounded-xl px-3 py-3 mt-1.5 text-sm font-mono">
+          <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="appt_time">الوقت (اختياري)</label>
+          <input name="time" type="time" class="w-full rounded-xl px-3 py-3 mt-1.5 text-sm font-mono">
         </div>
+      </div>
+      <div>
+        <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="price_label">السعر (د.ت)</label>
+        <input name="price" type="number" step="0.5" placeholder="0" class="w-full rounded-xl px-3 py-3 mt-1.5 text-sm font-mono">
       </div>
       <div>
         <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="notes">ملاحظات</label>
@@ -602,7 +606,7 @@
   </div>
 
   <!-- ===================== SOUND LEVEL METER OVERLAY ===================== -->
-  <div id="soundMeterOverlay" class="hidden fixed inset-0 z-[70] flex flex-col" style="background:var(--bg-deep)">
+  <div id="soundMeterOverlay" class="fixed inset-0 z-[70] flex-col" style="background:var(--bg-deep); display:none">
     <div class="flex items-center justify-between px-5 pt-6 pb-2">
       <h3 class="font-display font-black text-lg" data-i18n="sound_meter">قياس مستوى الضوضاء</h3>
       <button id="btnCloseSoundMeter" class="w-9 h-9 rounded-full flex items-center justify-center" style="background:var(--surface)">
@@ -760,6 +764,7 @@ const TRANSLATIONS = {
     status: 'الحالة',
     ac_power: 'قوة المكيف (BTU)',
     appt_date: 'تاريخ الموعد',
+    appt_time: 'الوقت (اختياري)',
     price_label: 'السعر (د.ت)',
     notes: 'ملاحظات',
     notes_ph: 'نوع المكيف، الضمان، تفاصيل أخرى...',
@@ -887,6 +892,7 @@ const TRANSLATIONS = {
     status: 'Statut',
     ac_power: 'Puissance clim (BTU)',
     appt_date: 'Date du rendez-vous',
+    appt_time: 'Heure (optionnel)',
     price_label: 'Prix (DT)',
     notes: 'Notes',
     notes_ph: 'Type de clim, garantie, autres détails...',
@@ -1212,7 +1218,7 @@ function renderList(){
     const q = searchQuery.trim();
     items = items.filter(c => c.name.includes(q) || c.phone.includes(q));
   }
-  items.sort((a,b) => a.date.localeCompare(b.date));
+  items.sort((a,b) => a.date.localeCompare(b.date) || (a.time||'99:99').localeCompare(b.time||'99:99'));
 
   // كي المستخدم يفلتر يدوياً على "منجز"، نعرضوها عادي في القائمة الرئيسية بلا فصل
   let mainItems = items, doneItems = [];
@@ -1276,7 +1282,7 @@ function renderCard(c){
           <p class="font-display font-bold text-[15px]">${c.name}</p>
           <p class="text-xs font-mono mt-0.5" style="color:var(--text-dim)">${c.phone}</p>
         </div>
-        <span class="badge" style="background:${badge.color}22; color:${badge.color}">${badge.text}</span>
+        <span class="badge" style="background:${badge.color}22; color:${badge.color}">${badge.text}${c.time ? ' · ' + c.time : ''}</span>
       </div>
       <div class="flex items-center gap-2 mt-3 flex-wrap">
         <span class="badge" style="background:${SERVICE_COLORS[c.serviceType]}22; color:${SERVICE_COLORS[c.serviceType]}">${serviceTypeLabel(c.serviceType)}</span>
@@ -1683,7 +1689,8 @@ function renderCalDayList(){
   }
 
   label.textContent = fmtDate(selectedDate);
-  const items = customers.filter(c => c.date === selectedDate);
+  const items = customers.filter(c => c.date === selectedDate)
+    .sort((a,b) => (a.time||'99:99').localeCompare(b.time||'99:99'));
   list.innerHTML = '';
   if(items.length === 0){
     empty.classList.remove('hidden');
@@ -1887,7 +1894,7 @@ function openSheet(){
 }
 function closeSheet(){
   if(typeof smRunning !== 'undefined' && smRunning) stopSoundMeter();
-  document.getElementById('soundMeterOverlay').classList.add('hidden');
+  document.getElementById('soundMeterOverlay').style.display = 'none';
   sheet.classList.add('hidden-sheet');
   setTimeout(()=> overlay.classList.add('hidden'), 280);
 }
@@ -1939,13 +1946,13 @@ function rmsToApproxDb(rms){
 }
 
 function openSoundMeter(){
-  document.getElementById('soundMeterOverlay').classList.remove('hidden');
+  document.getElementById('soundMeterOverlay').style.display = 'flex';
   resetSoundMeterUI();
 }
 
 function closeSoundMeter(){
   stopSoundMeter();
-  document.getElementById('soundMeterOverlay').classList.add('hidden');
+  document.getElementById('soundMeterOverlay').style.display = 'none';
 }
 
 function resetSoundMeterUI(){
@@ -2049,6 +2056,7 @@ window.openEdit = function openEdit(id){
   form.serviceType.value = c.serviceType;
   form.status.value = c.status;
   form.date.value = c.date;
+  form.time.value = c.time || '';
   form.price.value = c.price || '';
   form.notes.value = c.notes || '';
   setBtuSelection(c.btu || '');
