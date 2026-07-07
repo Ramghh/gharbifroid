@@ -589,11 +589,61 @@
         <textarea name="notes" rows="2" placeholder="نوع المكيف، الضمان، تفاصيل أخرى..." data-i18n-ph="notes_ph" class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm resize-none"></textarea>
       </div>
 
+      <button type="button" id="btnOpenSoundMeter" class="w-full flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold" style="background:var(--surface-2); border:1px solid var(--line); color:var(--text)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 010 7.07"/><path d="M19.07 4.93a10 10 0 010 14.14"/></svg>
+        <span data-i18n="sound_meter">قياس مستوى الضوضاء</span>
+      </button>
+
       <div class="flex gap-3 mt-2">
         <button type="button" id="btnDelete" class="hidden flex-1 rounded-xl py-3 font-bold text-sm" style="background:rgba(232,103,74,.12); color:var(--danger); border:1px solid rgba(232,103,74,.3)" data-i18n="delete">حذف</button>
         <button type="submit" class="flex-1 rounded-xl py-3 font-bold text-sm" style="background:var(--copper); color:#1A1006" data-i18n="save">حفظ</button>
       </div>
     </form>
+  </div>
+
+  <!-- ===================== SOUND LEVEL METER OVERLAY ===================== -->
+  <div id="soundMeterOverlay" class="hidden fixed inset-0 z-[70] flex flex-col" style="background:var(--bg-deep)">
+    <div class="flex items-center justify-between px-5 pt-6 pb-2">
+      <h3 class="font-display font-black text-lg" data-i18n="sound_meter">قياس مستوى الضوضاء</h3>
+      <button id="btnCloseSoundMeter" class="w-9 h-9 rounded-full flex items-center justify-center" style="background:var(--surface)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <div class="flex-1 flex flex-col items-center justify-center px-8 -mt-10">
+      <div class="relative flex items-center justify-center" style="width:220px; height:220px">
+        <svg width="220" height="220" viewBox="0 0 220 220" style="transform:rotate(-90deg)">
+          <circle cx="110" cy="110" r="96" fill="none" stroke="var(--surface-2)" stroke-width="14"/>
+          <circle id="soundMeterRing" cx="110" cy="110" r="96" fill="none" stroke="var(--copper)" stroke-width="14" stroke-linecap="round" stroke-dasharray="603" stroke-dashoffset="603" style="transition: stroke-dashoffset .15s ease, stroke .3s ease"/>
+        </svg>
+        <div class="absolute flex flex-col items-center">
+          <p class="font-mono font-black text-5xl" id="soundMeterValue" style="color:var(--text)">—</p>
+          <p class="text-xs mt-1" style="color:var(--text-dim)">dB</p>
+        </div>
+      </div>
+
+      <p id="soundMeterStatus" class="text-sm font-semibold mt-6 text-center" style="color:var(--text-dim)" data-i18n="sm_press_start">اضغط "ابدأ" باش تبدا القياس</p>
+
+      <div class="grid grid-cols-2 gap-3 w-full mt-6" id="soundMeterResults" style="display:none">
+        <div class="rounded-2xl p-3 text-center" style="background:var(--surface); border:1px solid var(--line)">
+          <p class="text-[11px]" style="color:var(--text-dim)" data-i18n="sm_average">المعدل</p>
+          <p class="font-mono font-bold text-xl mt-0.5" id="soundMeterAvg" style="color:var(--mint)">—</p>
+        </div>
+        <div class="rounded-2xl p-3 text-center" style="background:var(--surface); border:1px solid var(--line)">
+          <p class="text-[11px]" style="color:var(--text-dim)" data-i18n="sm_peak">الذروة</p>
+          <p class="font-mono font-bold text-xl mt-0.5" id="soundMeterPeak" style="color:var(--amber)">—</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="px-6 pb-3">
+      <p class="text-[11px] text-center leading-relaxed" style="color:var(--text-dim)" data-i18n="sm_disclaimer">مؤشر تقريبي غير معتمد — يعتمد على حساسية ميكروفون الهاتف، وما يعوضش جهاز قياس ضوضاء احترافي معاير.</p>
+    </div>
+
+    <div class="px-6 pb-8 flex gap-3">
+      <button id="btnSoundMeterToggle" class="flex-1 rounded-xl py-3.5 font-bold text-sm" style="background:var(--copper); color:#1A1006" data-i18n="sm_start">ابدأ</button>
+      <button id="btnSoundMeterSave" class="hidden flex-1 rounded-xl py-3.5 font-bold text-sm" style="background:var(--surface-2); border:1px solid var(--line)" data-i18n="sm_save_to_notes">أضف للملاحظات</button>
+    </div>
   </div>
 
   <!-- ===================== SYNC STATUS TOAST ===================== -->
@@ -713,6 +763,17 @@ const TRANSLATIONS = {
     price_label: 'السعر (د.ت)',
     notes: 'ملاحظات',
     notes_ph: 'نوع المكيف، الضمان، تفاصيل أخرى...',
+    sound_meter: 'قياس مستوى الضوضاء',
+    sm_press_start: 'اضغط "ابدأ" باش تبدا القياس',
+    sm_measuring: 'جاري القياس... قرب الهاتف من الوحدة',
+    sm_average: 'المعدل',
+    sm_peak: 'الذروة',
+    sm_disclaimer: 'مؤشر تقريبي غير معتمد — يعتمد على حساسية ميكروفون الهاتف، وما يعوضش جهاز قياس ضوضاء احترافي معاير.',
+    sm_start: 'ابدأ',
+    sm_stop: 'وقف',
+    sm_save_to_notes: 'أضف للملاحظات',
+    sm_mic_denied: 'ما نجمناش نوصلو للميكروفون. تأكد من إذن المتصفح.',
+    sm_saved: 'تمت الإضافة ✓',
     delete: 'حذف',
     save: 'حفظ',
     saving: 'جاري الحفظ...',
@@ -829,6 +890,17 @@ const TRANSLATIONS = {
     price_label: 'Prix (DT)',
     notes: 'Notes',
     notes_ph: 'Type de clim, garantie, autres détails...',
+    sound_meter: 'Mesurer le niveau sonore',
+    sm_press_start: 'Appuyez sur "Démarrer" pour mesurer',
+    sm_measuring: "Mesure en cours... approchez le téléphone de l'unité",
+    sm_average: 'Moyenne',
+    sm_peak: 'Pic',
+    sm_disclaimer: "Indicateur approximatif non certifié — dépend de la sensibilité du micro du téléphone, ne remplace pas un sonomètre professionnel calibré.",
+    sm_start: 'Démarrer',
+    sm_stop: 'Arrêter',
+    sm_save_to_notes: 'Ajouter aux notes',
+    sm_mic_denied: "Impossible d'accéder au micro. Vérifiez les autorisations du navigateur.",
+    sm_saved: 'Ajouté ✓',
     delete: 'Supprimer',
     save: 'Enregistrer',
     saving: 'Enregistrement...',
@@ -1814,6 +1886,8 @@ function openSheet(){
   requestAnimationFrame(()=> sheet.classList.remove('hidden-sheet'));
 }
 function closeSheet(){
+  if(typeof smRunning !== 'undefined' && smRunning) stopSoundMeter();
+  document.getElementById('soundMeterOverlay').classList.add('hidden');
   sheet.classList.add('hidden-sheet');
   setTimeout(()=> overlay.classList.add('hidden'), 280);
 }
@@ -1842,6 +1916,128 @@ document.getElementById('btnAdd').addEventListener('click', () => {
 });
 document.getElementById('btnCloseSheet').addEventListener('click', closeSheet);
 overlay.addEventListener('click', closeSheet);
+
+/* ============ قياس مستوى الضوضاء (Web Audio API) ============ */
+let smAudioCtx = null, smStream = null, smAnalyser = null, smRafId = null;
+let smRunning = false, smReadings = [], smPeak = 0;
+const RING_CIRCUMFERENCE = 603; // 2 * PI * 96, مقربة
+
+function smSetRing(pct){ // pct من 0 إلى 1
+  const ring = document.getElementById('soundMeterRing');
+  const offset = RING_CIRCUMFERENCE * (1 - Math.max(0, Math.min(1, pct)));
+  ring.style.strokeDashoffset = offset;
+  ring.style.stroke = pct > 0.75 ? 'var(--danger)' : (pct > 0.45 ? 'var(--amber)' : 'var(--copper)');
+}
+
+// نحولو RMS للمايكروفون لقيمة "dB" تقريبية قابلة للقراءة (مقياس نسبي مش SPL معاير)
+function rmsToApproxDb(rms){
+  if(rms <= 0.0001) return 30; // أرضية الصمت التقريبية
+  const dbfs = 20 * Math.log10(rms); // قيمة سالبة عادة (-60 إلى 0)
+  // نحولوها لمقياس تقريبي يشبه درجات الضوضاء الحقيقية (30-100 dB) بمعايرة تقريبية بسيطة
+  const approx = Math.round(90 + dbfs);
+  return Math.max(30, Math.min(100, approx));
+}
+
+function openSoundMeter(){
+  document.getElementById('soundMeterOverlay').classList.remove('hidden');
+  resetSoundMeterUI();
+}
+
+function closeSoundMeter(){
+  stopSoundMeter();
+  document.getElementById('soundMeterOverlay').classList.add('hidden');
+}
+
+function resetSoundMeterUI(){
+  smSetRing(0);
+  document.getElementById('soundMeterValue').textContent = '—';
+  document.getElementById('soundMeterStatus').textContent = t('sm_press_start');
+  document.getElementById('soundMeterResults').style.display = 'none';
+  document.getElementById('btnSoundMeterToggle').textContent = t('sm_start');
+  document.getElementById('btnSoundMeterSave').classList.add('hidden');
+  smReadings = []; smPeak = 0;
+}
+
+async function startSoundMeter(){
+  try{
+    smStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  } catch(err){
+    document.getElementById('soundMeterStatus').textContent = t('sm_mic_denied');
+    document.getElementById('soundMeterStatus').style.color = 'var(--danger)';
+    return;
+  }
+  smAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const source = smAudioCtx.createMediaStreamSource(smStream);
+  smAnalyser = smAudioCtx.createAnalyser();
+  smAnalyser.fftSize = 2048;
+  source.connect(smAnalyser);
+
+  const buffer = new Float32Array(smAnalyser.fftSize);
+  smRunning = true;
+  smReadings = []; smPeak = 0;
+  document.getElementById('soundMeterStatus').style.color = 'var(--text-dim)';
+  document.getElementById('soundMeterStatus').textContent = t('sm_measuring');
+  document.getElementById('btnSoundMeterToggle').textContent = t('sm_stop');
+  document.getElementById('btnSoundMeterSave').classList.add('hidden');
+  document.getElementById('soundMeterResults').style.display = 'none';
+
+  function tick(){
+    if(!smRunning) return;
+    smAnalyser.getFloatTimeDomainData(buffer);
+    let sumSq = 0;
+    for(let i=0; i<buffer.length; i++) sumSq += buffer[i]*buffer[i];
+    const rms = Math.sqrt(sumSq / buffer.length);
+    const db = rmsToApproxDb(rms);
+    smReadings.push(db);
+    if(db > smPeak) smPeak = db;
+
+    document.getElementById('soundMeterValue').textContent = db;
+    smSetRing((db - 30) / 70); // مقياس 30-100
+
+    smRafId = requestAnimationFrame(tick);
+  }
+  tick();
+}
+
+function stopSoundMeter(){
+  smRunning = false;
+  if(smRafId) cancelAnimationFrame(smRafId);
+  if(smStream) smStream.getTracks().forEach(tr => tr.stop());
+  if(smAudioCtx) smAudioCtx.close().catch(()=>{});
+  smStream = null; smAudioCtx = null; smAnalyser = null;
+
+  if(smReadings.length > 0){
+    const avg = Math.round(smReadings.reduce((s,v)=>s+v,0) / smReadings.length);
+    document.getElementById('soundMeterAvg').textContent = avg + ' dB';
+    document.getElementById('soundMeterPeak').textContent = smPeak + ' dB';
+    document.getElementById('soundMeterResults').style.display = 'grid';
+    document.getElementById('soundMeterStatus').textContent = t('sm_press_start');
+    document.getElementById('btnSoundMeterSave').classList.remove('hidden');
+  }
+  document.getElementById('btnSoundMeterToggle').textContent = t('sm_start');
+}
+
+document.getElementById('btnOpenSoundMeter').addEventListener('click', openSoundMeter);
+document.getElementById('btnCloseSoundMeter').addEventListener('click', closeSoundMeter);
+
+document.getElementById('btnSoundMeterToggle').addEventListener('click', () => {
+  if(smRunning) stopSoundMeter();
+  else startSoundMeter();
+});
+
+document.getElementById('btnSoundMeterSave').addEventListener('click', () => {
+  if(smReadings.length === 0) return;
+  const avg = Math.round(smReadings.reduce((s,v)=>s+v,0) / smReadings.length);
+  const line = `🔊 ${avg} dB (${t('sm_peak')}: ${smPeak} dB)`;
+  const notesEl = form.notes;
+  notesEl.value = notesEl.value ? (notesEl.value + '\n' + line) : line;
+  document.getElementById('btnSoundMeterSave').textContent = t('sm_saved');
+  setTimeout(() => {
+    document.getElementById('btnSoundMeterSave').textContent = t('sm_save_to_notes');
+    closeSoundMeter();
+  }, 700);
+});
+
 
 window.openEdit = function openEdit(id){
   const c = customers.find(x => x.id === id);
