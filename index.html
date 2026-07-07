@@ -140,6 +140,9 @@
   }
   .chip.chip-active{ background: var(--copper); border-color: var(--copper); color:#1A1006; }
 
+  .btu-chip{ color: var(--text-dim); transition: background .15s ease, color .15s ease, border-color .15s ease; }
+  .btu-chip.btu-active{ background: var(--copper) !important; border-color: var(--copper) !important; color:#1A1006 !important; }
+
   @media (min-width:640px){
     body{ display:flex; justify-content:center; }
     #app{ max-width: 480px; width:100%; min-height:100vh; box-shadow: 0 0 60px rgba(0,0,0,.4); }
@@ -490,6 +493,29 @@
           </select>
         </div>
       </div>
+      <div>
+        <label class="text-xs font-semibold" style="color:var(--text-dim)">قوة المكيف (BTU)</label>
+        <input type="hidden" name="btu" id="btuInput" value="">
+        <div class="grid grid-cols-4 gap-2 mt-1.5">
+          <button type="button" class="btu-chip flex flex-col items-center gap-1 py-2.5 rounded-xl" data-btu="9000" style="background:var(--surface-2); border:1px solid var(--line)">
+            <svg width="16" height="10" viewBox="0 0 24 14" fill="none"><rect x="1" y="1" width="22" height="12" rx="3" stroke="currentColor" stroke-width="1.6"/></svg>
+            <span class="text-[10.5px] font-mono font-semibold">9K</span>
+          </button>
+          <button type="button" class="btu-chip flex flex-col items-center gap-1 py-2.5 rounded-xl" data-btu="12000" style="background:var(--surface-2); border:1px solid var(--line)">
+            <svg width="19" height="11" viewBox="0 0 28 15" fill="none"><rect x="1" y="1" width="26" height="13" rx="3" stroke="currentColor" stroke-width="1.7"/></svg>
+            <span class="text-[10.5px] font-mono font-semibold">12K</span>
+          </button>
+          <button type="button" class="btu-chip flex flex-col items-center gap-1 py-2.5 rounded-xl" data-btu="18000" style="background:var(--surface-2); border:1px solid var(--line)">
+            <svg width="22" height="12" viewBox="0 0 32 16" fill="none"><rect x="1" y="1" width="30" height="14" rx="3.5" stroke="currentColor" stroke-width="1.8"/></svg>
+            <span class="text-[10.5px] font-mono font-semibold">18K</span>
+          </button>
+          <button type="button" class="btu-chip flex flex-col items-center gap-1 py-2.5 rounded-xl" data-btu="24000" style="background:var(--surface-2); border:1px solid var(--line)">
+            <svg width="25" height="13" viewBox="0 0 36 17" fill="none"><rect x="1" y="1" width="34" height="15" rx="4" stroke="currentColor" stroke-width="1.9"/></svg>
+            <span class="text-[10.5px] font-mono font-semibold">24K</span>
+          </button>
+        </div>
+      </div>
+
       <div class="grid grid-cols-2 gap-3">
         <div>
           <label class="text-xs font-semibold" style="color:var(--text-dim)">تاريخ الموعد</label>
@@ -777,6 +803,11 @@ function renderCard(c){
       </div>
       <div class="flex items-center gap-2 mt-3 flex-wrap">
         <span class="badge" style="background:${SERVICE_COLORS[c.serviceType]}22; color:${SERVICE_COLORS[c.serviceType]}">${c.serviceType}</span>
+        ${c.btu ? `
+        <span class="badge flex items-center gap-1" style="background:var(--surface-2); color:var(--text-dim)">
+          <svg width="12" height="7" viewBox="0 0 24 14" fill="none"><rect x="1" y="1" width="22" height="12" rx="3" stroke="currentColor" stroke-width="1.8"/></svg>
+          ${Math.round(c.btu/1000)}K BTU
+        </span>` : ''}
         <span class="flex items-center gap-1 text-xs" style="color:var(--text-dim)">
           <span class="status-dot" style="background:${STATUS_COLOR[c.status]}"></span>${STATUS_LABEL[c.status]}
         </span>
@@ -1238,9 +1269,24 @@ function closeSheet(){
   sheet.classList.add('hidden-sheet');
   setTimeout(()=> overlay.classList.add('hidden'), 280);
 }
+function setBtuSelection(value){
+  document.getElementById('btuInput').value = value || '';
+  document.querySelectorAll('.btu-chip').forEach(chip => {
+    chip.classList.toggle('btu-active', chip.dataset.btu === String(value || ''));
+  });
+}
+document.querySelectorAll('.btu-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    const current = document.getElementById('btuInput').value;
+    // كي تضغط على نفس الاختيار مرة أخرى، يتلغى (باش تقدر تخلي القوة "غير محددة")
+    setBtuSelection(current === chip.dataset.btu ? '' : chip.dataset.btu);
+  });
+});
+
 document.getElementById('btnAdd').addEventListener('click', () => {
   editingId = null;
   form.reset();
+  setBtuSelection('');
   document.getElementById('sheetTitle').textContent = 'زبون جديد';
   document.getElementById('btnDelete').classList.add('hidden');
   form.date.value = todayStr();
@@ -1261,6 +1307,7 @@ window.openEdit = function openEdit(id){
   form.date.value = c.date;
   form.price.value = c.price || '';
   form.notes.value = c.notes || '';
+  setBtuSelection(c.btu || '');
   document.getElementById('sheetTitle').textContent = 'تعديل الزبون';
   document.getElementById('btnDelete').classList.remove('hidden');
   openSheet();
