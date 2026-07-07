@@ -247,7 +247,18 @@
       <p class="font-display font-bold text-base" style="color:var(--text-dim)" data-i18n="no_customers_yet">ما فماش زبائن توة</p>
       <p class="text-xs mt-1" style="color:var(--text-dim)" data-i18n="add_first_customer">اضغط على + باش تزيد أول زبون</p>
     </div>
+
+    <button id="btnToggleDone" class="hidden w-full flex items-center justify-between rounded-2xl px-4 py-3 mt-2" style="background:var(--surface); border:1px solid var(--line)">
+      <span class="flex items-center gap-2 text-sm font-semibold" style="color:var(--text-dim)">
+        <span class="status-dot" style="background:var(--mint)"></span>
+        <span data-i18n="done_section" id="btnToggleDoneLabel">الخدمات المنجزة</span>
+        <span class="font-mono" id="doneCount">(0)</span>
+      </span>
+      <svg id="doneChevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="2" style="transition:transform .2s ease"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div id="doneList" class="hidden flex flex-col gap-4 mt-3"></div>
   </main>
+
 
   <!-- ===================== CALENDAR VIEW ===================== -->
   <main class="flex-1 px-5 pt-2 pb-28 hidden" id="viewCalendar">
@@ -645,6 +656,7 @@ const TRANSLATIONS = {
     status_done: 'منجز',
     status_cancelled: 'ملغى',
     upcoming_appts: 'مواعيد قادمة',
+    done_section: 'الخدمات المنجزة',
     no_customers_yet: 'ما فماش زبائن توة',
     add_first_customer: 'اضغط على + باش تزيد أول زبون',
     appts_label: 'مواعيد',
@@ -760,6 +772,7 @@ const TRANSLATIONS = {
     status_done: 'Terminé',
     status_cancelled: 'Annulé',
     upcoming_appts: 'Prochains rendez-vous',
+    done_section: 'Services terminés',
     no_customers_yet: 'Aucun client pour le moment',
     add_first_customer: 'Appuyez sur + pour ajouter un client',
     appts_label: 'RDV',
@@ -1106,9 +1119,14 @@ function dateBadge(iso){
   return {text: fmtDate(iso), color:'var(--text-dim)'};
 }
 
+let doneSectionOpen = false;
+
 function renderList(){
   const list = document.getElementById('customerList');
   const empty = document.getElementById('emptyState');
+  const doneList = document.getElementById('doneList');
+  const btnToggleDone = document.getElementById('btnToggleDone');
+  const doneCountEl = document.getElementById('doneCount');
   let items = [...customers];
 
   if(activeFilter !== 'all'){
@@ -1124,19 +1142,47 @@ function renderList(){
   }
   items.sort((a,b) => a.date.localeCompare(b.date));
 
+  // كي المستخدم يفلتر يدوياً على "منجز"، نعرضوها عادي في القائمة الرئيسية بلا فصل
+  let mainItems = items, doneItems = [];
+  if(activeFilter !== 'done'){
+    mainItems = items.filter(c => c.status !== 'done');
+    doneItems = items.filter(c => c.status === 'done');
+  }
+
   list.innerHTML = '';
-  if(items.length === 0){
+  if(mainItems.length === 0 && doneItems.length === 0){
     empty.classList.remove('hidden');
   } else {
     empty.classList.add('hidden');
-    items.forEach(c => list.appendChild(renderCard(c)));
+    mainItems.forEach(c => list.appendChild(renderCard(c)));
   }
+
+  if(doneItems.length > 0){
+    btnToggleDone.classList.remove('hidden');
+    doneCountEl.textContent = `(${doneItems.length})`;
+    doneList.innerHTML = '';
+    doneItems.forEach(c => doneList.appendChild(renderCard(c)));
+    doneList.classList.toggle('hidden', !doneSectionOpen);
+    document.getElementById('doneChevron').style.transform = doneSectionOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+  } else {
+    btnToggleDone.classList.add('hidden');
+    doneList.classList.add('hidden');
+    doneList.innerHTML = '';
+  }
+
   updateHomeStats();
   checkAndNotify();
   renderCalendar();
   renderCalDayList();
   renderReport();
 }
+
+document.getElementById('btnToggleDone').addEventListener('click', () => {
+  doneSectionOpen = !doneSectionOpen;
+  const doneListEl = document.getElementById('doneList');
+  doneListEl.classList.toggle('hidden', !doneSectionOpen);
+  document.getElementById('doneChevron').style.transform = doneSectionOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+});
 
 function escapeHtml(str){
   const div = document.createElement('div');
