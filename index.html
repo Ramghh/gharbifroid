@@ -223,14 +223,35 @@
 
   <!-- ===================== CALENDAR VIEW ===================== -->
   <main class="flex-1 px-5 pt-2 pb-28 hidden" id="viewCalendar">
-    <div class="flex items-center justify-between mb-4">
-      <button id="calPrev" class="w-9 h-9 rounded-full flex items-center justify-center" style="background:var(--surface); border:1px solid var(--line)">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
-      </button>
-      <h2 class="font-display font-black text-base" id="calMonthLabel">—</h2>
-      <button id="calNext" class="w-9 h-9 rounded-full flex items-center justify-center" style="background:var(--surface); border:1px solid var(--line)">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
-      </button>
+
+    <div class="rounded-2xl p-4 mb-4" style="background:var(--surface); border:1px solid var(--line)">
+      <div class="flex items-center justify-between">
+        <button id="calPrev" class="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style="background:var(--surface-2)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div class="text-center">
+          <h2 class="font-display font-black text-lg" id="calMonthLabel">—</h2>
+          <p class="text-xs mt-0.5" id="calMonthSummary" style="color:var(--text-dim)">—</p>
+        </div>
+        <button id="calNext" class="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style="background:var(--surface-2)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-3 gap-2 mt-4">
+        <div class="rounded-xl px-2 py-2.5 text-center" style="background:var(--surface-2)">
+          <p class="text-[10.5px]" style="color:var(--text-dim)">مواعيد</p>
+          <p class="font-mono font-bold text-base mt-0.5" id="calStatCount" style="color:var(--copper)">0</p>
+        </div>
+        <div class="rounded-xl px-2 py-2.5 text-center" style="background:var(--surface-2)">
+          <p class="text-[10.5px]" style="color:var(--text-dim)">مداخيل</p>
+          <p class="font-mono font-bold text-base mt-0.5" id="calStatIncome" style="color:var(--mint)">0</p>
+        </div>
+        <div class="rounded-xl px-2 py-2.5 text-center" style="background:var(--surface-2)">
+          <p class="text-[10.5px]" style="color:var(--text-dim)">قيد الانتظار</p>
+          <p class="font-mono font-bold text-base mt-0.5" id="calStatPending" style="color:var(--amber)">0</p>
+        </div>
+      </div>
     </div>
 
     <div class="grid grid-cols-7 gap-y-2 text-center mb-1">
@@ -243,6 +264,18 @@
       <span class="text-[11px] font-semibold" style="color:var(--text-dim)">سبت</span>
     </div>
     <div id="calGrid" class="grid grid-cols-7 gap-y-2 text-center"></div>
+
+    <div class="flex items-center justify-center gap-4 mt-4 flex-wrap">
+      <span class="flex items-center gap-1.5 text-[11px]" style="color:var(--text-dim)">
+        <span style="width:10px; height:10px; border-radius:4px; background:rgba(224,138,60,.18); border:1px solid rgba(224,138,60,.3); display:inline-block"></span>1 موعد
+      </span>
+      <span class="flex items-center gap-1.5 text-[11px]" style="color:var(--text-dim)">
+        <span style="width:10px; height:10px; border-radius:4px; background:rgba(224,138,60,.42); display:inline-block"></span>2-3 مواعيد
+      </span>
+      <span class="flex items-center gap-1.5 text-[11px]" style="color:var(--text-dim)">
+        <span style="width:10px; height:10px; border-radius:4px; background:var(--copper); display:inline-block"></span>4+ مواعيد
+      </span>
+    </div>
 
     <div class="pipe-divider">
       <span class="joint"></span><span class="seg"></span>
@@ -821,11 +854,21 @@ function renderCalendar(){
   // نجمعو المواعيد حسب اليوم لهذا الشهر (باش ما نمشيوش على القائمة كاملة لكل خانة)
   const monthPrefix = `${y}-${String(m+1).padStart(2,'0')}`;
   const byDay = {};
+  const monthItems = [];
   customers.forEach(c => {
     if(c.date && c.date.startsWith(monthPrefix)){
       (byDay[c.date] = byDay[c.date] || []).push(c);
+      monthItems.push(c);
     }
   });
+
+  // ============ ملخص الشهر (فوق الشبكة) ============
+  const monthIncome = monthItems.filter(c => c.status==='done').reduce((s,c)=>s+(+c.price||0),0);
+  const monthPending = monthItems.filter(c => c.status==='pending').length;
+  document.getElementById('calStatCount').textContent = monthItems.length;
+  document.getElementById('calStatIncome').textContent = monthIncome;
+  document.getElementById('calStatPending').textContent = monthPending;
+  document.getElementById('calMonthSummary').textContent = `${monthItems.length} موعد · ${monthIncome} د.ت مداخيل`;
 
   const grid = document.getElementById('calGrid');
   grid.innerHTML = '';
@@ -837,20 +880,28 @@ function renderCalendar(){
   for(let d=1; d<=daysInMonth; d++){
     const iso = `${monthPrefix}-${String(d).padStart(2,'0')}`;
     const dayItems = byDay[iso] || [];
+    const count = dayItems.length;
     const isToday = iso === todayIso;
     const isSelected = iso === selectedDate;
+    const dayIncome = dayItems.filter(c => c.status==='done').reduce((s,c)=>s+(+c.price||0),0);
 
-    let dotColor = null;
-    if(dayItems.some(c => c.status==='pending')) dotColor = 'var(--amber)';
-    else if(dayItems.some(c => c.status==='done')) dotColor = 'var(--mint)';
+    // ============ درجة اللون حسب عدد المواعيد (heatmap) ============
+    let bg = 'transparent';
+    if(count >= 4) bg = 'var(--copper)';
+    else if(count >= 2) bg = 'rgba(224,138,60,.42)';
+    else if(count === 1) bg = 'rgba(224,138,60,.18)';
+
+    const textColor = (isSelected || count >= 4) ? '#1A1006' : 'var(--text)';
+    const finalBg = isSelected ? 'var(--copper)' : bg;
 
     const cell = document.createElement('button');
     cell.className = 'flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl';
-    cell.style.background = isSelected ? 'var(--copper)' : (isToday ? 'var(--surface-2)' : 'transparent');
-    cell.style.border = isToday && !isSelected ? '1px solid var(--copper)' : '1px solid transparent';
+    cell.style.background = finalBg;
+    cell.style.border = isToday && !isSelected ? '1.5px solid var(--copper)' : '1px solid transparent';
     cell.innerHTML = `
-      <span class="text-xs font-mono font-semibold" style="color:${isSelected ? '#1A1006' : 'var(--text)'}">${d}</span>
-      <span style="width:5px; height:5px; border-radius:50%; background:${dotColor || 'transparent'}"></span>
+      <span class="text-xs font-mono font-bold" style="color:${textColor}">${d}</span>
+      ${count > 0 ? `<span class="font-mono" style="font-size:9px; color:${textColor}; opacity:.85">${count}م</span>` : '<span style="height:11px"></span>'}
+      ${dayIncome > 0 ? `<span class="font-mono font-semibold" style="font-size:9px; color:${isSelected || count>=4 ? '#1A1006' : 'var(--mint)'}">+${dayIncome}</span>` : ''}
     `;
     cell.addEventListener('click', () => {
       selectedDate = iso;
