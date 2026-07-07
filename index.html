@@ -13,7 +13,7 @@
   })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>تبريد | متابعة الصيانة والتركيب</title>
+<title data-i18n="app_title_full">تبريد | متابعة الصيانة والتركيب</title>
 <meta name="theme-color" content="#0A2E2C">
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" href="./favicon-32.png" sizes="32x32" type="image/png">
@@ -168,8 +168,8 @@
     <circle cx="31" cy="17" r="2" fill="var(--copper)"/>
     <line x1="9" y1="17" x2="24" y2="17" stroke="var(--line)" stroke-width="2" stroke-linecap="round"/>
   </svg>
-  <h1 class="font-display font-black text-2xl mt-4" style="color:var(--text)">تبريد</h1>
-  <p class="text-xs mt-1" style="color:var(--text-dim)">متابعة الصيانة والتركيب</p>
+  <h1 class="font-display font-black text-2xl mt-4" style="color:var(--text)" data-i18n="app_name">تبريد</h1>
+  <p class="text-xs mt-1" style="color:var(--text-dim)" data-i18n="app_tagline">متابعة الصيانة والتركيب</p>
   <div style="margin-top:28px; width:28px; height:28px; border-radius:50%; border:2.5px solid var(--line); border-top-color:var(--copper); animation: splashSpin .8s linear infinite;"></div>
 </div>
 <style>
@@ -191,8 +191,8 @@
           <line x1="9" y1="17" x2="24" y2="17" stroke="var(--line)" stroke-width="2" stroke-linecap="round"/>
         </svg>
         <div>
-          <h1 class="font-display font-black text-lg leading-none">تبريد</h1>
-          <p class="text-xs mt-1" style="color:var(--text-dim)">متابعة الصيانة والتركيب</p>
+          <h1 class="font-display font-black text-lg leading-none" data-i18n="app_name">تبريد</h1>
+          <p class="text-xs mt-1" style="color:var(--text-dim)" data-i18n="app_tagline">متابعة الصيانة والتركيب</p>
         </div>
       </div>
       <button id="btnSearch" class="w-10 h-10 rounded-full flex items-center justify-center" style="background:var(--surface); border:1px solid var(--line)">
@@ -203,15 +203,15 @@
     <!-- Quick stats strip -->
     <div class="flex gap-3 mt-5 overflow-x-auto pb-1" style="scrollbar-width:none">
       <div class="ticket-top-mini rounded-2xl px-4 py-3 shrink-0" style="background:var(--surface); border:1px solid var(--line); min-width:132px">
-        <p class="text-[11px]" style="color:var(--text-dim)">مداخيل الشهر</p>
+        <p class="text-[11px]" style="color:var(--text-dim)" data-i18n="month_income">مداخيل الشهر</p>
         <p class="font-mono font-semibold text-lg mt-1" style="color:var(--mint)" id="statIncome">0 د.ت</p>
       </div>
       <div class="rounded-2xl px-4 py-3 shrink-0" style="background:var(--surface); border:1px solid var(--line); min-width:110px">
-        <p class="text-[11px]" style="color:var(--text-dim)">مواعيد اليوم</p>
+        <p class="text-[11px]" style="color:var(--text-dim)" data-i18n="today_appts">مواعيد اليوم</p>
         <p class="font-mono font-semibold text-lg mt-1" style="color:var(--amber)" id="statToday">0</p>
       </div>
       <div class="rounded-2xl px-4 py-3 shrink-0" style="background:var(--surface); border:1px solid var(--line); min-width:110px">
-        <p class="text-[11px]" style="color:var(--text-dim)">قيد الانتظار</p>
+        <p class="text-[11px]" style="color:var(--text-dim)" data-i18n="pending_label">قيد الانتظار</p>
         <p class="font-mono font-semibold text-lg mt-1" style="color:var(--copper)" id="statPending">0</p>
       </div>
     </div>
@@ -220,15 +220,15 @@
   <!-- ===================== SEARCH / FILTER BAR ===================== -->
   <div id="searchBar" class="px-5 hidden">
     <div class="relative">
-      <input id="searchInput" type="text" placeholder="ابحث بالاسم أو الهاتف..." class="w-full rounded-xl px-4 py-2.5 text-sm">
+      <input id="searchInput" type="text" placeholder="ابحث بالاسم أو الهاتف..." data-i18n-ph="search_ph" class="w-full rounded-xl px-4 py-2.5 text-sm">
     </div>
     <div class="flex gap-2 mt-3 overflow-x-auto pb-1">
-      <button class="chip chip-active" data-filter="all">الكل</button>
-      <button class="chip" data-filter="تركيب">تركيب</button>
-      <button class="chip" data-filter="صيانة">صيانة</button>
-      <button class="chip" data-filter="إصلاح">إصلاح</button>
-      <button class="chip" data-filter="pending">قيد الانتظار</button>
-      <button class="chip" data-filter="done">منجز</button>
+      <button class="chip chip-active" data-filter="all" data-i18n="filter_all">الكل</button>
+      <button class="chip" data-filter="تركيب" data-i18n="type_install">تركيب</button>
+      <button class="chip" data-filter="صيانة" data-i18n="type_maint">صيانة</button>
+      <button class="chip" data-filter="إصلاح" data-i18n="type_repair">إصلاح</button>
+      <button class="chip" data-filter="pending" data-i18n="pending_label">قيد الانتظار</button>
+      <button class="chip" data-filter="done" data-i18n="status_done">منجز</button>
     </div>
   </div>
 
@@ -237,15 +237,15 @@
 
     <div class="pipe-divider">
       <span class="joint"></span><span class="seg"></span>
-      <span class="font-display font-bold text-sm" style="color:var(--text-dim)">مواعيد قادمة</span>
+      <span class="font-display font-bold text-sm" style="color:var(--text-dim)" data-i18n="upcoming_appts">مواعيد قادمة</span>
       <span class="seg"></span><span class="joint"></span>
     </div>
 
     <div id="customerList" class="flex flex-col gap-4"></div>
 
     <div id="emptyState" class="hidden text-center py-16">
-      <p class="font-display font-bold text-base" style="color:var(--text-dim)">ما فماش زبائن توة</p>
-      <p class="text-xs mt-1" style="color:var(--text-dim)">اضغط على + باش تزيد أول زبون</p>
+      <p class="font-display font-bold text-base" style="color:var(--text-dim)" data-i18n="no_customers_yet">ما فماش زبائن توة</p>
+      <p class="text-xs mt-1" style="color:var(--text-dim)" data-i18n="add_first_customer">اضغط على + باش تزيد أول زبون</p>
     </div>
   </main>
 
@@ -268,71 +268,71 @@
 
       <div class="grid grid-cols-3 gap-2 mt-4">
         <div class="rounded-xl px-2 py-2.5 text-center" style="background:var(--surface-2)">
-          <p class="text-[10.5px]" style="color:var(--text-dim)">مواعيد</p>
+          <p class="text-[10.5px]" style="color:var(--text-dim)" data-i18n="appts_label">مواعيد</p>
           <p class="font-mono font-bold text-base mt-0.5" id="calStatCount" style="color:var(--copper)">0</p>
         </div>
         <div class="rounded-xl px-2 py-2.5 text-center" style="background:var(--surface-2)">
-          <p class="text-[10.5px]" style="color:var(--text-dim)">مداخيل</p>
+          <p class="text-[10.5px]" style="color:var(--text-dim)" data-i18n="income_label">مداخيل</p>
           <p class="font-mono font-bold text-base mt-0.5" id="calStatIncome" style="color:var(--mint)">0</p>
         </div>
         <div class="rounded-xl px-2 py-2.5 text-center" style="background:var(--surface-2)">
-          <p class="text-[10.5px]" style="color:var(--text-dim)">قيد الانتظار</p>
+          <p class="text-[10.5px]" style="color:var(--text-dim)" data-i18n="pending_label">قيد الانتظار</p>
           <p class="font-mono font-bold text-base mt-0.5" id="calStatPending" style="color:var(--amber)">0</p>
         </div>
       </div>
     </div>
 
     <div class="grid grid-cols-7 gap-y-2 text-center mb-1">
-      <span class="text-[11px] font-semibold" style="color:var(--text-dim)">أحد</span>
-      <span class="text-[11px] font-semibold" style="color:var(--text-dim)">إثنين</span>
-      <span class="text-[11px] font-semibold" style="color:var(--text-dim)">ثلاثاء</span>
-      <span class="text-[11px] font-semibold" style="color:var(--text-dim)">أربعاء</span>
-      <span class="text-[11px] font-semibold" style="color:var(--text-dim)">خميس</span>
-      <span class="text-[11px] font-semibold" style="color:var(--text-dim)">جمعة</span>
-      <span class="text-[11px] font-semibold" style="color:var(--text-dim)">سبت</span>
+      <span class="text-[11px] font-semibold" style="color:var(--text-dim)" data-i18n="wd_sun">أحد</span>
+      <span class="text-[11px] font-semibold" style="color:var(--text-dim)" data-i18n="wd_mon">إثنين</span>
+      <span class="text-[11px] font-semibold" style="color:var(--text-dim)" data-i18n="wd_tue">ثلاثاء</span>
+      <span class="text-[11px] font-semibold" style="color:var(--text-dim)" data-i18n="wd_wed">أربعاء</span>
+      <span class="text-[11px] font-semibold" style="color:var(--text-dim)" data-i18n="wd_thu">خميس</span>
+      <span class="text-[11px] font-semibold" style="color:var(--text-dim)" data-i18n="wd_fri">جمعة</span>
+      <span class="text-[11px] font-semibold" style="color:var(--text-dim)" data-i18n="wd_sat">سبت</span>
     </div>
     <div id="calGrid" class="grid grid-cols-7 gap-y-2 gap-x-1 text-center"></div>
 
     <div class="flex items-center justify-center gap-4 mt-4 flex-wrap">
       <span class="flex items-center gap-1.5 text-[11px]" style="color:var(--text-dim)">
-        <span style="width:10px; height:10px; border-radius:4px; background:rgba(224,138,60,.18); border:1px solid rgba(224,138,60,.3); display:inline-block"></span>1 موعد
+        <span style="width:10px; height:10px; border-radius:4px; background:rgba(224,138,60,.18); border:1px solid rgba(224,138,60,.3); display:inline-block"></span><span data-i18n="legend_1">1 موعد</span>
       </span>
       <span class="flex items-center gap-1.5 text-[11px]" style="color:var(--text-dim)">
-        <span style="width:10px; height:10px; border-radius:4px; background:rgba(224,138,60,.42); display:inline-block"></span>2-3 مواعيد
+        <span style="width:10px; height:10px; border-radius:4px; background:rgba(224,138,60,.42); display:inline-block"></span><span data-i18n="legend_2_3">2-3 مواعيد</span>
       </span>
       <span class="flex items-center gap-1.5 text-[11px]" style="color:var(--text-dim)">
-        <span style="width:10px; height:10px; border-radius:4px; background:var(--copper); display:inline-block"></span>4+ مواعيد
+        <span style="width:10px; height:10px; border-radius:4px; background:var(--copper); display:inline-block"></span><span data-i18n="legend_4plus">4+ مواعيد</span>
       </span>
     </div>
 
     <div class="pipe-divider">
       <span class="joint"></span><span class="seg"></span>
-      <span class="font-display font-bold text-sm" id="calSelectedLabel" style="color:var(--text-dim)">اختار يوم</span>
+      <span class="font-display font-bold text-sm" id="calSelectedLabel" style="color:var(--text-dim)" data-i18n="pick_day">اختار يوم</span>
       <span class="seg"></span><span class="joint"></span>
     </div>
 
     <div id="calDayList" class="flex flex-col gap-4"></div>
     <div id="calEmptyState" class="hidden text-center py-12">
-      <p class="font-display font-bold text-sm" style="color:var(--text-dim)">لا مواعيد في هذا اليوم</p>
+      <p class="font-display font-bold text-sm" style="color:var(--text-dim)" data-i18n="no_appts_day">لا مواعيد في هذا اليوم</p>
     </div>
   </main>
 
   <!-- ===================== STATS / REPORTS VIEW ===================== -->
   <main class="flex-1 px-5 pt-4 pb-28 hidden" id="viewStats">
     <div class="flex items-center justify-between mb-4">
-      <h2 class="font-display font-black text-lg">التقارير</h2>
+      <h2 class="font-display font-black text-lg" data-i18n="reports">التقارير</h2>
       <button id="btnPrintReport" class="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold" style="background:var(--surface); border:1px solid var(--line)">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
-        طباعة
+        <span data-i18n="print">طباعة</span>
       </button>
     </div>
 
     <div class="flex gap-2 mb-4 overflow-x-auto pb-1">
-      <button class="chip range-chip chip-active" data-range="today">اليوم</button>
-      <button class="chip range-chip" data-range="week">هذا الأسبوع</button>
-      <button class="chip range-chip" data-range="month">هذا الشهر</button>
-      <button class="chip range-chip" data-range="year">هذي السنة</button>
-      <button class="chip range-chip" data-range="all">الكل</button>
+      <button class="chip range-chip chip-active" data-range="today" data-i18n="range_today">اليوم</button>
+      <button class="chip range-chip" data-range="week" data-i18n="range_week">هذا الأسبوع</button>
+      <button class="chip range-chip" data-range="month" data-i18n="range_month">هذا الشهر</button>
+      <button class="chip range-chip" data-range="year" data-i18n="range_year">هذي السنة</button>
+      <button class="chip range-chip" data-range="all" data-i18n="range_all">الكل</button>
     </div>
 
     <div class="grid grid-cols-2 gap-3 mb-5">
@@ -350,29 +350,29 @@
 
     <div class="grid grid-cols-2 gap-3">
       <div class="rounded-2xl p-4" style="background:var(--surface); border:1px solid var(--line)">
-        <p class="text-xs" style="color:var(--text-dim)">عدد الخدمات المنجزة</p>
+        <p class="text-xs" style="color:var(--text-dim)" data-i18n="done_count_label">عدد الخدمات المنجزة</p>
         <p class="font-mono font-bold text-2xl mt-1" id="statDoneCount">0</p>
       </div>
       <div class="rounded-2xl p-4" style="background:var(--surface); border:1px solid var(--line)">
-        <p class="text-xs" style="color:var(--text-dim)">متوسط السعر</p>
+        <p class="text-xs" style="color:var(--text-dim)" data-i18n="avg_price_label">متوسط السعر</p>
         <p class="font-mono font-bold text-2xl mt-1" id="statAvgPrice">0</p>
       </div>
     </div>
 
     <div class="rounded-2xl p-4 mt-3" style="background:var(--surface); border:1px solid var(--line)">
-      <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)" id="chartBarLabel">المداخيل عبر الوقت</p>
+      <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)" id="chartBarLabel" data-i18n="chart_income_over_time">المداخيل عبر الوقت</p>
       <canvas id="chartBar" style="width:100%; height:150px; display:block"></canvas>
     </div>
 
     <div class="pipe-divider">
       <span class="joint"></span><span class="seg"></span>
-      <span class="font-display font-bold text-sm" style="color:var(--text-dim)">حسب نوع الخدمة</span>
+      <span class="font-display font-bold text-sm" style="color:var(--text-dim)" data-i18n="by_service_type">حسب نوع الخدمة</span>
       <span class="seg"></span><span class="joint"></span>
     </div>
 
     <div class="rounded-2xl p-4 mb-3 flex items-center gap-4" style="background:var(--surface); border:1px solid var(--line)">
       <canvas id="chartDonut" style="width:104px; height:104px; flex-shrink:0"></canvas>
-      <p class="text-xs flex-1" style="color:var(--text-dim)">توزيع المداخيل المنجزة حسب نوع الخدمة للفترة المختارة</p>
+      <p class="text-xs flex-1" style="color:var(--text-dim)" data-i18n="donut_caption">توزيع المداخيل المنجزة حسب نوع الخدمة للفترة المختارة</p>
     </div>
 
     <div id="statsByType" class="flex flex-col gap-2"></div>
@@ -380,23 +380,29 @@
 
   <!-- ===================== SETTINGS VIEW ===================== -->
   <main class="flex-1 px-5 pt-4 pb-28 hidden" id="viewSettings">
-    <h2 class="font-display font-black text-lg mb-4">الإعدادات</h2>
+    <h2 class="font-display font-black text-lg mb-4" data-i18n="settings">الإعدادات</h2>
 
-    <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)">المظهر</p>
+    <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)" data-i18n="appearance">المظهر</p>
     <div class="flex gap-2 mb-5">
-      <button class="chip theme-chip" data-theme-pref="auto">تلقائي</button>
-      <button class="chip theme-chip" data-theme-pref="light">فاتح</button>
-      <button class="chip theme-chip" data-theme-pref="dark">داكن</button>
+      <button class="chip theme-chip" data-theme-pref="auto" data-i18n="theme_auto">تلقائي</button>
+      <button class="chip theme-chip" data-theme-pref="light" data-i18n="theme_light">فاتح</button>
+      <button class="chip theme-chip" data-theme-pref="dark" data-i18n="theme_dark">داكن</button>
     </div>
 
-    <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)">الحساب</p>
+    <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)" data-i18n="language_section">اللغة</p>
+    <div class="flex gap-2 mb-5">
+      <button class="chip lang-chip" data-lang-pref="ar" data-i18n="lang_ar">العربية</button>
+      <button class="chip lang-chip" data-lang-pref="fr" data-i18n="lang_fr">Français</button>
+    </div>
+
+    <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)" data-i18n="account">الحساب</p>
     <div class="rounded-2xl p-4 mb-5" style="background:var(--surface); border:1px solid var(--line)">
       <div class="flex items-center gap-3 mb-4">
         <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style="background:var(--surface-2)">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
         </div>
         <div class="min-w-0">
-          <p class="text-xs" style="color:var(--text-dim)">مسجل بحساب</p>
+          <p class="text-xs" style="color:var(--text-dim)" data-i18n="logged_in_as">مسجل بحساب</p>
           <p class="text-sm font-semibold truncate font-mono" id="settingsEmail" style="direction:ltr; text-align:right">—</p>
         </div>
       </div>
@@ -404,48 +410,48 @@
       <button type="button" id="btnTogglePwd" class="w-full flex items-center justify-between rounded-xl px-4 py-3 mb-3" style="background:var(--surface-2)">
         <span class="flex items-center gap-2 text-sm font-semibold">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-          تغيير كلمة السر
+          <span data-i18n="change_password">تغيير كلمة السر</span>
         </span>
         <svg id="pwdChevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="2" style="transition:transform .2s ease"><path d="M6 9l6 6 6-6"/></svg>
       </button>
 
       <form id="pwdForm" class="hidden flex flex-col gap-3 mb-3">
-        <input required id="pwdCurrent" type="password" placeholder="كلمة السر الحالية" class="w-full rounded-xl px-4 py-3 text-sm" style="direction:ltr; text-align:right">
-        <input required id="pwdNew" type="password" placeholder="كلمة السر الجديدة (6 خانات فما فوق)" minlength="6" class="w-full rounded-xl px-4 py-3 text-sm" style="direction:ltr; text-align:right">
-        <input required id="pwdConfirm" type="password" placeholder="أعد كتابة كلمة السر الجديدة" minlength="6" class="w-full rounded-xl px-4 py-3 text-sm" style="direction:ltr; text-align:right">
+        <input required id="pwdCurrent" type="password" placeholder="كلمة السر الحالية" data-i18n-ph="pwd_current_ph" class="w-full rounded-xl px-4 py-3 text-sm" style="direction:ltr; text-align:right">
+        <input required id="pwdNew" type="password" placeholder="كلمة السر الجديدة (6 خانات فما فوق)" data-i18n-ph="pwd_new_ph" minlength="6" class="w-full rounded-xl px-4 py-3 text-sm" style="direction:ltr; text-align:right">
+        <input required id="pwdConfirm" type="password" placeholder="أعد كتابة كلمة السر الجديدة" data-i18n-ph="pwd_confirm_ph" minlength="6" class="w-full rounded-xl px-4 py-3 text-sm" style="direction:ltr; text-align:right">
         <p id="pwdError" class="hidden text-xs font-semibold" style="color:var(--danger)"></p>
         <p id="pwdSuccess" class="hidden text-xs font-semibold" style="color:var(--mint)"></p>
-        <button type="submit" id="pwdSubmitBtn" class="w-full rounded-xl py-3 font-bold text-sm" style="background:var(--copper); color:#1A1006">تحديث كلمة السر</button>
+        <button type="submit" id="pwdSubmitBtn" class="w-full rounded-xl py-3 font-bold text-sm" style="background:var(--copper); color:#1A1006" data-i18n="update_password">تحديث كلمة السر</button>
       </form>
 
-      <button id="btnLogout" class="w-full rounded-xl py-3 font-bold text-sm" style="background:rgba(232,103,74,.12); color:var(--danger); border:1px solid rgba(232,103,74,.3)">تسجيل الخروج</button>
+      <button id="btnLogout" class="w-full rounded-xl py-3 font-bold text-sm" style="background:rgba(232,103,74,.12); color:var(--danger); border:1px solid rgba(232,103,74,.3)" data-i18n="logout">تسجيل الخروج</button>
     </div>
 
-    <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)">البيانات</p>
+    <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)" data-i18n="data_section">البيانات</p>
     <div class="rounded-2xl p-4 mb-5 flex flex-col gap-3" style="background:var(--surface); border:1px solid var(--line)">
       <button id="btnExportBackup" class="w-full flex items-center justify-between rounded-xl px-4 py-3" style="background:var(--surface-2)">
         <span class="flex items-center gap-2 text-sm font-semibold">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--mint)" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
-          تصدير نسخة احتياطية (JSON)
+          <span data-i18n="export_backup">تصدير نسخة احتياطية (JSON)</span>
         </span>
         <span class="text-xs font-mono" style="color:var(--text-dim)" id="backupCount">0</span>
       </button>
-      <p class="text-[11px]" style="color:var(--text-dim)">البيانات متزامنة أوتوماتيكياً مع Firebase — هذا الملف نسخة إضافية تحفظها إنت.</p>
+      <p class="text-[11px]" style="color:var(--text-dim)" data-i18n="backup_note">البيانات متزامنة أوتوماتيكياً مع Firebase — هذا الملف نسخة إضافية تحفظها إنت.</p>
     </div>
 
-    <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)">التنبيهات</p>
+    <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)" data-i18n="notifications">التنبيهات</p>
     <div class="rounded-2xl p-4 mb-5 flex flex-col gap-3" style="background:var(--surface); border:1px solid var(--line)">
       <button id="btnEnableNotif" class="w-full flex items-center justify-between rounded-xl px-4 py-3" style="background:var(--surface-2)">
         <span class="flex items-center gap-2 text-sm font-semibold">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-          تفعيل تنبيهات المواعيد
+          <span data-i18n="enable_notif">تفعيل تنبيهات المواعيد</span>
         </span>
         <span class="text-xs font-semibold" id="notifStatus" style="color:var(--text-dim)">غير مفعلة</span>
       </button>
-      <p class="text-[11px]" style="color:var(--text-dim)">كي تفتح التطبيق صباحاً، يعلمك بمواعيد اليوم وأي موعد "قيد الانتظار" فات وقتو. ⚠️ لازم تفتح التطبيق مرة على الأقل كل يوم باش التنبيه يخدم — التطبيق ما ينجمش يبعث تنبيه وهو مسكر كامل بلا سيرفر خاص بيه.</p>
+      <p class="text-[11px]" style="color:var(--text-dim)" data-i18n="notif_note">كي تفتح التطبيق صباحاً، يعلمك بمواعيد اليوم وأي موعد "قيد الانتظار" فات وقتو. ⚠️ لازم تفتح التطبيق مرة على الأقل كل يوم باش التنبيه يخدم — التطبيق ما ينجمش يبعث تنبيه وهو مسكر كامل بلا سيرفر خاص بيه.</p>
     </div>
 
-    <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)">عن التطبيق</p>
+    <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)" data-i18n="about_app">عن التطبيق</p>
     <div class="rounded-2xl p-4 flex items-center gap-3" style="background:var(--surface); border:1px solid var(--line)">
       <svg width="30" height="30" viewBox="0 0 40 40" fill="none">
         <rect x="3" y="10" width="34" height="14" rx="4" stroke="var(--copper)" stroke-width="2"/>
@@ -454,8 +460,8 @@
         <line x1="9" y1="17" x2="24" y2="17" stroke="var(--line)" stroke-width="2" stroke-linecap="round"/>
       </svg>
       <div>
-        <p class="font-display font-bold text-sm">تبريد</p>
-        <p class="text-[11px]" style="color:var(--text-dim)">الإصدار 1.0 — PWA بلا أنترنت</p>
+        <p class="font-display font-bold text-sm" data-i18n="app_name">تبريد</p>
+        <p class="text-[11px]" style="color:var(--text-dim)" data-i18n="version_note">الإصدار 1.0 — PWA بلا أنترنت</p>
       </div>
     </div>
   </main>
@@ -464,11 +470,11 @@
   <nav class="fixed bottom-0 inset-x-0 mx-auto px-4 py-3 flex items-center justify-between" style="max-width:480px; background: var(--bg-deep); border-top:1px solid var(--line)">
     <button class="tab-btn tab-active flex flex-col items-center gap-1 flex-1" data-view="home">
       <svg class="tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7"/><path d="M5 10v9a1 1 0 001 1h4v-6h4v6h4a1 1 0 001-1v-9"/></svg>
-      <span class="text-[10.5px] font-semibold">الرئيسية</span>
+      <span class="text-[10.5px] font-semibold" data-i18n="nav_home">الرئيسية</span>
     </button>
     <button class="tab-btn flex flex-col items-center gap-1 flex-1" data-view="calendar" style="color:var(--text-dim)">
       <svg class="tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
-      <span class="text-[10.5px] font-semibold">التقويم</span>
+      <span class="text-[10.5px] font-semibold" data-i18n="nav_calendar">التقويم</span>
     </button>
     <div class="flex-1 flex justify-center">
       <button id="btnAdd" class="fab w-14 h-14 rounded-full flex items-center justify-center -mt-8" style="background:var(--copper)">
@@ -477,11 +483,11 @@
     </div>
     <button class="tab-btn flex flex-col items-center gap-1 flex-1" data-view="stats" style="color:var(--text-dim)">
       <svg class="tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>
-      <span class="text-[10.5px] font-semibold">التقارير</span>
+      <span class="text-[10.5px] font-semibold" data-i18n="nav_reports">التقارير</span>
     </button>
     <button class="tab-btn flex flex-col items-center gap-1 flex-1" data-view="settings" style="color:var(--text-dim)">
       <svg class="tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1 1.55V21a2 2 0 11-4 0v-.09a1.7 1.7 0 00-1-1.55 1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.7 1.7 0 00.34-1.87 1.7 1.7 0 00-1.55-1H3a2 2 0 110-4h.09a1.7 1.7 0 001.55-1 1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06a1.7 1.7 0 001.87.34H9a1.7 1.7 0 001-1.55V3a2 2 0 114 0v.09a1.7 1.7 0 001 1.55 1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06.06a1.7 1.7 0 00-.34 1.87V9a1.7 1.7 0 001.55 1H21a2 2 0 110 4h-.09a1.7 1.7 0 00-1.55 1z"/></svg>
-      <span class="text-[10.5px] font-semibold">الإعدادات</span>
+      <span class="text-[10.5px] font-semibold" data-i18n="nav_settings">الإعدادات</span>
     </button>
   </nav>
 
@@ -490,7 +496,7 @@
   <div id="sheet" class="sheet hidden-sheet fixed bottom-0 inset-x-0 mx-auto z-50 rounded-t-3xl px-5 pt-5 pb-8 max-h-[88vh] overflow-y-auto" style="max-width:480px; background:var(--bg-deep); border:1px solid var(--line); border-bottom:none">
     <div class="w-10 h-1.5 rounded-full mx-auto mb-4" style="background:var(--line)"></div>
     <div class="flex items-center justify-between mb-5">
-      <h3 class="font-display font-black text-lg" id="sheetTitle">زبون جديد</h3>
+      <h3 class="font-display font-black text-lg" id="sheetTitle" data-i18n="new_customer">زبون جديد</h3>
       <button id="btnCloseSheet" class="w-8 h-8 rounded-full flex items-center justify-center" style="background:var(--surface)">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
       </button>
@@ -498,37 +504,37 @@
 
     <form id="customerForm" class="flex flex-col gap-4">
       <div>
-        <label class="text-xs font-semibold" style="color:var(--text-dim)">اسم الحريف</label>
-        <input required name="name" type="text" placeholder="مثال: سامي بن علي" class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm">
+        <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="customer_name">اسم الحريف</label>
+        <input required name="name" type="text" placeholder="مثال: سامي بن علي" data-i18n-ph="customer_name_ph" class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm">
       </div>
       <div>
-        <label class="text-xs font-semibold" style="color:var(--text-dim)">رقم الهاتف</label>
+        <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="phone_number">رقم الهاتف</label>
         <input required name="phone" type="tel" placeholder="+216 XX XXX XXX" class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm font-mono" style="direction:ltr; text-align:right">
       </div>
       <div>
-        <label class="text-xs font-semibold" style="color:var(--text-dim)">العنوان</label>
-        <input name="address" type="text" placeholder="الحي، المدينة" class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm">
+        <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="address">العنوان</label>
+        <input name="address" type="text" placeholder="الحي، المدينة" data-i18n-ph="address_ph" class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm">
       </div>
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label class="text-xs font-semibold" style="color:var(--text-dim)">نوع الخدمة</label>
+          <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="service_type">نوع الخدمة</label>
           <select name="serviceType" class="w-full rounded-xl px-3 py-3 mt-1.5 text-sm">
-            <option value="تركيب">تركيب</option>
-            <option value="صيانة">صيانة</option>
-            <option value="إصلاح">إصلاح</option>
+            <option value="تركيب" data-i18n="type_install">تركيب</option>
+            <option value="صيانة" data-i18n="type_maint">صيانة</option>
+            <option value="إصلاح" data-i18n="type_repair">إصلاح</option>
           </select>
         </div>
         <div>
-          <label class="text-xs font-semibold" style="color:var(--text-dim)">الحالة</label>
+          <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="status">الحالة</label>
           <select name="status" class="w-full rounded-xl px-3 py-3 mt-1.5 text-sm">
-            <option value="pending">قيد الانتظار</option>
-            <option value="done">منجز</option>
-            <option value="cancelled">ملغى</option>
+            <option value="pending" data-i18n="pending_label">قيد الانتظار</option>
+            <option value="done" data-i18n="status_done">منجز</option>
+            <option value="cancelled" data-i18n="status_cancelled">ملغى</option>
           </select>
         </div>
       </div>
       <div>
-        <label class="text-xs font-semibold" style="color:var(--text-dim)">قوة المكيف (BTU)</label>
+        <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="ac_power">قوة المكيف (BTU)</label>
         <input type="hidden" name="btu" id="btuInput" value="">
         <div class="grid grid-cols-4 gap-2 mt-1.5">
           <button type="button" class="btu-chip flex flex-col items-center gap-1 py-2.5 rounded-xl" data-btu="9000" style="background:var(--surface-2); border:1px solid var(--line)">
@@ -552,22 +558,22 @@
 
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label class="text-xs font-semibold" style="color:var(--text-dim)">تاريخ الموعد</label>
+          <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="appt_date">تاريخ الموعد</label>
           <input required name="date" type="date" class="w-full rounded-xl px-3 py-3 mt-1.5 text-sm font-mono">
         </div>
         <div>
-          <label class="text-xs font-semibold" style="color:var(--text-dim)">السعر (د.ت)</label>
+          <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="price_label">السعر (د.ت)</label>
           <input name="price" type="number" step="0.5" placeholder="0" class="w-full rounded-xl px-3 py-3 mt-1.5 text-sm font-mono">
         </div>
       </div>
       <div>
-        <label class="text-xs font-semibold" style="color:var(--text-dim)">ملاحظات</label>
-        <textarea name="notes" rows="2" placeholder="نوع المكيف، الضمان، تفاصيل أخرى..." class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm resize-none"></textarea>
+        <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="notes">ملاحظات</label>
+        <textarea name="notes" rows="2" placeholder="نوع المكيف، الضمان، تفاصيل أخرى..." data-i18n-ph="notes_ph" class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm resize-none"></textarea>
       </div>
 
       <div class="flex gap-3 mt-2">
-        <button type="button" id="btnDelete" class="hidden flex-1 rounded-xl py-3 font-bold text-sm" style="background:rgba(232,103,74,.12); color:var(--danger); border:1px solid rgba(232,103,74,.3)">حذف</button>
-        <button type="submit" class="flex-1 rounded-xl py-3 font-bold text-sm" style="background:var(--copper); color:#1A1006">حفظ</button>
+        <button type="button" id="btnDelete" class="hidden flex-1 rounded-xl py-3 font-bold text-sm" style="background:rgba(232,103,74,.12); color:var(--danger); border:1px solid rgba(232,103,74,.3)" data-i18n="delete">حذف</button>
+        <button type="submit" class="flex-1 rounded-xl py-3 font-bold text-sm" style="background:var(--copper); color:#1A1006" data-i18n="save">حفظ</button>
       </div>
     </form>
   </div>
@@ -576,7 +582,7 @@
   <div id="syncToast" class="fixed top-4 inset-x-0 mx-auto z-50 hidden" style="max-width:480px">
     <div class="mx-5 rounded-full px-4 py-2 flex items-center gap-2 text-xs font-semibold" id="syncToastInner" style="background:var(--surface); border:1px solid var(--line)">
       <span class="status-dot" id="syncDot" style="background:var(--amber)"></span>
-      <span id="syncText">غير متصل — التغييرات تتزامن كي يرجع الأنترنت</span>
+      <span id="syncText" data-i18n="offline_note">غير متصل — التغييرات تتزامن كي يرجع الأنترنت</span>
     </div>
   </div>
 
@@ -590,21 +596,21 @@
           <circle cx="31" cy="17" r="2" fill="var(--copper)"/>
           <line x1="9" y1="17" x2="24" y2="17" stroke="var(--line)" stroke-width="2" stroke-linecap="round"/>
         </svg>
-        <h1 class="font-display font-black text-xl mt-3">تبريد</h1>
-        <p class="text-xs mt-1" style="color:var(--text-dim)" id="authSubtitle">سجل الدخول لمتابعة زبائنك</p>
+        <h1 class="font-display font-black text-xl mt-3" data-i18n="app_name">تبريد</h1>
+        <p class="text-xs mt-1" style="color:var(--text-dim)" id="authSubtitle" data-i18n="auth_subtitle">سجل الدخول لمتابعة زبائنك</p>
       </div>
 
       <form id="authForm" class="flex flex-col gap-3">
         <div>
-          <label class="text-xs font-semibold" style="color:var(--text-dim)">البريد الإلكتروني</label>
+          <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="email">البريد الإلكتروني</label>
           <input required id="authEmail" type="email" placeholder="you@example.com" class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm" style="direction:ltr; text-align:right">
         </div>
         <div>
-          <label class="text-xs font-semibold" style="color:var(--text-dim)">كلمة السر</label>
+          <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="password">كلمة السر</label>
           <input required id="authPassword" type="password" placeholder="••••••••" minlength="6" class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm" style="direction:ltr; text-align:right">
         </div>
         <p id="authError" class="hidden text-xs font-semibold" style="color:var(--danger)"></p>
-        <button type="submit" id="authSubmitBtn" class="rounded-xl py-3 font-bold text-sm mt-2" style="background:var(--copper); color:#1A1006">دخول</button>
+        <button type="submit" id="authSubmitBtn" class="rounded-xl py-3 font-bold text-sm mt-2" style="background:var(--copper); color:#1A1006" data-i18n="login">دخول</button>
       </form>
     </div>
   </div>
@@ -612,6 +618,283 @@
 </div>
 
 <script type="module">
+/* ============ الترجمة (i18n) — عربي / فرنسي ============ */
+const LANG_KEY = 'tabrid-lang';
+let currentLang = localStorage.getItem(LANG_KEY) || 'ar';
+
+const TRANSLATIONS = {
+  ar: {
+    app_title_full: 'تبريد | متابعة الصيانة والتركيب',
+    app_name: 'تبريد',
+    app_tagline: 'متابعة الصيانة والتركيب',
+    month_income: 'مداخيل الشهر',
+    today_appts: 'مواعيد اليوم',
+    pending_label: 'قيد الانتظار',
+    search_ph: 'ابحث بالاسم أو الهاتف...',
+    filter_all: 'الكل',
+    type_install: 'تركيب',
+    type_maint: 'صيانة',
+    type_repair: 'إصلاح',
+    status_done: 'منجز',
+    status_cancelled: 'ملغى',
+    upcoming_appts: 'مواعيد قادمة',
+    no_customers_yet: 'ما فماش زبائن توة',
+    add_first_customer: 'اضغط على + باش تزيد أول زبون',
+    appts_label: 'مواعيد',
+    income_label: 'مداخيل',
+    wd_sun: 'أحد', wd_mon: 'إثنين', wd_tue: 'ثلاثاء', wd_wed: 'أربعاء',
+    wd_thu: 'خميس', wd_fri: 'جمعة', wd_sat: 'سبت',
+    legend_1: '1 موعد', legend_2_3: '2-3 مواعيد', legend_4plus: '4+ مواعيد',
+    pick_day: 'اختار يوم',
+    no_appts_day: 'لا مواعيد في هذا اليوم',
+    reports: 'التقارير',
+    print: 'طباعة',
+    range_today: 'اليوم', range_week: 'هذا الأسبوع', range_month: 'هذا الشهر', range_year: 'هذي السنة', range_all: 'الكل',
+    done_count_label: 'عدد الخدمات المنجزة',
+    avg_price_label: 'متوسط السعر',
+    chart_income_over_time: 'المداخيل عبر الوقت',
+    chart_income_monthly_12: 'المداخيل الشهرية (آخر 12 شهر)',
+    chart_income_daily: 'المداخيل اليومية',
+    by_service_type: 'حسب نوع الخدمة',
+    donut_caption: 'توزيع المداخيل المنجزة حسب نوع الخدمة للفترة المختارة',
+    settings: 'الإعدادات',
+    appearance: 'المظهر',
+    theme_auto: 'تلقائي', theme_light: 'فاتح', theme_dark: 'داكن',
+    language_section: 'اللغة',
+    lang_ar: 'العربية', lang_fr: 'Français',
+    account: 'الحساب',
+    logged_in_as: 'مسجل بحساب',
+    change_password: 'تغيير كلمة السر',
+    pwd_current_ph: 'كلمة السر الحالية',
+    pwd_new_ph: 'كلمة السر الجديدة (6 خانات فما فوق)',
+    pwd_confirm_ph: 'أعد كتابة كلمة السر الجديدة',
+    update_password: 'تحديث كلمة السر',
+    logout: 'تسجيل الخروج',
+    data_section: 'البيانات',
+    export_backup: 'تصدير نسخة احتياطية (JSON)',
+    backup_note: 'البيانات متزامنة أوتوماتيكياً مع Firebase — هذا الملف نسخة إضافية تحفظها إنت.',
+    notifications: 'التنبيهات',
+    enable_notif: 'تفعيل تنبيهات المواعيد',
+    notif_note: 'كي تفتح التطبيق صباحاً، يعلمك بمواعيد اليوم وأي موعد "قيد الانتظار" فات وقتو. ⚠️ لازم تفتح التطبيق مرة على الأقل كل يوم باش التنبيه يخدم — التطبيق ما ينجمش يبعث تنبيه وهو مسكر كامل بلا سيرفر خاص بيه.',
+    about_app: 'عن التطبيق',
+    version_note: 'الإصدار 1.0 — PWA بلا أنترنت',
+    nav_home: 'الرئيسية', nav_calendar: 'التقويم', nav_reports: 'التقارير', nav_settings: 'الإعدادات',
+    new_customer: 'زبون جديد',
+    edit_customer: 'تعديل الزبون',
+    customer_name: 'اسم الحريف',
+    customer_name_ph: 'مثال: سامي بن علي',
+    phone_number: 'رقم الهاتف',
+    address: 'العنوان',
+    address_ph: 'الحي، المدينة',
+    service_type: 'نوع الخدمة',
+    status: 'الحالة',
+    ac_power: 'قوة المكيف (BTU)',
+    appt_date: 'تاريخ الموعد',
+    price_label: 'السعر (د.ت)',
+    notes: 'ملاحظات',
+    notes_ph: 'نوع المكيف، الضمان، تفاصيل أخرى...',
+    delete: 'حذف',
+    save: 'حفظ',
+    saving: 'جاري الحفظ...',
+    offline_note: 'غير متصل — التغييرات تتزامن كي يرجع الأنترنت',
+    reconnecting_note: 'تم الاتصال — جاري المزامنة...',
+    offline_stored_note: 'غير متصل — التغييرات تتخزن وتتزامن كي يرجع الأنترنت',
+    auth_subtitle: 'سجل الدخول لمتابعة زبائنك',
+    email: 'البريد الإلكتروني',
+    password: 'كلمة السر',
+    login: 'دخول',
+    currency: 'د.ت',
+    badge_today: 'اليوم', badge_tomorrow: 'غدا', badge_overdue: 'متأخر',
+    period_today: 'مداخيل اليوم', period_week: 'مداخيل هذا الأسبوع', period_month: 'مداخيل هذا الشهر',
+    period_year: 'مداخيل هذي السنة', period_all: 'مجموع المداخيل (كل الوقت)',
+    prev_today: 'مقارنة بالأمس', prev_week: 'مقارنة بالأسبوع الفارط', prev_month: 'مقارنة بالشهر الفارط', prev_year: 'مقارنة بالسنة الفارطة',
+    cmp_new: 'جديد', cmp_dash: '—',
+    confirm_logout: 'تسجيل الخروج من الحساب؟',
+    confirm_delete: 'تأكد الحذف؟',
+    notif_not_supported: 'هذا المتصفح ما يدعمش التنبيهات.',
+    notif_denied_alert: 'التنبيهات مرفوضة من إعدادات المتصفح متاع الهاتف. لازم تفعلها يدوياً من هناك.',
+    notif_enabled_body: 'التنبيهات مفعلة! باش تتوصل بملخص المواعيد كي تفتح التطبيق صباحاً.',
+    notif_summary_title: 'تبريد — ملخص اليوم',
+    notif_today_count: (n) => `${n} موعد اليوم`,
+    notif_overdue_count: (n) => `${n} موعد متأخر`,
+    notif_status_unsupported: 'غير مدعومة',
+    notif_status_granted: 'مفعلة ✓',
+    notif_status_denied: 'مرفوضة (فعلها من إعدادات المتصفح)',
+    notif_status_off: 'غير مفعلة',
+    pwd_mismatch: 'كلمة السر الجديدة وتأكيدها ما يتطابقوش',
+    pwd_too_short: 'كلمة السر الجديدة لازم أكثر من 6 خانات',
+    pwd_success: 'تبدلت كلمة السر بنجاح ✓',
+    pwd_err_wrong: 'كلمة السر الحالية غالطة',
+    pwd_err_weak: 'كلمة السر الجديدة لازم أكثر من 6 خانات',
+    pwd_err_recent_login: 'لازم تسجل خروج وتعاود دخول قبل ما تبدل كلمة السر',
+    pwd_err_too_many: 'محاولات كثيرة، جرب بعد شوية',
+    pwd_err_generic: 'صار خطأ، عاود جرب',
+    auth_err_invalid_email: 'البريد الإلكتروني غير صحيح',
+    auth_err_user_not_found: 'ما فماش حساب بهذا البريد',
+    auth_err_wrong_password: 'كلمة السر غالطة',
+    auth_err_invalid_credential: 'بيانات الدخول غالطة',
+    auth_err_email_in_use: 'هذا البريد مستعمل من قبل',
+    auth_err_weak_password: 'كلمة السر لازم أكثر من 6 خانات',
+    auth_err_generic: 'صار خطأ، عاود جرب',
+  },
+  fr: {
+    app_title_full: 'Tabrid | Suivi maintenance et installation',
+    app_name: 'Tabrid',
+    app_tagline: 'Suivi maintenance et installation',
+    month_income: 'Revenu du mois',
+    today_appts: "RDV aujourd'hui",
+    pending_label: 'En attente',
+    search_ph: 'Rechercher nom ou téléphone...',
+    filter_all: 'Tous',
+    type_install: 'Installation',
+    type_maint: 'Maintenance',
+    type_repair: 'Réparation',
+    status_done: 'Terminé',
+    status_cancelled: 'Annulé',
+    upcoming_appts: 'Prochains rendez-vous',
+    no_customers_yet: 'Aucun client pour le moment',
+    add_first_customer: 'Appuyez sur + pour ajouter un client',
+    appts_label: 'RDV',
+    income_label: 'Revenu',
+    wd_sun: 'Dim', wd_mon: 'Lun', wd_tue: 'Mar', wd_wed: 'Mer',
+    wd_thu: 'Jeu', wd_fri: 'Ven', wd_sat: 'Sam',
+    legend_1: '1 RDV', legend_2_3: '2-3 RDV', legend_4plus: '4+ RDV',
+    pick_day: 'Choisir un jour',
+    no_appts_day: 'Aucun rendez-vous ce jour',
+    reports: 'Rapports',
+    print: 'Imprimer',
+    range_today: "Aujourd'hui", range_week: 'Cette semaine', range_month: 'Ce mois', range_year: 'Cette année', range_all: 'Tout',
+    done_count_label: 'Services terminés',
+    avg_price_label: 'Prix moyen',
+    chart_income_over_time: 'Revenus dans le temps',
+    chart_income_monthly_12: 'Revenus mensuels (12 derniers mois)',
+    chart_income_daily: 'Revenus quotidiens',
+    by_service_type: 'Par type de service',
+    donut_caption: 'Répartition des revenus terminés par type de service, pour la période choisie',
+    settings: 'Paramètres',
+    appearance: 'Apparence',
+    theme_auto: 'Auto', theme_light: 'Clair', theme_dark: 'Sombre',
+    language_section: 'Langue',
+    lang_ar: 'العربية', lang_fr: 'Français',
+    account: 'Compte',
+    logged_in_as: 'Connecté avec',
+    change_password: 'Changer le mot de passe',
+    pwd_current_ph: 'Mot de passe actuel',
+    pwd_new_ph: 'Nouveau mot de passe (6 caractères min.)',
+    pwd_confirm_ph: 'Confirmer le nouveau mot de passe',
+    update_password: 'Mettre à jour',
+    logout: 'Déconnexion',
+    data_section: 'Données',
+    export_backup: 'Exporter une sauvegarde (JSON)',
+    backup_note: 'Les données sont synchronisées automatiquement avec Firebase — ce fichier est une sauvegarde supplémentaire que vous gardez vous-même.',
+    notifications: 'Notifications',
+    enable_notif: 'Activer les rappels de rendez-vous',
+    notif_note: 'En ouvrant l\'app le matin, vous recevez un résumé des RDV du jour et des RDV "en attente" en retard. ⚠️ L\'app doit être ouverte au moins une fois par jour pour que ça fonctionne — sans serveur dédié, elle ne peut pas notifier quand elle est complètement fermée.',
+    about_app: "À propos",
+    version_note: 'Version 1.0 — PWA hors ligne',
+    nav_home: 'Accueil', nav_calendar: 'Calendrier', nav_reports: 'Rapports', nav_settings: 'Réglages',
+    new_customer: 'Nouveau client',
+    edit_customer: 'Modifier le client',
+    customer_name: 'Nom du client',
+    customer_name_ph: 'Ex : Sami Ben Ali',
+    phone_number: 'Téléphone',
+    address: 'Adresse',
+    address_ph: 'Quartier, ville',
+    service_type: 'Type de service',
+    status: 'Statut',
+    ac_power: 'Puissance clim (BTU)',
+    appt_date: 'Date du rendez-vous',
+    price_label: 'Prix (DT)',
+    notes: 'Notes',
+    notes_ph: 'Type de clim, garantie, autres détails...',
+    delete: 'Supprimer',
+    save: 'Enregistrer',
+    saving: 'Enregistrement...',
+    offline_note: 'Hors ligne — synchronisation au retour du réseau',
+    reconnecting_note: 'Reconnecté — synchronisation en cours...',
+    offline_stored_note: 'Hors ligne — les changements seront synchronisés au retour du réseau',
+    auth_subtitle: 'Connectez-vous pour gérer vos clients',
+    email: 'E-mail',
+    password: 'Mot de passe',
+    login: 'Connexion',
+    currency: 'DT',
+    badge_today: "Aujourd'hui", badge_tomorrow: 'Demain', badge_overdue: 'En retard',
+    period_today: "Revenu d'aujourd'hui", period_week: 'Revenu de la semaine', period_month: 'Revenu du mois',
+    period_year: "Revenu de l'année", period_all: 'Revenu total (tout)',
+    prev_today: 'vs hier', prev_week: 'vs semaine dernière', prev_month: 'vs mois dernier', prev_year: 'vs année dernière',
+    cmp_new: 'Nouveau', cmp_dash: '—',
+    confirm_logout: 'Se déconnecter du compte ?',
+    confirm_delete: 'Confirmer la suppression ?',
+    notif_not_supported: "Ce navigateur ne supporte pas les notifications.",
+    notif_denied_alert: "Les notifications sont refusées dans les réglages du navigateur. Vous devez les activer manuellement.",
+    notif_enabled_body: "Notifications activées ! Vous recevrez un résumé des RDV en ouvrant l'app le matin.",
+    notif_summary_title: 'Tabrid — Résumé du jour',
+    notif_today_count: (n) => `${n} RDV aujourd'hui`,
+    notif_overdue_count: (n) => `${n} RDV en retard`,
+    notif_status_unsupported: 'Non supportées',
+    notif_status_granted: 'Activées ✓',
+    notif_status_denied: 'Refusées (activez-les dans le navigateur)',
+    notif_status_off: 'Désactivées',
+    pwd_mismatch: 'Le nouveau mot de passe et sa confirmation ne correspondent pas',
+    pwd_too_short: 'Le nouveau mot de passe doit faire au moins 6 caractères',
+    pwd_success: 'Mot de passe mis à jour avec succès ✓',
+    pwd_err_wrong: 'Mot de passe actuel incorrect',
+    pwd_err_weak: 'Le nouveau mot de passe doit faire au moins 6 caractères',
+    pwd_err_recent_login: 'Vous devez vous reconnecter avant de changer le mot de passe',
+    pwd_err_too_many: 'Trop de tentatives, réessayez plus tard',
+    pwd_err_generic: 'Une erreur est survenue, réessayez',
+    auth_err_invalid_email: 'E-mail invalide',
+    auth_err_user_not_found: 'Aucun compte avec cet e-mail',
+    auth_err_wrong_password: 'Mot de passe incorrect',
+    auth_err_invalid_credential: 'Identifiants incorrects',
+    auth_err_email_in_use: 'Cet e-mail est déjà utilisé',
+    auth_err_weak_password: 'Le mot de passe doit faire au moins 6 caractères',
+    auth_err_generic: 'Une erreur est survenue, réessayez',
+  }
+};
+
+function t(key){
+  const val = (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][key]) ?? TRANSLATIONS.ar[key];
+  return val !== undefined ? val : key;
+}
+
+const MONTH_NAMES = {
+  ar: ['جانفي','فيفري','مارس','أفريل','ماي','جوان','جويلية','أوت','سبتمبر','أكتوبر','نوفمبر','ديسمبر'],
+  fr: ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre']
+};
+
+function applyLanguage(){
+  document.documentElement.setAttribute('lang', currentLang);
+  document.documentElement.setAttribute('dir', currentLang === 'fr' ? 'ltr' : 'rtl');
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    el.textContent = t(key);
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const key = el.getAttribute('data-i18n-ph');
+    el.setAttribute('placeholder', t(key));
+  });
+  document.title = t('app_title_full');
+
+  document.querySelectorAll('.lang-chip').forEach(chip => {
+    chip.classList.toggle('chip-active', chip.dataset.langPref === currentLang);
+  });
+
+  // نعاودو نرسمو كل الشاشات باش المحتوى المتحرك (بادجات، شارطات، تقويم) يتبدل بلغة جديدة
+  renderList();
+  renderCalendar();
+  renderCalDayList();
+  renderReport();
+  updateNotifStatusUI();
+}
+
+function setLangPref(lang){
+  currentLang = lang;
+  localStorage.setItem(LANG_KEY, lang);
+  applyLanguage();
+}
+
 /* ============ FIREBASE SETUP ============ */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
@@ -664,20 +947,20 @@ authForm.addEventListener('submit', async (e) => {
     authError.textContent = mapAuthError(err.code);
     authError.classList.remove('hidden');
     authSubmitBtn.disabled = false;
-    authSubmitBtn.textContent = 'دخول';
+    authSubmitBtn.textContent = t('login');
   }
 });
 
 function mapAuthError(code){
   const map = {
-    'auth/invalid-email': 'البريد الإلكتروني غير صحيح',
-    'auth/user-not-found': 'ما فماش حساب بهذا البريد',
-    'auth/wrong-password': 'كلمة السر غالطة',
-    'auth/invalid-credential': 'بيانات الدخول غالطة',
-    'auth/email-already-in-use': 'هذا البريد مستعمل من قبل',
-    'auth/weak-password': 'كلمة السر لازم أكثر من 6 خانات',
+    'auth/invalid-email': t('auth_err_invalid_email'),
+    'auth/user-not-found': t('auth_err_user_not_found'),
+    'auth/wrong-password': t('auth_err_wrong_password'),
+    'auth/invalid-credential': t('auth_err_invalid_credential'),
+    'auth/email-already-in-use': t('auth_err_email_in_use'),
+    'auth/weak-password': t('auth_err_weak_password'),
   };
-  return map[code] || 'صار خطأ، عاود جرب';
+  return map[code] || t('auth_err_generic');
 }
 
 const splashShownAt = Date.now();
@@ -714,7 +997,7 @@ function updateSyncStatus(){
   } else {
     toast.classList.remove('hidden');
     dot.style.background = 'var(--amber)';
-    text.textContent = 'غير متصل — التغييرات تتخزن وتتزامن كي يرجع الأنترنت';
+    text.textContent = t('offline_stored_note');
   }
 }
 window.addEventListener('online', () => {
@@ -723,7 +1006,7 @@ window.addEventListener('online', () => {
   const dot = document.getElementById('syncDot');
   const text = document.getElementById('syncText');
   dot.style.background = 'var(--mint)';
-  text.textContent = 'تم الاتصال — جاري المزامنة...';
+  text.textContent = t('reconnecting_note');
   toast.classList.remove('hidden');
   setTimeout(()=> toast.classList.add('hidden'), 2500);
 });
@@ -762,8 +1045,13 @@ async function removeCustomer(id){
 }
 
 /* ============ STATE (now populated live from Firestore) ============ */
+// SERVICE_COLORS تبقى مفاتيحها بالعربي (هي القيمة المخزنة في Firestore أصلاً، ما نبدلوهاش باش ما نخسروش توافق البيانات القديمة)
 const SERVICE_COLORS = { 'تركيب':'var(--mint)', 'صيانة':'var(--amber)', 'إصلاح':'var(--danger)' };
-const STATUS_LABEL = { pending:'قيد الانتظار', done:'منجز', cancelled:'ملغى' };
+const SERVICE_TYPE_I18N_KEY = { 'تركيب':'type_install', 'صيانة':'type_maint', 'إصلاح':'type_repair' };
+function serviceTypeLabel(code){ return t(SERVICE_TYPE_I18N_KEY[code] || code); }
+
+const STATUS_I18N_KEY = { pending:'pending_label', done:'status_done', cancelled:'status_cancelled' };
+function statusLabel(code){ return t(STATUS_I18N_KEY[code] || code); }
 const STATUS_COLOR = { pending:'var(--amber)', done:'var(--mint)', cancelled:'var(--danger)' };
 
 function todayStr(offset=0){
@@ -781,13 +1069,14 @@ let editingId = null;
 /* ============ RENDER ============ */
 function fmtDate(iso){
   const d = new Date(iso+'T00:00:00');
-  return d.toLocaleDateString('ar-TN',{ day:'2-digit', month:'2-digit', year:'numeric' });
+  const locale = currentLang === 'fr' ? 'fr-FR' : 'ar-TN';
+  return d.toLocaleDateString(locale, { day:'2-digit', month:'2-digit', year:'numeric' });
 }
 function dateBadge(iso){
   const diff = Math.round((new Date(iso) - new Date(todayStr()))/86400000);
-  if(diff === 0) return {text:'اليوم', color:'var(--amber)'};
-  if(diff < 0) return {text:'متأخر', color:'var(--danger)'};
-  if(diff === 1) return {text:'غدا', color:'var(--mint)'};
+  if(diff === 0) return {text:t('badge_today'), color:'var(--amber)'};
+  if(diff < 0) return {text:t('badge_overdue'), color:'var(--danger)'};
+  if(diff === 1) return {text:t('badge_tomorrow'), color:'var(--mint)'};
   return {text: fmtDate(iso), color:'var(--text-dim)'};
 }
 
@@ -840,19 +1129,19 @@ function renderCard(c){
         <span class="badge" style="background:${badge.color}22; color:${badge.color}">${badge.text}</span>
       </div>
       <div class="flex items-center gap-2 mt-3 flex-wrap">
-        <span class="badge" style="background:${SERVICE_COLORS[c.serviceType]}22; color:${SERVICE_COLORS[c.serviceType]}">${c.serviceType}</span>
+        <span class="badge" style="background:${SERVICE_COLORS[c.serviceType]}22; color:${SERVICE_COLORS[c.serviceType]}">${serviceTypeLabel(c.serviceType)}</span>
         ${c.btu ? `
         <span class="badge flex items-center gap-1" style="background:var(--surface-2); color:var(--text-dim)">
           <svg width="12" height="7" viewBox="0 0 24 14" fill="none"><rect x="1" y="1" width="22" height="12" rx="3" stroke="currentColor" stroke-width="1.8"/></svg>
           ${Math.round(c.btu/1000)}K BTU
         </span>` : ''}
         <span class="flex items-center gap-1 text-xs" style="color:var(--text-dim)">
-          <span class="status-dot" style="background:${STATUS_COLOR[c.status]}"></span>${STATUS_LABEL[c.status]}
+          <span class="status-dot" style="background:${STATUS_COLOR[c.status]}"></span>${statusLabel(c.status)}
         </span>
         ${c.address ? `<span class="text-xs" style="color:var(--text-dim)">· ${c.address}</span>` : ''}
       </div>
       <div class="flex items-center justify-between mt-4">
-        <p class="font-mono font-bold text-base" style="color:var(--mint)">${c.price ? c.price+' د.ت' : '—'}</p>
+        <p class="font-mono font-bold text-base" style="color:var(--mint)">${c.price ? c.price+' '+t('currency') : '—'}</p>
         <div class="flex gap-2">
           <a href="tel:${c.phone}" onclick="event.stopPropagation()" class="w-9 h-9 rounded-full flex items-center justify-center" style="background:rgba(79,209,174,.14)">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--mint)" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
@@ -874,14 +1163,14 @@ function updateHomeStats(){
   const todayCount = customers.filter(c => c.date === todayStr() && c.status==='pending').length;
   const pendingCount = customers.filter(c => c.status==='pending').length;
 
-  document.getElementById('statIncome').textContent = monthIncome + ' د.ت';
+  document.getElementById('statIncome').textContent = monthIncome + ' ' + t('currency');
   document.getElementById('statToday').textContent = todayCount;
   document.getElementById('statPending').textContent = pendingCount;
 }
 
 /* ============ REPORTS (بتصفية حسب الفترة) ============ */
 let activeRange = 'today';
-const RANGE_LABEL = { today:'مداخيل اليوم', week:'مداخيل هذا الأسبوع', month:'مداخيل هذا الشهر', year:'مداخيل هذي السنة', all:'مجموع المداخيل (كل الوقت)' };
+const RANGE_TO_PERIOD_KEY = { today:'period_today', week:'period_week', month:'period_month', year:'period_year', all:'period_all' };
 
 function getRangeBounds(range){
   const now = new Date();
@@ -903,7 +1192,7 @@ function getRangeBounds(range){
 }
 
 // ============ حدود الفترة السابقة (لمقارنة النسبة المئوية) ============
-const PREV_LABEL = { today:'مقارنة بالأمس', week:'مقارنة بالأسبوع الفارط', month:'مقارنة بالشهر الفارط', year:'مقارنة بالسنة الفارطة' };
+const RANGE_TO_PREV_KEY = { today:'prev_today', week:'prev_week', month:'prev_month', year:'prev_year' };
 
 function getPreviousRangeBounds(range){
   const now = new Date();
@@ -934,11 +1223,11 @@ function renderReport(){
   const { start, end } = getRangeBounds(activeRange);
   const inRange = c => !start || (c.date >= start && c.date <= end);
 
-  document.getElementById('statPeriodLabel').textContent = RANGE_LABEL[activeRange];
+  document.getElementById('statPeriodLabel').textContent = t(RANGE_TO_PERIOD_KEY[activeRange]);
 
   const doneList = customers.filter(c => c.status==='done' && inRange(c));
   const total = doneList.reduce((s,c)=>s+(+c.price||0),0);
-  document.getElementById('statTotalIncome').textContent = total + ' د.ت';
+  document.getElementById('statTotalIncome').textContent = total + ' ' + t('currency');
   document.getElementById('statDoneCount').textContent = doneList.length;
   document.getElementById('statAvgPrice').textContent = doneList.length ? Math.round(total/doneList.length) : 0;
 
@@ -957,9 +1246,9 @@ function renderReport(){
 
     let text, color, arrow;
     if(prevTotal === 0 && total === 0){
-      text = '—'; color = 'var(--text-dim)'; arrow = '';
+      text = t('cmp_dash'); color = 'var(--text-dim)'; arrow = '';
     } else if(prevTotal === 0){
-      text = 'جديد'; color = 'var(--mint)'; arrow = '↑';
+      text = t('cmp_new'); color = 'var(--mint)'; arrow = '↑';
     } else {
       const pct = Math.round(((total - prevTotal) / prevTotal) * 100);
       color = pct > 0 ? 'var(--mint)' : (pct < 0 ? 'var(--danger)' : 'var(--text-dim)');
@@ -971,7 +1260,7 @@ function renderReport(){
     compareBadge.style.color = color;
     compareBadge.classList.remove('hidden');
 
-    compareLabel.textContent = PREV_LABEL[activeRange];
+    compareLabel.textContent = t(RANGE_TO_PREV_KEY[activeRange]);
     compareLabel.classList.remove('hidden');
   }
 
@@ -987,9 +1276,9 @@ function renderReport(){
     row.style.border = '1px solid var(--line)';
     row.innerHTML = `
       <span class="flex items-center gap-2 text-sm font-semibold">
-        <span class="status-dot" style="background:${SERVICE_COLORS[type]}"></span>${type}
+        <span class="status-dot" style="background:${SERVICE_COLORS[type]}"></span>${serviceTypeLabel(type)}
       </span>
-      <span class="font-mono font-bold" style="color:${SERVICE_COLORS[type]}">${val} د.ت</span>
+      <span class="font-mono font-bold" style="color:${SERVICE_COLORS[type]}">${val} ${t('currency')}</span>
     `;
     box.appendChild(row);
   });
@@ -997,7 +1286,7 @@ function renderReport(){
   // ============ الرسوم البيانية (Canvas) ============
   const barSeries = buildBarSeries(activeRange);
   document.getElementById('chartBarLabel').textContent =
-    (activeRange === 'year' || activeRange === 'all') ? 'المداخيل الشهرية (آخر 12 شهر)' : 'المداخيل اليومية';
+    (activeRange === 'year' || activeRange === 'all') ? t('chart_income_monthly_12') : t('chart_income_daily');
   drawBarChart(document.getElementById('chartBar'), barSeries.labels, barSeries.values);
 
   const donutSegments = Object.keys(SERVICE_COLORS).map(type => ({
@@ -1040,7 +1329,7 @@ function buildBarSeries(range){
       const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
       const prefix = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
       const val = customers.filter(c => c.status==='done' && c.date && c.date.startsWith(prefix)).reduce((s,c)=>s+(+c.price||0),0);
-      labels.push(MONTH_NAMES_TN[d.getMonth()].slice(0,3));
+      labels.push(MONTH_NAMES[currentLang][d.getMonth()].slice(0,3));
       values.push(val);
     }
     return { labels, values };
@@ -1135,7 +1424,7 @@ function drawDonutChart(canvas, segments, total){
   ctx.fillText(total > 0 ? total : '0', cx, cy - 6);
   ctx.font = '8px Cairo, sans-serif';
   ctx.fillStyle = cssVar('--text-dim');
-  ctx.fillText('د.ت', cx, cy + 9);
+  ctx.fillText(t('currency'), cx, cy + 9);
 }
 
 document.querySelectorAll('.range-chip').forEach(chip => {
@@ -1150,14 +1439,13 @@ document.querySelectorAll('.range-chip').forEach(chip => {
 document.getElementById('btnPrintReport').addEventListener('click', () => window.print());
 
 /* ============ CALENDAR ============ */
-const MONTH_NAMES_TN = ['جانفي','فيفري','مارس','أفريل','ماي','جوان','جويلية','أوت','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
 let calViewDate = new Date();
 let selectedDate = null;
 
 function renderCalendar(){
   const y = calViewDate.getFullYear();
   const m = calViewDate.getMonth();
-  document.getElementById('calMonthLabel').textContent = `${MONTH_NAMES_TN[m]} ${y}`;
+  document.getElementById('calMonthLabel').textContent = `${MONTH_NAMES[currentLang][m]} ${y}`;
 
   const firstDay = new Date(y, m, 1);
   const daysInMonth = new Date(y, m+1, 0).getDate();
@@ -1183,7 +1471,7 @@ function renderCalendar(){
   document.getElementById('calStatCount').textContent = monthItems.length;
   document.getElementById('calStatIncome').textContent = monthIncome;
   document.getElementById('calStatPending').textContent = monthPending;
-  document.getElementById('calMonthSummary').textContent = `${monthItems.length} موعد · ${monthIncome} د.ت مداخيل`;
+  document.getElementById('calMonthSummary').textContent = `${monthItems.length} ${t('appts_label')} · ${monthIncome} ${t('currency')} ${t('income_label')}`;
 
   const grid = document.getElementById('calGrid');
   grid.innerHTML = '';
@@ -1215,7 +1503,7 @@ function renderCalendar(){
     cell.style.border = isToday && !isSelected ? '1.5px solid var(--copper)' : '1px solid var(--line)';
     cell.innerHTML = `
       <span class="text-xs font-mono font-bold" style="color:${textColor}">${d}</span>
-      ${count > 0 ? `<span class="font-mono" style="font-size:9px; color:${textColor}; opacity:.85">${count}م</span>` : '<span style="height:11px"></span>'}
+      ${count > 0 ? `<span class="font-mono" style="font-size:9px; color:${textColor}; opacity:.85">${count}${currentLang === 'ar' ? 'م' : ''}</span>` : '<span style="height:11px"></span>'}
       ${dayIncome > 0 ? `<span class="font-mono font-semibold" style="font-size:9px; color:${isSelected || count>=4 ? '#1A1006' : 'var(--mint)'}">+${dayIncome}</span>` : ''}
     `;
     cell.addEventListener('click', () => {
@@ -1233,7 +1521,7 @@ function renderCalDayList(){
   const label = document.getElementById('calSelectedLabel');
 
   if(!selectedDate){
-    label.textContent = 'اختار يوم';
+    label.textContent = t('pick_day');
     list.innerHTML = '';
     empty.classList.add('hidden');
     return;
@@ -1277,7 +1565,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 
 function renderSettings(){
   document.getElementById('settingsEmail').textContent = auth.currentUser ? auth.currentUser.email : '—';
-  document.getElementById('backupCount').textContent = customers.length + ' زبون';
+  document.getElementById('backupCount').textContent = customers.length + ' ' + (currentLang === 'ar' ? 'زبون' : (customers.length > 1 ? 'clients' : 'client'));
   updateNotifStatusUI();
 }
 
@@ -1301,13 +1589,13 @@ document.getElementById('btnTogglePwd').addEventListener('click', () => {
 
 function mapPwdError(code){
   const map = {
-    'auth/wrong-password': 'كلمة السر الحالية غالطة',
-    'auth/invalid-credential': 'كلمة السر الحالية غالطة',
-    'auth/weak-password': 'كلمة السر الجديدة لازم أكثر من 6 خانات',
-    'auth/requires-recent-login': 'لازم تسجل خروج وتعاود دخول قبل ما تبدل كلمة السر',
-    'auth/too-many-requests': 'محاولات كثيرة، جرب بعد شوية',
+    'auth/wrong-password': t('pwd_err_wrong'),
+    'auth/invalid-credential': t('pwd_err_wrong'),
+    'auth/weak-password': t('pwd_err_weak'),
+    'auth/requires-recent-login': t('pwd_err_recent_login'),
+    'auth/too-many-requests': t('pwd_err_too_many'),
   };
-  return map[code] || 'صار خطأ، عاود جرب';
+  return map[code] || t('pwd_err_generic');
 }
 
 pwdForm.addEventListener('submit', async (e) => {
@@ -1320,12 +1608,12 @@ pwdForm.addEventListener('submit', async (e) => {
   const confirmPwd = document.getElementById('pwdConfirm').value;
 
   if(newPwd !== confirmPwd){
-    pwdError.textContent = 'كلمة السر الجديدة وتأكيدها ما يتطابقوش';
+    pwdError.textContent = t('pwd_mismatch');
     pwdError.classList.remove('hidden');
     return;
   }
   if(newPwd.length < 6){
-    pwdError.textContent = 'كلمة السر الجديدة لازم أكثر من 6 خانات';
+    pwdError.textContent = t('pwd_too_short');
     pwdError.classList.remove('hidden');
     return;
   }
@@ -1337,7 +1625,7 @@ pwdForm.addEventListener('submit', async (e) => {
     const credential = EmailAuthProvider.credential(auth.currentUser.email, current);
     await reauthenticateWithCredential(auth.currentUser, credential);
     await updatePassword(auth.currentUser, newPwd);
-    pwdSuccess.textContent = 'تبدلت كلمة السر بنجاح ✓';
+    pwdSuccess.textContent = t('pwd_success');
     pwdSuccess.classList.remove('hidden');
     pwdForm.reset();
   } catch(err){
@@ -1345,12 +1633,12 @@ pwdForm.addEventListener('submit', async (e) => {
     pwdError.classList.remove('hidden');
   } finally {
     pwdSubmitBtn.disabled = false;
-    pwdSubmitBtn.textContent = 'تحديث كلمة السر';
+    pwdSubmitBtn.textContent = t('update_password');
   }
 });
 
 document.getElementById('btnLogout').addEventListener('click', () => {
-  if(confirm('تسجيل الخروج من الحساب؟')){
+  if(confirm(t('confirm_logout'))){
     signOut(auth);
   }
 });
@@ -1400,6 +1688,10 @@ function setThemePref(pref){
 
 document.querySelectorAll('.theme-chip').forEach(chip => {
   chip.addEventListener('click', () => setThemePref(chip.dataset.themePref));
+});
+
+document.querySelectorAll('.lang-chip').forEach(chip => {
+  chip.addEventListener('click', () => setLangPref(chip.dataset.langPref));
 });
 
 // كي النظام (الهاتف) يبدل بين فاتح/داكن أوتوماتيكياً ونحنا في وضع "تلقائي"، نتبعوه فوراً
@@ -1455,7 +1747,7 @@ document.getElementById('btnAdd').addEventListener('click', () => {
   editingId = null;
   form.reset();
   setBtuSelection('');
-  document.getElementById('sheetTitle').textContent = 'زبون جديد';
+  document.getElementById('sheetTitle').textContent = t('new_customer');
   document.getElementById('btnDelete').classList.add('hidden');
   form.date.value = todayStr();
   openSheet();
@@ -1476,7 +1768,7 @@ window.openEdit = function openEdit(id){
   form.price.value = c.price || '';
   form.notes.value = c.notes || '';
   setBtuSelection(c.btu || '');
-  document.getElementById('sheetTitle').textContent = 'تعديل الزبون';
+  document.getElementById('sheetTitle').textContent = t('edit_customer');
   document.getElementById('btnDelete').classList.remove('hidden');
   openSheet();
 }
@@ -1491,7 +1783,7 @@ form.addEventListener('submit', async e => {
 
   submitBtn.disabled = true;
   const originalLabel = submitBtn.textContent;
-  submitBtn.textContent = 'جاري الحفظ...';
+  submitBtn.textContent = t('saving');
   try {
     // saveCustomer يكتب في Firestore؛ لو الجهاز أوفلاين، الكتابة تتخزن محلياً (persistentLocalCache)
     // وتتزامن أوتوماتيكياً كي يرجع الأنترنت — لهذا السبب ما ننتظروش رد السيرفر باش نسكرو الشيت.
@@ -1505,7 +1797,7 @@ form.addEventListener('submit', async e => {
 
 document.getElementById('btnDelete').addEventListener('click', () => {
   if(!editingId) return;
-  if(confirm('تأكد الحذف؟')){
+  if(confirm(t('confirm_delete'))){
     removeCustomer(editingId).catch(err => console.error('Delete error:', err));
     closeSheet();
   }
@@ -1518,29 +1810,29 @@ const MORNING_HOUR = 7; // نستنو الساعة 7 صباحاً قبل ما ن
 function updateNotifStatusUI(){
   const statusEl = document.getElementById('notifStatus');
   if(!('Notification' in window)){
-    statusEl.textContent = 'غير مدعومة';
+    statusEl.textContent = t('notif_status_unsupported');
     statusEl.style.color = 'var(--text-dim)';
     return;
   }
   if(Notification.permission === 'granted'){
-    statusEl.textContent = 'مفعلة ✓';
+    statusEl.textContent = t('notif_status_granted');
     statusEl.style.color = 'var(--mint)';
   } else if(Notification.permission === 'denied'){
-    statusEl.textContent = 'مرفوضة (فعلها من إعدادات المتصفح)';
+    statusEl.textContent = t('notif_status_denied');
     statusEl.style.color = 'var(--danger)';
   } else {
-    statusEl.textContent = 'غير مفعلة';
+    statusEl.textContent = t('notif_status_off');
     statusEl.style.color = 'var(--text-dim)';
   }
 }
 
 document.getElementById('btnEnableNotif').addEventListener('click', async () => {
   if(!('Notification' in window)){
-    alert('هذا المتصفح ما يدعمش التنبيهات.');
+    alert(t('notif_not_supported'));
     return;
   }
   if(Notification.permission === 'denied'){
-    alert('التنبيهات مرفوضة من إعدادات المتصفح متاع الهاتف. لازم تفعلها يدوياً من هناك.');
+    alert(t('notif_denied_alert'));
     return;
   }
   const perm = await Notification.requestPermission();
@@ -1548,10 +1840,10 @@ document.getElementById('btnEnableNotif').addEventListener('click', async () => 
   if(perm === 'granted'){
     // نجربو تنبيه فوري باش يتأكد إنو خدامة
     navigator.serviceWorker.ready.then(reg => {
-      reg.showNotification('تبريد', {
-        body: 'التنبيهات مفعلة! باش تتوصل بملخص المواعيد كي تفتح التطبيق صباحاً.',
+      reg.showNotification(t('app_name'), {
+        body: t('notif_enabled_body'),
         icon: './icon-192.png',
-        dir: 'rtl', lang: 'ar'
+        dir: currentLang === 'fr' ? 'ltr' : 'rtl', lang: currentLang
       });
     });
     localStorage.removeItem(NOTIF_LAST_KEY); // نخليو الفحص يعاود يجري توة
@@ -1574,16 +1866,16 @@ function checkAndNotify(){
   if(todays.length === 0 && overdue.length === 0) return;
 
   const parts = [];
-  if(todays.length) parts.push(`${todays.length} موعد اليوم`);
-  if(overdue.length) parts.push(`${overdue.length} موعد متأخر`);
+  if(todays.length) parts.push(t('notif_today_count')(todays.length));
+  if(overdue.length) parts.push(t('notif_overdue_count')(overdue.length));
 
   navigator.serviceWorker.ready.then(reg => {
-    reg.showNotification('تبريد — ملخص اليوم', {
+    reg.showNotification(t('notif_summary_title'), {
       body: parts.join(' · '),
       icon: './icon-192.png',
       badge: './icon-192.png',
       tag: 'tabrid-daily-summary',
-      dir: 'rtl', lang: 'ar'
+      dir: currentLang === 'fr' ? 'ltr' : 'rtl', lang: currentLang
     });
   });
 
@@ -1596,7 +1888,7 @@ document.addEventListener('visibilitychange', () => {
 });
 
 /* ============ INIT ============ */
-renderList();
+applyLanguage();
 
 // حماية: إذا لأي سبب auth تاخر برشا (نات ضعيف جداً)، ما نخليوش السبلاش تبقى واقفة
 setTimeout(hideSplash, 4000);
