@@ -1138,6 +1138,12 @@ function renderList(){
   renderReport();
 }
 
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str ?? '';
+  return div.innerHTML;
+}
+
 function renderCard(c){
   const badge = dateBadge(c.date);
   const wrap = document.createElement('div');
@@ -1166,6 +1172,11 @@ function renderCard(c){
         </span>
         ${c.address ? `<span class="text-xs" style="color:var(--text-dim)">· ${c.address}</span>` : ''}
       </div>
+      ${c.notes ? `
+      <p class="flex items-start gap-1.5 text-xs mt-2.5" style="color:var(--text-dim)">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 mt-0.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+        <span style="word-break:break-word">${escapeHtml(c.notes)}</span>
+      </p>` : ''}
       <div class="flex items-center justify-between mt-4">
         <p class="font-mono font-bold text-base" style="color:var(--mint)">${c.price ? c.price+' '+t('currency') : '—'}</p>
         <div class="flex gap-2">
