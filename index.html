@@ -479,6 +479,18 @@
       <p class="text-[11px]" style="color:var(--text-dim)" data-i18n="notif_note">كي تفتح التطبيق صباحاً، يعلمك بمواعيد اليوم وأي موعد "قيد الانتظار" فات وقتو. ⚠️ لازم تفتح التطبيق مرة على الأقل كل يوم باش التنبيه يخدم — التطبيق ما ينجمش يبعث تنبيه وهو مسكر كامل بلا سيرفر خاص بيه.</p>
     </div>
 
+    <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)" data-i18n="booking_link_section">رابط الحجز متاعك</p>
+    <div class="rounded-2xl p-4 mb-5" style="background:var(--surface); border:1px solid var(--line)">
+      <p class="text-[11px] mb-2" style="color:var(--text-dim)" data-i18n="booking_link_note">أعطي هذا الرابط لحرفائك — يقدروا يطلبوا موعد بلا ما يحتاجوا حساب.</p>
+      <div class="flex items-center gap-2 rounded-xl px-3 py-2.5 mb-2" style="background:var(--surface-2); border:1px solid var(--line)">
+        <input readonly id="bookingLinkInput" type="text" class="flex-1 bg-transparent text-xs font-mono outline-none" style="direction:ltr; text-align:left; color:var(--text-dim)" value="">
+      </div>
+      <button id="btnCopyBookingLink" class="w-full flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold" style="background:var(--copper); color:#1A1006">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1A1006" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        <span data-i18n="copy_link">نسخ الرابط</span>
+      </button>
+    </div>
+
     <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)" data-i18n="about_app">عن التطبيق</p>
     <div class="rounded-2xl p-4 flex items-center gap-3" style="background:var(--surface); border:1px solid var(--line)">
       <svg width="30" height="30" viewBox="0 0 40 40" fill="none">
@@ -804,6 +816,10 @@ const TRANSLATIONS = {
     sm_mic_denied: 'ما نجمناش نوصلو للميكروفون. تأكد من إذن المتصفح.',
     sm_saved: 'تمت الإضافة ✓',
     booking_requests: 'طلبات المواعيد',
+    booking_link_section: 'رابط الحجز متاعك',
+    booking_link_note: 'أعطي هذا الرابط لحرفائك — يقدروا يطلبوا موعد بلا ما يحتاجوا حساب.',
+    copy_link: 'نسخ الرابط',
+    link_copied: 'تم النسخ ✓',
     no_booking_requests: 'ما فماش طلبات مواعيد جديدة توة',
     new_booking_badge: (n) => `${n} طلبات مواعيد جديدة`,
     accept: 'قبول',
@@ -940,6 +956,10 @@ const TRANSLATIONS = {
     sm_mic_denied: "Impossible d'accéder au micro. Vérifiez les autorisations du navigateur.",
     sm_saved: 'Ajouté ✓',
     booking_requests: 'Demandes de rendez-vous',
+    booking_link_section: 'Votre lien de réservation',
+    booking_link_note: 'Donnez ce lien à vos clients — ils peuvent demander un RDV sans compte.',
+    copy_link: 'Copier le lien',
+    link_copied: 'Copié ✓',
     no_booking_requests: 'Aucune nouvelle demande pour le moment',
     new_booking_badge: (n) => `${n} nouvelles demandes de RDV`,
     accept: 'Accepter',
@@ -1878,7 +1898,31 @@ function renderSettings(){
   document.getElementById('settingsEmail').textContent = auth.currentUser ? auth.currentUser.email : '—';
   document.getElementById('backupCount').textContent = customers.length + ' ' + (currentLang === 'ar' ? 'زبون' : (customers.length > 1 ? 'clients' : 'client'));
   updateNotifStatusUI();
+
+  // نبنيو رابط الحجز أوتوماتيكياً من UID المستخدم الحالي — بلا أي تدخل يدوي
+  if(currentUid){
+    const bookingUrl = new URL('./book.html', window.location.href);
+    bookingUrl.searchParams.set('tech', currentUid);
+    document.getElementById('bookingLinkInput').value = bookingUrl.href;
+  }
 }
+
+document.getElementById('btnCopyBookingLink').addEventListener('click', async () => {
+  const input = document.getElementById('bookingLinkInput');
+  const btn = document.getElementById('btnCopyBookingLink');
+  try{
+    await navigator.clipboard.writeText(input.value);
+  } catch(err){
+    // بعض المتصفحات القديمة ما يدعموش navigator.clipboard — نستعملو طريقة احتياطية
+    input.removeAttribute('readonly');
+    input.select();
+    document.execCommand('copy');
+    input.setAttribute('readonly', 'true');
+  }
+  const originalHtml = btn.innerHTML;
+  btn.innerHTML = `<span>${t('link_copied')}</span>`;
+  setTimeout(() => { btn.innerHTML = originalHtml; }, 1500);
+});
 
 /* ============ تغيير كلمة السر ============ */
 const pwdForm = document.getElementById('pwdForm');

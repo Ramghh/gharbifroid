@@ -34,8 +34,17 @@
       <circle cx="31" cy="17" r="2" fill="var(--copper)"/>
       <line x1="9" y1="17" x2="24" y2="17" stroke="var(--line)" stroke-width="2" stroke-linecap="round"/>
     </svg>
-    <h1 class="font-display font-black text-xl mt-3">احجز موعد صيانة أو تركيب</h1>
+    <h1 id="pageTitle" class="font-display font-black text-xl mt-3">احجز موعد صيانة أو تركيب</h1>
     <p class="text-xs mt-1 text-center" style="color:var(--text-dim)">عبي المعلومات، ونتصل بيك نأكد الموعد</p>
+  </div>
+
+  <!-- ============ حالة رابط غير صالح (بلا tech UID) ============ -->
+  <div id="invalidLinkState" class="flex-col items-center text-center py-10" style="display:none">
+    <div class="w-16 h-16 rounded-full flex items-center justify-center mb-4" style="background:rgba(232,103,74,.15)">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2.3"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+    </div>
+    <h2 class="font-display font-black text-lg">رابط غير صالح</h2>
+    <p class="text-sm mt-2" style="color:var(--text-dim)">تأكد من الرابط اللي عطاوهولك، أو تواصل مع الفني مباشرة.</p>
   </div>
 
   <!-- ============ FORM ============ -->
@@ -81,7 +90,7 @@
   </form>
 
   <!-- ============ SUCCESS STATE ============ -->
-  <div id="successState" class="hidden flex-col items-center text-center py-10">
+  <div id="successState" class="flex-col items-center text-center py-10" style="display:none">
     <div class="w-16 h-16 rounded-full flex items-center justify-center mb-4" style="background:rgba(79,209,174,.15)">
       <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--mint)" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
     </div>
@@ -108,13 +117,24 @@ const firebaseConfig = {
   appId: "1:976211973529:web:91ad6b7a915276fe71ef08"
 };
 
-// ⚠️⚠️ لازم تعوض هذا بالـ UID الحقيقي متاعك (Firebase Console → Authentication → Users → عمود User UID)
-const TECH_UID = "oDcPuDDWNMSdfG9uVTRcZNH0yKY2";
+// نقراو UID الفني (وإسمو الاختياري) من الرابط نفسو — مثال:
+// book.html?tech=XXXXXXXX&name=رمزي
+const params = new URLSearchParams(window.location.search);
+const TECH_UID = params.get('tech');
+const TECH_NAME = params.get('name');
 
 const app = initializeApp(firebaseConfig);
 const db = initializeFirestore(app, {
   localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
 });
+
+// ============ إذا الرابط ناقصو tech=UID، نوقفو هنا ونبينو رسالة بدل الفورم ============
+if(!TECH_UID){
+  document.getElementById('bookingForm').style.display = 'none';
+  document.getElementById('invalidLinkState').style.display = 'flex';
+} else if(TECH_NAME){
+  document.getElementById('pageTitle').textContent = `احجز موعد مع ${TECH_NAME}`;
+}
 
 let selectedType = null;
 document.querySelectorAll('.chip').forEach(chip => {
@@ -133,10 +153,8 @@ form.addEventListener('submit', async (e) => {
   e.preventDefault();
   errorEl.classList.add('hidden');
 
-  if(TECH_UID === 'PASTE_YOUR_UID_HERE'){
-    errorEl.textContent = 'الصفحة ما تهيأتش بعد (UID ناقص). تواصل مع الفني.';
-    errorEl.classList.remove('hidden');
-    return;
+  if(!TECH_UID){
+    return; // الفورم أصلاً مخفي في هذه الحالة، حماية إضافية بس
   }
   if(!selectedType){
     errorEl.textContent = 'اختار نوع الخدمة';
@@ -160,8 +178,7 @@ form.addEventListener('submit', async (e) => {
       createdAt: serverTimestamp()
     });
     form.classList.add('hidden');
-    document.getElementById('successState').classList.remove('hidden');
-    document.getElementById('successState').classList.add('flex');
+    document.getElementById('successState').style.display = 'flex';
   } catch(err){
     console.error(err);
     errorEl.textContent = 'صار خطأ، عاود جرب من بعد شوية.';
