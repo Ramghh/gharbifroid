@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>تبريد | احجز موعدك</title>
+<meta name="theme-color" content="#0A2E2C">
+<link rel="icon" href="./favicon-32.png" sizes="32x32" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800;900&family=Cairo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root{
+    --bg: #0A2E2C; --bg-deep: #071F1D; --surface: #0F3D3A; --surface-2: #124743;
+    --line: #1D5450; --copper: #E08A3C; --mint: #4FD1AE; --amber: #F2C14E; --danger: #E8674A;
+    --text: #EAF3F1; --text-dim: #8FADA9;
+  }
+  html,body{ background: var(--bg-deep); color: var(--text); font-family:'Cairo',sans-serif; min-height:100vh; }
+  .font-display{ font-family:'Tajawal',sans-serif; }
+  input, select, textarea{ background: var(--surface-2); border: 1px solid var(--line); color: var(--text); }
+  input::placeholder, textarea::placeholder{ color: var(--text-dim); }
+  input:focus, select:focus, textarea:focus{ outline:none; border-color: var(--copper); box-shadow: 0 0 0 3px rgba(224,138,60,.18); }
+  .chip{ padding:10px 8px; border-radius:12px; border:1px solid var(--line); background:var(--surface); text-align:center; font-size:13px; font-weight:700; cursor:pointer; }
+  .chip.active{ background:var(--copper); border-color:var(--copper); color:#1A1006; }
+  @media (min-width:640px){ body{ display:flex; justify-content:center; } #wrap{ max-width:460px; width:100%; } }
+</style>
+</head>
+<body>
+<div id="wrap" class="min-h-screen px-5 py-8">
+
+  <div class="flex flex-col items-center mb-8">
+    <svg width="46" height="46" viewBox="0 0 40 40" fill="none">
+      <rect x="3" y="10" width="34" height="14" rx="4" stroke="var(--copper)" stroke-width="2"/>
+      <path d="M8 27c0 4 2 6 2 6M14 27c0 5 2 7 2 7M20 27c0 4 2 6 2 6M26 27c0 5 2 7 2 7" stroke="var(--mint)" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="31" cy="17" r="2" fill="var(--copper)"/>
+      <line x1="9" y1="17" x2="24" y2="17" stroke="var(--line)" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <h1 class="font-display font-black text-xl mt-3">احجز موعد صيانة أو تركيب</h1>
+    <p class="text-xs mt-1 text-center" style="color:var(--text-dim)">عبي المعلومات، ونتصل بيك نأكد الموعد</p>
+  </div>
+
+  <!-- ============ FORM ============ -->
+  <form id="bookingForm" class="flex flex-col gap-4">
+    <div>
+      <label class="text-xs font-semibold" style="color:var(--text-dim)">اسمك الكامل</label>
+      <input required id="fName" type="text" placeholder="مثال: سامي بن علي" class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm">
+    </div>
+    <div>
+      <label class="text-xs font-semibold" style="color:var(--text-dim)">رقم الهاتف</label>
+      <input required id="fPhone" type="tel" placeholder="+216 XX XXX XXX" class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm font-mono" style="direction:ltr; text-align:right">
+    </div>
+    <div>
+      <label class="text-xs font-semibold" style="color:var(--text-dim)">العنوان</label>
+      <input id="fAddress" type="text" placeholder="الحي، المدينة" class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm">
+    </div>
+    <div>
+      <label class="text-xs font-semibold" style="color:var(--text-dim)">نوع الخدمة</label>
+      <div class="grid grid-cols-3 gap-2 mt-1.5">
+        <div class="chip" data-value="تركيب">تركيب</div>
+        <div class="chip" data-value="صيانة">صيانة</div>
+        <div class="chip" data-value="إصلاح">إصلاح</div>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <label class="text-xs font-semibold" style="color:var(--text-dim)">التاريخ المفضل</label>
+        <input required id="fDate" type="date" class="w-full rounded-xl px-3 py-3 mt-1.5 text-sm font-mono">
+      </div>
+      <div>
+        <label class="text-xs font-semibold" style="color:var(--text-dim)">الوقت (اختياري)</label>
+        <input id="fTime" type="time" class="w-full rounded-xl px-3 py-3 mt-1.5 text-sm font-mono">
+      </div>
+    </div>
+    <div>
+      <label class="text-xs font-semibold" style="color:var(--text-dim)">ملاحظات</label>
+      <textarea id="fNotes" rows="2" placeholder="نوع المكيف، الطابق، أي تفاصيل تساعدنا..." class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm resize-none"></textarea>
+    </div>
+
+    <p id="formError" class="hidden text-xs font-semibold" style="color:var(--danger)"></p>
+    <button type="submit" id="submitBtn" class="rounded-xl py-3.5 font-bold text-sm mt-2" style="background:var(--copper); color:#1A1006">إرسال طلب الموعد</button>
+    <p class="text-[11px] text-center" style="color:var(--text-dim)">هذا طلب أولي — نتصل بيك نأكدو الموعد بالضبط.</p>
+  </form>
+
+  <!-- ============ SUCCESS STATE ============ -->
+  <div id="successState" class="hidden flex-col items-center text-center py-10">
+    <div class="w-16 h-16 rounded-full flex items-center justify-center mb-4" style="background:rgba(79,209,174,.15)">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--mint)" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+    </div>
+    <h2 class="font-display font-black text-lg">توصل طلبك ✓</h2>
+    <p class="text-sm mt-2" style="color:var(--text-dim)">بش نتصلو بيك قريب نأكدو الموعد. شكراً!</p>
+  </div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  initializeFirestore, persistentLocalCache, persistentMultipleTabManager,
+  collection, addDoc, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// ⚠️ نفس مشروع MotoTrack (مطابق لـ index.html متاع تطبيق تبريد)
+const firebaseConfig = {
+  apiKey: "AIzaSyBmQqqvfJui-COVWd4fHpBaDwIHDusyPG0",
+  authDomain: "mototrack-9c47c.firebaseapp.com",
+  projectId: "mototrack-9c47c",
+  storageBucket: "mototrack-9c47c.firebasestorage.app",
+  messagingSenderId: "976211973529",
+  appId: "1:976211973529:web:91ad6b7a915276fe71ef08"
+};
+
+// ⚠️⚠️ لازم تعوض هذا بالـ UID الحقيقي متاعك (Firebase Console → Authentication → Users → عمود User UID)
+const TECH_UID = "oDcPuDDWNMSdfG9uVTRcZNH0yKY2";
+
+const app = initializeApp(firebaseConfig);
+const db = initializeFirestore(app, {
+  localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+});
+
+let selectedType = null;
+document.querySelectorAll('.chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    selectedType = chip.dataset.value;
+  });
+});
+
+const form = document.getElementById('bookingForm');
+const errorEl = document.getElementById('formError');
+const submitBtn = document.getElementById('submitBtn');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  errorEl.classList.add('hidden');
+
+  if(TECH_UID === 'PASTE_YOUR_UID_HERE'){
+    errorEl.textContent = 'الصفحة ما تهيأتش بعد (UID ناقص). تواصل مع الفني.';
+    errorEl.classList.remove('hidden');
+    return;
+  }
+  if(!selectedType){
+    errorEl.textContent = 'اختار نوع الخدمة';
+    errorEl.classList.remove('hidden');
+    return;
+  }
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = '...';
+
+  try{
+    await addDoc(collection(db, 'users', TECH_UID, 'bookingRequests'), {
+      name: document.getElementById('fName').value.trim(),
+      phone: document.getElementById('fPhone').value.trim(),
+      address: document.getElementById('fAddress').value.trim(),
+      serviceType: selectedType,
+      date: document.getElementById('fDate').value,
+      time: document.getElementById('fTime').value || '',
+      notes: document.getElementById('fNotes').value.trim(),
+      status: 'new',
+      createdAt: serverTimestamp()
+    });
+    form.classList.add('hidden');
+    document.getElementById('successState').classList.remove('hidden');
+    document.getElementById('successState').classList.add('flex');
+  } catch(err){
+    console.error(err);
+    errorEl.textContent = 'صار خطأ، عاود جرب من بعد شوية.';
+    errorEl.classList.remove('hidden');
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'إرسال طلب الموعد';
+  }
+});
+</script>
+</body>
+</html>

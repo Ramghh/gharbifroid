@@ -235,6 +235,16 @@
   <!-- ===================== MAIN CONTENT ===================== -->
   <main class="flex-1 px-5 pt-2 pb-28" id="viewHome">
 
+    <button id="btnBookingBanner" style="display:none; background:linear-gradient(90deg, rgba(224,138,60,.18), rgba(224,138,60,.06)); border:1px solid rgba(224,138,60,.4)" class="w-full flex items-center justify-between rounded-2xl px-4 py-3.5 mb-4">
+      <span class="flex items-center gap-2.5">
+        <span class="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style="background:var(--copper)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1A1006" stroke-width="2.3"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        </span>
+        <span class="font-display font-bold text-sm" id="bookingBannerText" style="color:var(--text)">طلبات مواعيد جديدة</span>
+      </span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg>
+    </button>
+
     <div class="pipe-divider">
       <span class="joint"></span><span class="seg"></span>
       <span class="font-display font-bold text-sm" style="color:var(--text-dim)" data-i18n="upcoming_appts">مواعيد قادمة</span>
@@ -650,6 +660,20 @@
     </div>
   </div>
 
+  <!-- ===================== BOOKING REQUESTS OVERLAY ===================== -->
+  <div id="bookingOverlay" class="fixed inset-0 z-[70] flex-col" style="background:var(--bg-deep); display:none">
+    <div class="flex items-center justify-between px-5 pt-6 pb-3">
+      <h3 class="font-display font-black text-lg" data-i18n="booking_requests">طلبات المواعيد</h3>
+      <button id="btnCloseBooking" class="w-9 h-9 rounded-full flex items-center justify-center" style="background:var(--surface)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div id="bookingList" class="flex-1 overflow-y-auto px-5 pb-8 flex flex-col gap-3"></div>
+    <div id="bookingEmptyState" class="hidden flex-1 flex items-center justify-center px-8">
+      <p class="text-sm font-semibold text-center" style="color:var(--text-dim)" data-i18n="no_booking_requests">ما فماش طلبات مواعيد جديدة توة</p>
+    </div>
+  </div>
+
   <!-- ===================== SYNC STATUS TOAST ===================== -->
   <div id="syncToast" class="fixed top-4 inset-x-0 mx-auto z-50 hidden" style="max-width:480px">
     <div class="mx-5 rounded-full px-4 py-2 flex items-center gap-2 text-xs font-semibold" id="syncToastInner" style="background:var(--surface); border:1px solid var(--line)">
@@ -779,6 +803,14 @@ const TRANSLATIONS = {
     sm_save_to_notes: 'أضف للملاحظات',
     sm_mic_denied: 'ما نجمناش نوصلو للميكروفون. تأكد من إذن المتصفح.',
     sm_saved: 'تمت الإضافة ✓',
+    booking_requests: 'طلبات المواعيد',
+    no_booking_requests: 'ما فماش طلبات مواعيد جديدة توة',
+    new_booking_badge: (n) => `${n} طلبات مواعيد جديدة`,
+    accept: 'قبول',
+    reject: 'رفض',
+    booking_accepted: 'تم قبول الطلب ✓',
+    booking_rejected: 'تم رفض الطلب',
+    confirm_reject_booking: 'تأكد رفض هذا الطلب؟',
     delete: 'حذف',
     save: 'حفظ',
     saving: 'جاري الحفظ...',
@@ -907,6 +939,14 @@ const TRANSLATIONS = {
     sm_save_to_notes: 'Ajouter aux notes',
     sm_mic_denied: "Impossible d'accéder au micro. Vérifiez les autorisations du navigateur.",
     sm_saved: 'Ajouté ✓',
+    booking_requests: 'Demandes de rendez-vous',
+    no_booking_requests: 'Aucune nouvelle demande pour le moment',
+    new_booking_badge: (n) => `${n} nouvelles demandes de RDV`,
+    accept: 'Accepter',
+    reject: 'Refuser',
+    booking_accepted: 'Demande acceptée ✓',
+    booking_rejected: 'Demande refusée',
+    confirm_reject_booking: 'Confirmer le refus de cette demande ?',
     delete: 'Supprimer',
     save: 'Enregistrer',
     saving: 'Enregistrement...',
@@ -986,6 +1026,8 @@ function applyLanguage(){
   renderCalendar();
   renderCalDayList();
   renderReport();
+  renderBookingBanner();
+  renderBookingList();
   updateNotifStatusUI();
 }
 
@@ -1096,11 +1138,14 @@ onAuthStateChanged(auth, (user) => {
     authGate.classList.add('hidden');
     authSubmitBtn.disabled = false;
     subscribeToCustomers();
+    subscribeToBookingRequests();
   } else {
     currentUid = null;
     authGate.classList.remove('hidden');
     if(unsubscribeCustomers){ unsubscribeCustomers(); unsubscribeCustomers = null; }
+    if(unsubscribeBookings){ unsubscribeBookings(); unsubscribeBookings = null; }
     customers = [];
+    bookingRequests = [];
   }
 });
 
@@ -1133,6 +1178,28 @@ updateSyncStatus();
 /* ============ FIRESTORE CRUD ============ */
 function customersCol(){
   return collection(db, 'users', currentUid, 'customers');
+}
+
+function bookingRequestsCol(){
+  return collection(db, 'users', currentUid, 'bookingRequests');
+}
+
+let unsubscribeBookings = null;
+let bookingRequests = [];
+
+function subscribeToBookingRequests(){
+  if(unsubscribeBookings) unsubscribeBookings();
+  const q = query(bookingRequestsCol(), orderBy('createdAt', 'desc'));
+  unsubscribeBookings = onSnapshot(q,
+    (snap) => {
+      bookingRequests = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(r => r.status !== 'rejected');
+      renderBookingBanner();
+      renderBookingList();
+    },
+    (err) => {
+      console.error('Booking requests sync error:', err);
+    }
+  );
 }
 
 function subscribeToCustomers(){
@@ -1266,6 +1333,88 @@ function escapeHtml(str){
   const div = document.createElement('div');
   div.textContent = str ?? '';
   return div.innerHTML;
+}
+
+/* ============ طلبات المواعيد (Booking Requests) ============ */
+function renderBookingBanner(){
+  const btn = document.getElementById('btnBookingBanner');
+  const label = document.getElementById('bookingBannerText');
+  if(bookingRequests.length > 0){
+    btn.style.display = 'flex';
+    label.textContent = t('new_booking_badge')(bookingRequests.length);
+  } else {
+    btn.style.display = 'none';
+  }
+}
+
+function renderBookingList(){
+  const list = document.getElementById('bookingList');
+  const empty = document.getElementById('bookingEmptyState');
+  list.innerHTML = '';
+  if(bookingRequests.length === 0){
+    empty.classList.remove('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+  bookingRequests.forEach(r => list.appendChild(renderBookingCard(r)));
+}
+
+function renderBookingCard(r){
+  const wrap = document.createElement('div');
+  wrap.className = 'rounded-2xl p-4';
+  wrap.style.background = 'var(--surface)';
+  wrap.style.border = '1px solid var(--line)';
+  wrap.innerHTML = `
+    <div class="flex items-start justify-between">
+      <div>
+        <p class="font-display font-bold text-[15px]">${escapeHtml(r.name || '')}</p>
+        <p class="text-xs font-mono mt-0.5" style="color:var(--text-dim)">${escapeHtml(r.phone || '')}</p>
+      </div>
+      <span class="badge" style="background:${(SERVICE_COLORS[r.serviceType]||'var(--text-dim)')}22; color:${SERVICE_COLORS[r.serviceType]||'var(--text-dim)'}">${serviceTypeLabel(r.serviceType)}</span>
+    </div>
+    <div class="flex items-center gap-2 mt-2.5 flex-wrap text-xs" style="color:var(--text-dim)">
+      <span class="font-mono">${r.date || ''}${r.time ? ' · ' + r.time : ''}</span>
+      ${r.address ? `<span>· ${escapeHtml(r.address)}</span>` : ''}
+    </div>
+    ${r.notes ? `<p class="text-xs mt-2" style="color:var(--text-dim)">${escapeHtml(r.notes)}</p>` : ''}
+    <div class="flex gap-2 mt-3.5">
+      <button class="btn-reject flex-1 rounded-xl py-2.5 text-xs font-bold" style="background:rgba(232,103,74,.12); color:var(--danger); border:1px solid rgba(232,103,74,.3)">${t('reject')}</button>
+      <button class="btn-accept flex-1 rounded-xl py-2.5 text-xs font-bold" style="background:var(--copper); color:#1A1006">${t('accept')}</button>
+    </div>
+  `;
+  wrap.querySelector('.btn-accept').addEventListener('click', () => acceptBookingRequest(r));
+  wrap.querySelector('.btn-reject').addEventListener('click', () => rejectBookingRequest(r));
+  return wrap;
+}
+
+async function acceptBookingRequest(r){
+  try{
+    await addDoc(customersCol(), {
+      name: r.name || '', phone: r.phone || '', address: r.address || '',
+      serviceType: r.serviceType || 'صيانة', status: 'pending',
+      date: r.date || todayStr(), time: r.time || '', price: 0, notes: r.notes || '',
+      createdAt: serverTimestamp(), updatedAt: serverTimestamp()
+    });
+    await deleteDoc(doc(bookingRequestsCol(), r.id));
+  } catch(err){
+    console.error('Accept booking error:', err);
+  }
+}
+
+async function rejectBookingRequest(r){
+  if(!confirm(t('confirm_reject_booking'))) return;
+  try{
+    await deleteDoc(doc(bookingRequestsCol(), r.id));
+  } catch(err){
+    console.error('Reject booking error:', err);
+  }
+}
+
+function openBookingOverlay(){
+  document.getElementById('bookingOverlay').style.display = 'flex';
+}
+function closeBookingOverlay(){
+  document.getElementById('bookingOverlay').style.display = 'none';
 }
 
 function renderCard(c){
@@ -2026,6 +2175,9 @@ function stopSoundMeter(){
 
 document.getElementById('btnOpenSoundMeter').addEventListener('click', openSoundMeter);
 document.getElementById('btnCloseSoundMeter').addEventListener('click', closeSoundMeter);
+
+document.getElementById('btnBookingBanner').addEventListener('click', openBookingOverlay);
+document.getElementById('btnCloseBooking').addEventListener('click', closeBookingOverlay);
 
 document.getElementById('btnSoundMeterToggle').addEventListener('click', () => {
   if(smRunning) stopSoundMeter();
