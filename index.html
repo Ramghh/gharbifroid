@@ -533,13 +533,15 @@
 
   <!-- ===================== ADD/EDIT BOTTOM SHEET ===================== -->
   <div id="sheetOverlay" class="fixed inset-0 bg-black/60 hidden z-40"></div>
-  <div id="sheet" class="sheet hidden-sheet fixed bottom-0 inset-x-0 mx-auto z-50 rounded-t-3xl px-5 pt-5 pb-8 max-h-[88vh] overflow-y-auto" style="max-width:480px; background:var(--bg-deep); border:1px solid var(--line); border-bottom:none">
-    <div class="w-10 h-1.5 rounded-full mx-auto mb-4" style="background:var(--line)"></div>
-    <div class="flex items-center justify-between mb-5">
-      <h3 class="font-display font-black text-lg" id="sheetTitle" data-i18n="new_customer">زبون جديد</h3>
-      <button id="btnCloseSheet" class="w-8 h-8 rounded-full flex items-center justify-center" style="background:var(--surface)">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-      </button>
+  <div id="sheet" class="sheet hidden-sheet fixed bottom-0 inset-x-0 mx-auto z-50 rounded-t-3xl px-5 pb-8 max-h-[88vh] overflow-y-auto" style="max-width:480px; background:var(--bg-deep); border:1px solid var(--line); border-bottom:none">
+    <div class="sticky top-0 pt-5 pb-3 -mx-5 px-5" style="background:var(--bg-deep); z-index:5">
+      <div class="w-10 h-1.5 rounded-full mx-auto mb-4" style="background:var(--line)"></div>
+      <div class="flex items-center justify-between">
+        <h3 class="font-display font-black text-lg" id="sheetTitle" data-i18n="new_customer">زبون جديد</h3>
+        <button id="btnCloseSheet" class="w-8 h-8 rounded-full flex items-center justify-center" style="background:var(--surface)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
     </div>
 
     <form id="customerForm" class="flex flex-col gap-4">
@@ -1042,13 +1044,11 @@ function applyLanguage(){
   });
 
   // نعاودو نرسمو كل الشاشات باش المحتوى المتحرك (بادجات، شارطات، تقويم) يتبدل بلغة جديدة
-  renderList();
-  renderCalendar();
-  renderCalDayList();
-  renderReport();
-  renderBookingBanner();
-  renderBookingList();
-  updateNotifStatusUI();
+  // كل واحدة معزولة بـ try/catch باش خطأ في وحدة (مثلاً شارط في تبويب مخفي) ما يوقفش الباقي
+  const safeCalls = [renderList, renderCalendar, renderCalDayList, renderReport, renderBookingBanner, renderBookingList, updateNotifStatusUI];
+  safeCalls.forEach(fn => {
+    try{ fn(); } catch(err){ console.error(`applyLanguage: ${fn.name} failed:`, err); }
+  });
 }
 
 /* ============ حجم الخط (تكبير/تصغير كامل الواجهة) ============ */
@@ -1682,7 +1682,9 @@ function buildBarSeries(range){
 }
 
 function drawBarChart(canvas, labels, values){
-  const cssW = canvas.parentElement.clientWidth - 32; // ناقص padding البطاقة
+  const rawW = canvas.parentElement.clientWidth - 32; // ناقص padding البطاقة
+  if(rawW <= 0) return; // الكارت مخفي توة (تبويب آخر مفتوح) — ما فماش داعي نرسمو
+  const cssW = rawW;
   const cssH = 150;
   const ctx = setupCanvasHiDPI(canvas, cssW, cssH);
   ctx.clearRect(0, 0, cssW, cssH);
