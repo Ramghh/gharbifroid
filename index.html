@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="fr" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <script>
@@ -13,7 +13,7 @@
   })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title data-i18n="app_title_full">تبريد | متابعة الصيانة والتركيب</title>
+<title data-i18n="app_title_full">Tabrid | Suivi maintenance et installation</title>
 <meta name="theme-color" content="#0A2E2C">
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" href="./favicon-32.png" sizes="32x32" type="image/png">
@@ -21,7 +21,7 @@
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="تبريد">
+<meta name="apple-mobile-web-app-title" content="Tabrid">
 <meta name="mobile-web-app-capable" content="yes">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800;900&family=Cairo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
@@ -168,8 +168,8 @@
     <circle cx="31" cy="17" r="2" fill="var(--copper)"/>
     <line x1="9" y1="17" x2="24" y2="17" stroke="var(--line)" stroke-width="2" stroke-linecap="round"/>
   </svg>
-  <h1 class="font-display font-black text-2xl mt-4" style="color:var(--text)" data-i18n="app_name">تبريد</h1>
-  <p class="text-xs mt-1" style="color:var(--text-dim)" data-i18n="app_tagline">متابعة الصيانة والتركيب</p>
+  <h1 class="font-display font-black text-2xl mt-4" style="color:var(--text)" data-i18n="app_name">Tabrid</h1>
+  <p class="text-xs mt-1" style="color:var(--text-dim)" data-i18n="app_tagline">Suivi maintenance et installation</p>
   <div style="margin-top:28px; width:28px; height:28px; border-radius:50%; border:2.5px solid var(--line); border-top-color:var(--copper); animation: splashSpin .8s linear infinite;"></div>
 </div>
 <style>
@@ -192,8 +192,8 @@
           <line x1="9" y1="17" x2="24" y2="17" stroke="var(--line)" stroke-width="2" stroke-linecap="round"/>
         </svg>
         <div>
-          <h1 class="font-display font-black text-lg leading-none" data-i18n="app_name">تبريد</h1>
-          <p class="text-xs mt-1" style="color:var(--text-dim)" data-i18n="app_tagline">متابعة الصيانة والتركيب</p>
+          <h1 class="font-display font-black text-lg leading-none" data-i18n="app_name">Tabrid</h1>
+          <p class="text-xs mt-1" style="color:var(--text-dim)" data-i18n="app_tagline">Suivi maintenance et installation</p>
         </div>
       </div>
       <button id="btnSearch" class="w-10 h-10 rounded-full flex items-center justify-center" style="background:var(--surface); border:1px solid var(--line)">
@@ -204,15 +204,15 @@
     <!-- Quick stats strip -->
     <div class="grid grid-cols-3 gap-2 mt-5">
       <div class="rounded-2xl px-2.5 py-2.5 text-center" style="background:var(--surface); border:1px solid var(--line)">
-        <p class="text-[10px] leading-tight" style="color:var(--text-dim)" data-i18n="month_income">مداخيل الشهر</p>
-        <p class="font-mono font-semibold text-base mt-1" style="color:var(--mint)" id="statIncome">0 د.ت</p>
+        <p class="text-[10px] leading-tight" style="color:var(--text-dim)" data-i18n="month_income">Revenu du mois</p>
+        <p class="font-mono font-semibold text-base mt-1" style="color:var(--mint)" id="statIncome">0 DT</p>
       </div>
       <div class="rounded-2xl px-2.5 py-2.5 text-center" style="background:var(--surface); border:1px solid var(--line)">
-        <p class="text-[10px] leading-tight" style="color:var(--text-dim)" data-i18n="today_appts">مواعيد اليوم</p>
+        <p class="text-[10px] leading-tight" style="color:var(--text-dim)" data-i18n="today_appts">RDV aujourd'hui</p>
         <p class="font-mono font-semibold text-base mt-1" style="color:var(--amber)" id="statToday">0</p>
       </div>
       <div class="rounded-2xl px-2.5 py-2.5 text-center" style="background:var(--surface); border:1px solid var(--line)">
-        <p class="text-[10px] leading-tight" style="color:var(--text-dim)" data-i18n="pending_label">قيد الانتظار</p>
+        <p class="text-[10px] leading-tight" style="color:var(--text-dim)" data-i18n="pending_label">En attente</p>
         <p class="font-mono font-semibold text-base mt-1" style="color:var(--copper)" id="statPending">0</p>
       </div>
     </div>
@@ -221,15 +221,15 @@
   <!-- ===================== SEARCH / FILTER BAR ===================== -->
   <div id="searchBar" class="px-5 hidden">
     <div class="relative">
-      <input id="searchInput" type="text" placeholder="ابحث بالاسم أو الهاتف..." data-i18n-ph="search_ph" class="w-full rounded-xl px-4 py-2.5 text-sm">
+      <input id="searchInput" type="text" placeholder="Rechercher nom ou téléphone..." data-i18n-ph="search_ph" class="w-full rounded-xl px-4 py-2.5 text-sm">
     </div>
     <div class="flex gap-2 mt-3 overflow-x-auto pb-1">
-      <button class="chip chip-active" data-filter="all" data-i18n="filter_all">الكل</button>
-      <button class="chip" data-filter="تركيب" data-i18n="type_install">تركيب</button>
-      <button class="chip" data-filter="صيانة" data-i18n="type_maint">صيانة</button>
-      <button class="chip" data-filter="إصلاح" data-i18n="type_repair">إصلاح</button>
-      <button class="chip" data-filter="pending" data-i18n="pending_label">قيد الانتظار</button>
-      <button class="chip" data-filter="done" data-i18n="status_done">منجز</button>
+      <button class="chip chip-active" data-filter="all" data-i18n="filter_all">Tous</button>
+      <button class="chip" data-filter="تركيب" data-i18n="type_install">Installation</button>
+      <button class="chip" data-filter="صيانة" data-i18n="type_maint">Maintenance</button>
+      <button class="chip" data-filter="إصلاح" data-i18n="type_repair">Réparation</button>
+      <button class="chip" data-filter="pending" data-i18n="pending_label">En attente</button>
+      <button class="chip" data-filter="done" data-i18n="status_done">Terminé</button>
     </div>
   </div>
 
@@ -241,28 +241,28 @@
         <span class="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style="background:var(--copper)">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1A1006" stroke-width="2.3"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
         </span>
-        <span class="font-display font-bold text-sm" id="bookingBannerText" style="color:var(--text)">طلبات مواعيد جديدة</span>
+        <span class="font-display font-bold text-sm" id="bookingBannerText" style="color:var(--text)">Nouvelles demandes de RDV</span>
       </span>
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg>
     </button>
 
     <div class="pipe-divider">
       <span class="joint"></span><span class="seg"></span>
-      <span class="font-display font-bold text-sm" style="color:var(--text-dim)" data-i18n="upcoming_appts">مواعيد قادمة</span>
+      <span class="font-display font-bold text-sm" style="color:var(--text-dim)" data-i18n="upcoming_appts">Prochains rendez-vous</span>
       <span class="seg"></span><span class="joint"></span>
     </div>
 
     <div id="customerList" class="flex flex-col gap-4"></div>
 
     <div id="emptyState" class="hidden text-center py-16">
-      <p class="font-display font-bold text-base" style="color:var(--text-dim)" data-i18n="no_customers_yet">ما فماش زبائن توة</p>
-      <p class="text-xs mt-1" style="color:var(--text-dim)" data-i18n="add_first_customer">اضغط على + باش تزيد أول زبون</p>
+      <p class="font-display font-bold text-base" style="color:var(--text-dim)" data-i18n="no_customers_yet">Aucun client pour le moment</p>
+      <p class="text-xs mt-1" style="color:var(--text-dim)" data-i18n="add_first_customer">Appuyez sur + pour ajouter un client</p>
     </div>
 
     <button id="btnToggleDone" class="hidden w-full flex items-center justify-between rounded-2xl px-4 py-3 mt-2" style="background:var(--surface); border:1px solid var(--line)">
       <span class="flex items-center gap-2 text-sm font-semibold" style="color:var(--text-dim)">
         <span class="status-dot" style="background:var(--mint)"></span>
-        <span data-i18n="done_section" id="btnToggleDoneLabel">الخدمات المنجزة</span>
+        <span data-i18n="done_section" id="btnToggleDoneLabel">Services terminés</span>
         <span class="font-mono" id="doneCount">(0)</span>
       </span>
       <svg id="doneChevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="2" style="transition:transform .2s ease"><path d="M6 9l6 6 6-6"/></svg>
@@ -290,71 +290,71 @@
 
       <div class="grid grid-cols-3 gap-2 mt-4">
         <div class="rounded-xl px-2 py-2.5 text-center" style="background:var(--surface-2)">
-          <p class="text-[10.5px]" style="color:var(--text-dim)" data-i18n="appts_label">مواعيد</p>
+          <p class="text-[10.5px]" style="color:var(--text-dim)" data-i18n="appts_label">RDV</p>
           <p class="font-mono font-bold text-base mt-0.5" id="calStatCount" style="color:var(--copper)">0</p>
         </div>
         <div class="rounded-xl px-2 py-2.5 text-center" style="background:var(--surface-2)">
-          <p class="text-[10.5px]" style="color:var(--text-dim)" data-i18n="income_label">مداخيل</p>
+          <p class="text-[10.5px]" style="color:var(--text-dim)" data-i18n="income_label">Revenu</p>
           <p class="font-mono font-bold text-base mt-0.5" id="calStatIncome" style="color:var(--mint)">0</p>
         </div>
         <div class="rounded-xl px-2 py-2.5 text-center" style="background:var(--surface-2)">
-          <p class="text-[10.5px]" style="color:var(--text-dim)" data-i18n="pending_label">قيد الانتظار</p>
+          <p class="text-[10.5px]" style="color:var(--text-dim)" data-i18n="pending_label">En attente</p>
           <p class="font-mono font-bold text-base mt-0.5" id="calStatPending" style="color:var(--amber)">0</p>
         </div>
       </div>
     </div>
 
     <div class="grid grid-cols-7 gap-y-2 text-center mb-1">
-      <span class="text-[11px] font-semibold" style="color:var(--text-dim)" data-i18n="wd_sun">أحد</span>
-      <span class="text-[11px] font-semibold" style="color:var(--text-dim)" data-i18n="wd_mon">إثنين</span>
-      <span class="text-[11px] font-semibold" style="color:var(--text-dim)" data-i18n="wd_tue">ثلاثاء</span>
-      <span class="text-[11px] font-semibold" style="color:var(--text-dim)" data-i18n="wd_wed">أربعاء</span>
-      <span class="text-[11px] font-semibold" style="color:var(--text-dim)" data-i18n="wd_thu">خميس</span>
-      <span class="text-[11px] font-semibold" style="color:var(--text-dim)" data-i18n="wd_fri">جمعة</span>
-      <span class="text-[11px] font-semibold" style="color:var(--text-dim)" data-i18n="wd_sat">سبت</span>
+      <span class="text-[11px] font-semibold" style="color:var(--text-dim)" data-i18n="wd_sun">Dim</span>
+      <span class="text-[11px] font-semibold" style="color:var(--text-dim)" data-i18n="wd_mon">Lun</span>
+      <span class="text-[11px] font-semibold" style="color:var(--text-dim)" data-i18n="wd_tue">Mar</span>
+      <span class="text-[11px] font-semibold" style="color:var(--text-dim)" data-i18n="wd_wed">Mer</span>
+      <span class="text-[11px] font-semibold" style="color:var(--text-dim)" data-i18n="wd_thu">Jeu</span>
+      <span class="text-[11px] font-semibold" style="color:var(--text-dim)" data-i18n="wd_fri">Ven</span>
+      <span class="text-[11px] font-semibold" style="color:var(--text-dim)" data-i18n="wd_sat">Sam</span>
     </div>
     <div id="calGrid" class="grid grid-cols-7 gap-y-2 gap-x-1 text-center"></div>
 
     <div class="flex items-center justify-center gap-4 mt-4 flex-wrap">
       <span class="flex items-center gap-1.5 text-[11px]" style="color:var(--text-dim)">
-        <span style="width:10px; height:10px; border-radius:4px; background:rgba(224,138,60,.18); border:1px solid rgba(224,138,60,.3); display:inline-block"></span><span data-i18n="legend_1">1 موعد</span>
+        <span style="width:10px; height:10px; border-radius:4px; background:rgba(224,138,60,.18); border:1px solid rgba(224,138,60,.3); display:inline-block"></span><span data-i18n="legend_1">1 RDV</span>
       </span>
       <span class="flex items-center gap-1.5 text-[11px]" style="color:var(--text-dim)">
-        <span style="width:10px; height:10px; border-radius:4px; background:rgba(224,138,60,.42); display:inline-block"></span><span data-i18n="legend_2_3">2-3 مواعيد</span>
+        <span style="width:10px; height:10px; border-radius:4px; background:rgba(224,138,60,.42); display:inline-block"></span><span data-i18n="legend_2_3">2-3 RDV</span>
       </span>
       <span class="flex items-center gap-1.5 text-[11px]" style="color:var(--text-dim)">
-        <span style="width:10px; height:10px; border-radius:4px; background:var(--copper); display:inline-block"></span><span data-i18n="legend_4plus">4+ مواعيد</span>
+        <span style="width:10px; height:10px; border-radius:4px; background:var(--copper); display:inline-block"></span><span data-i18n="legend_4plus">4+ RDV</span>
       </span>
     </div>
 
     <div class="pipe-divider">
       <span class="joint"></span><span class="seg"></span>
-      <span class="font-display font-bold text-sm" id="calSelectedLabel" style="color:var(--text-dim)" data-i18n="pick_day">اختار يوم</span>
+      <span class="font-display font-bold text-sm" id="calSelectedLabel" style="color:var(--text-dim)" data-i18n="pick_day">Choisir un jour</span>
       <span class="seg"></span><span class="joint"></span>
     </div>
 
     <div id="calDayList" class="flex flex-col gap-4"></div>
     <div id="calEmptyState" class="hidden text-center py-12">
-      <p class="font-display font-bold text-sm" style="color:var(--text-dim)" data-i18n="no_appts_day">لا مواعيد في هذا اليوم</p>
+      <p class="font-display font-bold text-sm" style="color:var(--text-dim)" data-i18n="no_appts_day">Aucun rendez-vous ce jour</p>
     </div>
   </main>
 
   <!-- ===================== STATS / REPORTS VIEW ===================== -->
   <main class="flex-1 px-5 pt-4 pb-28 hidden" id="viewStats">
     <div class="flex items-center justify-between mb-4">
-      <h2 class="font-display font-black text-lg" data-i18n="reports">التقارير</h2>
+      <h2 class="font-display font-black text-lg" data-i18n="reports">Rapports</h2>
       <button id="btnPrintReport" class="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold" style="background:var(--surface); border:1px solid var(--line)">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
-        <span data-i18n="print">طباعة</span>
+        <span data-i18n="print">Imprimer</span>
       </button>
     </div>
 
     <div class="flex gap-2 mb-4 overflow-x-auto pb-1">
-      <button class="chip range-chip chip-active" data-range="today" data-i18n="range_today">اليوم</button>
-      <button class="chip range-chip" data-range="week" data-i18n="range_week">هذا الأسبوع</button>
-      <button class="chip range-chip" data-range="month" data-i18n="range_month">هذا الشهر</button>
-      <button class="chip range-chip" data-range="year" data-i18n="range_year">هذي السنة</button>
-      <button class="chip range-chip" data-range="all" data-i18n="range_all">الكل</button>
+      <button class="chip range-chip chip-active" data-range="today" data-i18n="range_today">Aujourd'hui</button>
+      <button class="chip range-chip" data-range="week" data-i18n="range_week">Cette semaine</button>
+      <button class="chip range-chip" data-range="month" data-i18n="range_month">Ce mois</button>
+      <button class="chip range-chip" data-range="year" data-i18n="range_year">Cette année</button>
+      <button class="chip range-chip" data-range="all" data-i18n="range_all">Tout</button>
     </div>
 
     <div class="grid grid-cols-2 gap-3 mb-5">
@@ -363,38 +363,38 @@
 
     <div class="rounded-2xl p-5 mb-4" style="background:var(--surface); border:1px solid var(--line)">
       <div class="flex items-center justify-between">
-        <p class="text-xs" style="color:var(--text-dim)" id="statPeriodLabel">مجموع المداخيل</p>
+        <p class="text-xs" style="color:var(--text-dim)" id="statPeriodLabel">Revenu total</p>
         <span id="statCompareBadge" class="hidden badge flex items-center gap-1 font-mono"></span>
       </div>
-      <p class="font-mono font-black text-3xl mt-1" style="color:var(--mint)" id="statTotalIncome">0 د.ت</p>
+      <p class="font-mono font-black text-3xl mt-1" style="color:var(--mint)" id="statTotalIncome">0 DT</p>
       <p class="text-[11px] mt-1 hidden" id="statCompareLabel" style="color:var(--text-dim)"></p>
     </div>
 
     <div class="grid grid-cols-2 gap-3">
       <div class="rounded-2xl p-4" style="background:var(--surface); border:1px solid var(--line)">
-        <p class="text-xs" style="color:var(--text-dim)" data-i18n="done_count_label">عدد الخدمات المنجزة</p>
+        <p class="text-xs" style="color:var(--text-dim)" data-i18n="done_count_label">Services terminés</p>
         <p class="font-mono font-bold text-2xl mt-1" id="statDoneCount">0</p>
       </div>
       <div class="rounded-2xl p-4" style="background:var(--surface); border:1px solid var(--line)">
-        <p class="text-xs" style="color:var(--text-dim)" data-i18n="avg_price_label">متوسط السعر</p>
+        <p class="text-xs" style="color:var(--text-dim)" data-i18n="avg_price_label">Prix moyen</p>
         <p class="font-mono font-bold text-2xl mt-1" id="statAvgPrice">0</p>
       </div>
     </div>
 
     <div class="rounded-2xl p-4 mt-3" style="background:var(--surface); border:1px solid var(--line)">
-      <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)" id="chartBarLabel" data-i18n="chart_income_over_time">المداخيل عبر الوقت</p>
+      <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)" id="chartBarLabel" data-i18n="chart_income_over_time">Revenus dans le temps</p>
       <canvas id="chartBar" style="width:100%; height:150px; display:block"></canvas>
     </div>
 
     <div class="pipe-divider">
       <span class="joint"></span><span class="seg"></span>
-      <span class="font-display font-bold text-sm" style="color:var(--text-dim)" data-i18n="by_service_type">حسب نوع الخدمة</span>
+      <span class="font-display font-bold text-sm" style="color:var(--text-dim)" data-i18n="by_service_type">Par type de service</span>
       <span class="seg"></span><span class="joint"></span>
     </div>
 
     <div class="rounded-2xl p-4 mb-3 flex items-center gap-4" style="background:var(--surface); border:1px solid var(--line)">
       <canvas id="chartDonut" style="width:104px; height:104px; flex-shrink:0"></canvas>
-      <p class="text-xs flex-1" style="color:var(--text-dim)" data-i18n="donut_caption">توزيع المداخيل المنجزة حسب نوع الخدمة للفترة المختارة</p>
+      <p class="text-xs flex-1" style="color:var(--text-dim)" data-i18n="donut_caption">Répartition des revenus terminés par type de service, pour la période choisie</p>
     </div>
 
     <div id="statsByType" class="flex flex-col gap-2"></div>
@@ -402,36 +402,30 @@
 
   <!-- ===================== SETTINGS VIEW ===================== -->
   <main class="flex-1 px-5 pt-4 pb-28 hidden" id="viewSettings">
-    <h2 class="font-display font-black text-lg mb-4" data-i18n="settings">الإعدادات</h2>
+    <h2 class="font-display font-black text-lg mb-4" data-i18n="settings">Paramètres</h2>
 
-    <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)" data-i18n="appearance">المظهر</p>
+    <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)" data-i18n="appearance">Apparence</p>
     <div class="flex gap-2 mb-5">
-      <button class="chip theme-chip" data-theme-pref="auto" data-i18n="theme_auto">تلقائي</button>
-      <button class="chip theme-chip" data-theme-pref="light" data-i18n="theme_light">فاتح</button>
-      <button class="chip theme-chip" data-theme-pref="dark" data-i18n="theme_dark">داكن</button>
+      <button class="chip theme-chip" data-theme-pref="auto" data-i18n="theme_auto">Auto</button>
+      <button class="chip theme-chip" data-theme-pref="light" data-i18n="theme_light">Clair</button>
+      <button class="chip theme-chip" data-theme-pref="dark" data-i18n="theme_dark">Sombre</button>
     </div>
 
-    <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)" data-i18n="language_section">اللغة</p>
-    <div class="flex gap-2 mb-5">
-      <button class="chip lang-chip" data-lang-pref="ar" data-i18n="lang_ar">العربية</button>
-      <button class="chip lang-chip" data-lang-pref="fr" data-i18n="lang_fr">Français</button>
-    </div>
-
-    <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)" data-i18n="font_size">حجم الخط</p>
+    <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)" data-i18n="font_size">Taille du texte</p>
     <div class="flex gap-2 mb-5">
       <button class="chip font-chip" data-font-scale="1" style="font-size:12px">A</button>
       <button class="chip font-chip" data-font-scale="1.15" style="font-size:15px">A</button>
       <button class="chip font-chip" data-font-scale="1.3" style="font-size:18px">A</button>
     </div>
 
-    <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)" data-i18n="account">الحساب</p>
+    <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)" data-i18n="account">Compte</p>
     <div class="rounded-2xl p-4 mb-5" style="background:var(--surface); border:1px solid var(--line)">
       <div class="flex items-center gap-3 mb-4">
         <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style="background:var(--surface-2)">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
         </div>
         <div class="min-w-0">
-          <p class="text-xs" style="color:var(--text-dim)" data-i18n="logged_in_as">مسجل بحساب</p>
+          <p class="text-xs" style="color:var(--text-dim)" data-i18n="logged_in_as">Connecté avec</p>
           <p class="text-sm font-semibold truncate font-mono" id="settingsEmail" style="direction:ltr; text-align:right">—</p>
         </div>
       </div>
@@ -439,60 +433,60 @@
       <button type="button" id="btnTogglePwd" class="w-full flex items-center justify-between rounded-xl px-4 py-3 mb-3" style="background:var(--surface-2)">
         <span class="flex items-center gap-2 text-sm font-semibold">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-          <span data-i18n="change_password">تغيير كلمة السر</span>
+          <span data-i18n="change_password">Changer le mot de passe</span>
         </span>
         <svg id="pwdChevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="2" style="transition:transform .2s ease"><path d="M6 9l6 6 6-6"/></svg>
       </button>
 
       <form id="pwdForm" class="hidden flex flex-col gap-3 mb-3">
-        <input required id="pwdCurrent" type="password" placeholder="كلمة السر الحالية" data-i18n-ph="pwd_current_ph" class="w-full rounded-xl px-4 py-3 text-sm" style="direction:ltr; text-align:right">
-        <input required id="pwdNew" type="password" placeholder="كلمة السر الجديدة (6 خانات فما فوق)" data-i18n-ph="pwd_new_ph" minlength="6" class="w-full rounded-xl px-4 py-3 text-sm" style="direction:ltr; text-align:right">
-        <input required id="pwdConfirm" type="password" placeholder="أعد كتابة كلمة السر الجديدة" data-i18n-ph="pwd_confirm_ph" minlength="6" class="w-full rounded-xl px-4 py-3 text-sm" style="direction:ltr; text-align:right">
+        <input required id="pwdCurrent" type="password" placeholder="Mot de passe actuel" data-i18n-ph="pwd_current_ph" class="w-full rounded-xl px-4 py-3 text-sm" style="direction:ltr; text-align:right">
+        <input required id="pwdNew" type="password" placeholder="Nouveau mot de passe (6 caractères min.)" data-i18n-ph="pwd_new_ph" minlength="6" class="w-full rounded-xl px-4 py-3 text-sm" style="direction:ltr; text-align:right">
+        <input required id="pwdConfirm" type="password" placeholder="Confirmer le nouveau mot de passe" data-i18n-ph="pwd_confirm_ph" minlength="6" class="w-full rounded-xl px-4 py-3 text-sm" style="direction:ltr; text-align:right">
         <p id="pwdError" class="hidden text-xs font-semibold" style="color:var(--danger)"></p>
         <p id="pwdSuccess" class="hidden text-xs font-semibold" style="color:var(--mint)"></p>
-        <button type="submit" id="pwdSubmitBtn" class="w-full rounded-xl py-3 font-bold text-sm" style="background:var(--copper); color:#1A1006" data-i18n="update_password">تحديث كلمة السر</button>
+        <button type="submit" id="pwdSubmitBtn" class="w-full rounded-xl py-3 font-bold text-sm" style="background:var(--copper); color:#1A1006" data-i18n="update_password">Mettre à jour</button>
       </form>
 
-      <button id="btnLogout" class="w-full rounded-xl py-3 font-bold text-sm" style="background:rgba(232,103,74,.12); color:var(--danger); border:1px solid rgba(232,103,74,.3)" data-i18n="logout">تسجيل الخروج</button>
+      <button id="btnLogout" class="w-full rounded-xl py-3 font-bold text-sm" style="background:rgba(232,103,74,.12); color:var(--danger); border:1px solid rgba(232,103,74,.3)" data-i18n="logout">Déconnexion</button>
     </div>
 
-    <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)" data-i18n="data_section">البيانات</p>
+    <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)" data-i18n="data_section">Données</p>
     <div class="rounded-2xl p-4 mb-5 flex flex-col gap-3" style="background:var(--surface); border:1px solid var(--line)">
       <button id="btnExportBackup" class="w-full flex items-center justify-between rounded-xl px-4 py-3" style="background:var(--surface-2)">
         <span class="flex items-center gap-2 text-sm font-semibold">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--mint)" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
-          <span data-i18n="export_backup">تصدير نسخة احتياطية (JSON)</span>
+          <span data-i18n="export_backup">Exporter une sauvegarde (JSON)</span>
         </span>
         <span class="text-xs font-mono" style="color:var(--text-dim)" id="backupCount">0</span>
       </button>
-      <p class="text-[11px]" style="color:var(--text-dim)" data-i18n="backup_note">البيانات متزامنة أوتوماتيكياً مع Firebase — هذا الملف نسخة إضافية تحفظها إنت.</p>
+      <p class="text-[11px]" style="color:var(--text-dim)" data-i18n="backup_note">Les données sont synchronisées automatiquement avec Firebase — ce fichier est une sauvegarde supplémentaire que vous gardez vous-même.</p>
     </div>
 
-    <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)" data-i18n="notifications">التنبيهات</p>
+    <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)" data-i18n="notifications">Notifications</p>
     <div class="rounded-2xl p-4 mb-5 flex flex-col gap-3" style="background:var(--surface); border:1px solid var(--line)">
       <button id="btnEnableNotif" class="w-full flex items-center justify-between rounded-xl px-4 py-3" style="background:var(--surface-2)">
         <span class="flex items-center gap-2 text-sm font-semibold">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-          <span data-i18n="enable_notif">تفعيل تنبيهات المواعيد</span>
+          <span data-i18n="enable_notif">Activer les rappels de rendez-vous</span>
         </span>
-        <span class="text-xs font-semibold" id="notifStatus" style="color:var(--text-dim)">غير مفعلة</span>
+        <span class="text-xs font-semibold" id="notifStatus" style="color:var(--text-dim)">Désactivées</span>
       </button>
-      <p class="text-[11px]" style="color:var(--text-dim)" data-i18n="notif_note">كي تفتح التطبيق صباحاً، يعلمك بمواعيد اليوم وأي موعد "قيد الانتظار" فات وقتو. ⚠️ لازم تفتح التطبيق مرة على الأقل كل يوم باش التنبيه يخدم — التطبيق ما ينجمش يبعث تنبيه وهو مسكر كامل بلا سيرفر خاص بيه.</p>
+      <p class="text-[11px]" style="color:var(--text-dim)" data-i18n="notif_note">En ouvrant l'app le matin, vous recevez un résumé des RDV du jour et des RDV "en attente" en retard. ⚠️ L'app doit être ouverte au moins une fois par jour pour que ça fonctionne — sans serveur dédié, elle ne peut pas notifier quand elle est complètement fermée.</p>
     </div>
 
-    <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)" data-i18n="booking_link_section">رابط الحجز متاعك</p>
+    <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)" data-i18n="booking_link_section">Votre lien de réservation</p>
     <div class="rounded-2xl p-4 mb-5" style="background:var(--surface); border:1px solid var(--line)">
-      <p class="text-[11px] mb-2" style="color:var(--text-dim)" data-i18n="booking_link_note">أعطي هذا الرابط لحرفائك — يقدروا يطلبوا موعد بلا ما يحتاجوا حساب.</p>
+      <p class="text-[11px] mb-2" style="color:var(--text-dim)" data-i18n="booking_link_note">Donnez ce lien à vos clients — ils peuvent demander un RDV sans compte.</p>
       <div class="flex items-center gap-2 rounded-xl px-3 py-2.5 mb-2" style="background:var(--surface-2); border:1px solid var(--line)">
         <input readonly id="bookingLinkInput" type="text" class="flex-1 bg-transparent text-xs font-mono outline-none" style="direction:ltr; text-align:left; color:var(--text-dim)" value="">
       </div>
       <button id="btnCopyBookingLink" class="w-full flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold" style="background:var(--copper); color:#1A1006">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1A1006" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-        <span data-i18n="copy_link">نسخ الرابط</span>
+        <span data-i18n="copy_link">Copier le lien</span>
       </button>
     </div>
 
-    <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)" data-i18n="about_app">عن التطبيق</p>
+    <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)" data-i18n="about_app">À propos</p>
     <div class="rounded-2xl p-4 flex items-center gap-3" style="background:var(--surface); border:1px solid var(--line)">
       <svg width="30" height="30" viewBox="0 0 40 40" fill="none">
         <rect x="3" y="10" width="34" height="14" rx="4" stroke="var(--copper)" stroke-width="2"/>
@@ -501,8 +495,8 @@
         <line x1="9" y1="17" x2="24" y2="17" stroke="var(--line)" stroke-width="2" stroke-linecap="round"/>
       </svg>
       <div>
-        <p class="font-display font-bold text-sm" data-i18n="app_name">تبريد</p>
-        <p class="text-[11px]" style="color:var(--text-dim)" data-i18n="version_note">الإصدار 1.0 — PWA بلا أنترنت</p>
+        <p class="font-display font-bold text-sm" data-i18n="app_name">Tabrid</p>
+        <p class="text-[11px]" style="color:var(--text-dim)" data-i18n="version_note">Version 1.0 — PWA hors ligne</p>
       </div>
     </div>
   </main>
@@ -511,11 +505,11 @@
   <nav class="fixed bottom-0 inset-x-0 mx-auto px-4 py-3 flex items-center justify-between" style="max-width:480px; background: var(--bg-deep); border-top:1px solid var(--line)">
     <button class="tab-btn tab-active flex flex-col items-center gap-1 flex-1" data-view="home">
       <svg class="tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7"/><path d="M5 10v9a1 1 0 001 1h4v-6h4v6h4a1 1 0 001-1v-9"/></svg>
-      <span class="text-[10.5px] font-semibold" data-i18n="nav_home">الرئيسية</span>
+      <span class="text-[10.5px] font-semibold" data-i18n="nav_home">Accueil</span>
     </button>
     <button class="tab-btn flex flex-col items-center gap-1 flex-1" data-view="calendar" style="color:var(--text-dim)">
       <svg class="tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
-      <span class="text-[10.5px] font-semibold" data-i18n="nav_calendar">التقويم</span>
+      <span class="text-[10.5px] font-semibold" data-i18n="nav_calendar">Calendrier</span>
     </button>
     <div class="flex-1 flex justify-center">
       <button id="btnAdd" class="fab w-14 h-14 rounded-full flex items-center justify-center -mt-8" style="background:var(--copper)">
@@ -524,11 +518,11 @@
     </div>
     <button class="tab-btn flex flex-col items-center gap-1 flex-1" data-view="stats" style="color:var(--text-dim)">
       <svg class="tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>
-      <span class="text-[10.5px] font-semibold" data-i18n="nav_reports">التقارير</span>
+      <span class="text-[10.5px] font-semibold" data-i18n="nav_reports">Rapports</span>
     </button>
     <button class="tab-btn flex flex-col items-center gap-1 flex-1" data-view="settings" style="color:var(--text-dim)">
       <svg class="tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1 1.55V21a2 2 0 11-4 0v-.09a1.7 1.7 0 00-1-1.55 1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.7 1.7 0 00.34-1.87 1.7 1.7 0 00-1.55-1H3a2 2 0 110-4h.09a1.7 1.7 0 001.55-1 1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06a1.7 1.7 0 001.87.34H9a1.7 1.7 0 001-1.55V3a2 2 0 114 0v.09a1.7 1.7 0 001 1.55 1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06.06a1.7 1.7 0 00-.34 1.87V9a1.7 1.7 0 001.55 1H21a2 2 0 110 4h-.09a1.7 1.7 0 00-1.55 1z"/></svg>
-      <span class="text-[10.5px] font-semibold" data-i18n="nav_settings">الإعدادات</span>
+      <span class="text-[10.5px] font-semibold" data-i18n="nav_settings">Réglages</span>
     </button>
   </nav>
 
@@ -538,7 +532,7 @@
     <div class="sticky top-0 pt-5 pb-3 -mx-5 px-5" style="background:var(--bg-deep); z-index:5">
       <div class="w-10 h-1.5 rounded-full mx-auto mb-4" style="background:var(--line)"></div>
       <div class="flex items-center justify-between">
-        <h3 class="font-display font-black text-lg" id="sheetTitle" data-i18n="new_customer">زبون جديد</h3>
+        <h3 class="font-display font-black text-lg" id="sheetTitle" data-i18n="new_customer">Nouveau client</h3>
         <button id="btnCloseSheet" class="w-8 h-8 rounded-full flex items-center justify-center" style="background:var(--surface)">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
         </button>
@@ -547,37 +541,37 @@
 
     <form id="customerForm" class="flex flex-col gap-4">
       <div>
-        <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="customer_name">اسم الحريف</label>
-        <input required name="name" type="text" placeholder="مثال: سامي بن علي" data-i18n-ph="customer_name_ph" class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm">
+        <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="customer_name">Nom du client</label>
+        <input required name="name" type="text" placeholder="Ex : Sami Ben Ali" data-i18n-ph="customer_name_ph" class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm">
       </div>
       <div>
-        <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="phone_number">رقم الهاتف</label>
+        <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="phone_number">Téléphone</label>
         <input required name="phone" type="tel" placeholder="+216 XX XXX XXX" class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm font-mono" style="direction:ltr; text-align:right">
       </div>
       <div>
-        <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="address">العنوان</label>
-        <input name="address" type="text" placeholder="الحي، المدينة" data-i18n-ph="address_ph" class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm">
+        <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="address">Adresse</label>
+        <input name="address" type="text" placeholder="Quartier, ville" data-i18n-ph="address_ph" class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm">
       </div>
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="service_type">نوع الخدمة</label>
+          <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="service_type">Type de service</label>
           <select name="serviceType" class="w-full rounded-xl px-3 py-3 mt-1.5 text-sm">
-            <option value="تركيب" data-i18n="type_install">تركيب</option>
-            <option value="صيانة" data-i18n="type_maint">صيانة</option>
-            <option value="إصلاح" data-i18n="type_repair">إصلاح</option>
+            <option value="تركيب" data-i18n="type_install">Installation</option>
+            <option value="صيانة" data-i18n="type_maint">Maintenance</option>
+            <option value="إصلاح" data-i18n="type_repair">Réparation</option>
           </select>
         </div>
         <div>
-          <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="status">الحالة</label>
+          <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="status">Statut</label>
           <select name="status" class="w-full rounded-xl px-3 py-3 mt-1.5 text-sm">
-            <option value="pending" data-i18n="pending_label">قيد الانتظار</option>
-            <option value="done" data-i18n="status_done">منجز</option>
-            <option value="cancelled" data-i18n="status_cancelled">ملغى</option>
+            <option value="pending" data-i18n="pending_label">En attente</option>
+            <option value="done" data-i18n="status_done">Terminé</option>
+            <option value="cancelled" data-i18n="status_cancelled">Annulé</option>
           </select>
         </div>
       </div>
       <div>
-        <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="ac_power">قوة المكيف (BTU)</label>
+        <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="ac_power">Puissance clim (BTU)</label>
         <input type="hidden" name="btu" id="btuInput" value="">
         <div class="grid grid-cols-4 gap-2 mt-1.5">
           <button type="button" class="btu-chip flex flex-col items-center gap-1 py-2.5 rounded-xl" data-btu="9000" style="background:var(--surface-2); border:1px solid var(--line)">
@@ -601,39 +595,39 @@
 
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="appt_date">تاريخ الموعد</label>
+          <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="appt_date">Date du rendez-vous</label>
           <input required name="date" type="date" class="w-full rounded-xl px-3 py-3 mt-1.5 text-sm font-mono">
         </div>
         <div>
-          <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="appt_time">الوقت (اختياري)</label>
+          <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="appt_time">Heure (optionnel)</label>
           <input name="time" type="time" class="w-full rounded-xl px-3 py-3 mt-1.5 text-sm font-mono">
         </div>
       </div>
       <div>
-        <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="price_label">السعر (د.ت)</label>
+        <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="price_label">Prix (DT)</label>
         <input name="price" id="priceInput" type="number" step="0.5" placeholder="0" class="w-full rounded-xl px-3 py-3 mt-1.5 text-sm font-mono">
       </div>
       <div>
-        <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="deposit_label">عربون / دفعة أولى (اختياري)</label>
+        <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="deposit_label">Acompte (optionnel)</label>
         <input name="deposit" id="depositInput" type="number" step="0.5" placeholder="0" class="w-full rounded-xl px-3 py-3 mt-1.5 text-sm font-mono">
         <p id="remainderNote" class="text-xs mt-1.5 hidden" style="color:var(--text-dim)"></p>
       </div>
       <div>
-        <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="notes">ملاحظات</label>
-        <textarea name="notes" rows="2" placeholder="نوع المكيف، الضمان، تفاصيل أخرى..." data-i18n-ph="notes_ph" class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm resize-none"></textarea>
+        <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="notes">Notes</label>
+        <textarea name="notes" rows="2" placeholder="Type de clim, garantie, autres détails..." data-i18n-ph="notes_ph" class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm resize-none"></textarea>
       </div>
 
       <button type="button" id="btnOpenSoundMeter" class="w-full flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold" style="background:var(--surface-2); border:1px solid var(--line); color:var(--text)">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 010 7.07"/><path d="M19.07 4.93a10 10 0 010 14.14"/></svg>
-        <span data-i18n="sound_meter">قياس مستوى الضوضاء</span>
+        <span data-i18n="sound_meter">Mesurer le niveau sonore</span>
       </button>
 
       <div class="flex gap-3 mt-2">
-        <button type="button" id="btnCancelSheet" class="flex-1 rounded-xl py-3 font-bold text-sm" style="background:var(--surface-2); border:1px solid var(--line); color:var(--text)" data-i18n="cancel">إلغاء</button>
-        <button type="submit" class="flex-1 rounded-xl py-3 font-bold text-sm" style="background:var(--copper); color:#1A1006" data-i18n="save">حفظ</button>
+        <button type="button" id="btnCancelSheet" class="flex-1 rounded-xl py-3 font-bold text-sm" style="background:var(--surface-2); border:1px solid var(--line); color:var(--text)" data-i18n="cancel">Annuler</button>
+        <button type="submit" class="flex-1 rounded-xl py-3 font-bold text-sm" style="background:var(--copper); color:#1A1006" data-i18n="save">Enregistrer</button>
       </div>
       <div class="flex gap-3">
-        <button type="button" id="btnDelete" class="hidden flex-1 rounded-xl py-3 font-bold text-sm" style="background:rgba(232,103,74,.12); color:var(--danger); border:1px solid rgba(232,103,74,.3)" data-i18n="delete">حذف</button>
+        <button type="button" id="btnDelete" class="hidden flex-1 rounded-xl py-3 font-bold text-sm" style="background:rgba(232,103,74,.12); color:var(--danger); border:1px solid rgba(232,103,74,.3)" data-i18n="delete">Supprimer</button>
       </div>
     </form>
   </div>
@@ -641,7 +635,7 @@
   <!-- ===================== SOUND LEVEL METER OVERLAY ===================== -->
   <div id="soundMeterOverlay" class="fixed inset-0 z-[70] flex-col" style="background:var(--bg-deep); display:none">
     <div class="flex items-center justify-between px-5 pt-6 pb-2">
-      <h3 class="font-display font-black text-lg" data-i18n="sound_meter">قياس مستوى الضوضاء</h3>
+      <h3 class="font-display font-black text-lg" data-i18n="sound_meter">Mesurer le niveau sonore</h3>
       <button id="btnCloseSoundMeter" class="w-9 h-9 rounded-full flex items-center justify-center" style="background:var(--surface)">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
       </button>
@@ -659,41 +653,41 @@
         </div>
       </div>
 
-      <p id="soundMeterStatus" class="text-sm font-semibold mt-6 text-center" style="color:var(--text-dim)" data-i18n="sm_press_start">اضغط "ابدأ" باش تبدا القياس</p>
+      <p id="soundMeterStatus" class="text-sm font-semibold mt-6 text-center" style="color:var(--text-dim)" data-i18n="sm_press_start">Appuyez sur "Démarrer" pour mesurer</p>
 
       <div class="grid grid-cols-2 gap-3 w-full mt-6" id="soundMeterResults" style="display:none">
         <div class="rounded-2xl p-3 text-center" style="background:var(--surface); border:1px solid var(--line)">
-          <p class="text-[11px]" style="color:var(--text-dim)" data-i18n="sm_average">المعدل</p>
+          <p class="text-[11px]" style="color:var(--text-dim)" data-i18n="sm_average">Moyenne</p>
           <p class="font-mono font-bold text-xl mt-0.5" id="soundMeterAvg" style="color:var(--mint)">—</p>
         </div>
         <div class="rounded-2xl p-3 text-center" style="background:var(--surface); border:1px solid var(--line)">
-          <p class="text-[11px]" style="color:var(--text-dim)" data-i18n="sm_peak">الذروة</p>
+          <p class="text-[11px]" style="color:var(--text-dim)" data-i18n="sm_peak">Pic</p>
           <p class="font-mono font-bold text-xl mt-0.5" id="soundMeterPeak" style="color:var(--amber)">—</p>
         </div>
       </div>
     </div>
 
     <div class="px-6 pb-3">
-      <p class="text-[11px] text-center leading-relaxed" style="color:var(--text-dim)" data-i18n="sm_disclaimer">مؤشر تقريبي غير معتمد — يعتمد على حساسية ميكروفون الهاتف، وما يعوضش جهاز قياس ضوضاء احترافي معاير.</p>
+      <p class="text-[11px] text-center leading-relaxed" style="color:var(--text-dim)" data-i18n="sm_disclaimer">Indicateur approximatif non certifié — dépend de la sensibilité du micro du téléphone, ne remplace pas un sonomètre professionnel calibré.</p>
     </div>
 
     <div class="px-6 pb-8 flex gap-3">
-      <button id="btnSoundMeterToggle" class="flex-1 rounded-xl py-3.5 font-bold text-sm" style="background:var(--copper); color:#1A1006" data-i18n="sm_start">ابدأ</button>
-      <button id="btnSoundMeterSave" class="hidden flex-1 rounded-xl py-3.5 font-bold text-sm" style="background:var(--surface-2); border:1px solid var(--line)" data-i18n="sm_save_to_notes">أضف للملاحظات</button>
+      <button id="btnSoundMeterToggle" class="flex-1 rounded-xl py-3.5 font-bold text-sm" style="background:var(--copper); color:#1A1006" data-i18n="sm_start">Démarrer</button>
+      <button id="btnSoundMeterSave" class="hidden flex-1 rounded-xl py-3.5 font-bold text-sm" style="background:var(--surface-2); border:1px solid var(--line)" data-i18n="sm_save_to_notes">Ajouter aux notes</button>
     </div>
   </div>
 
   <!-- ===================== BOOKING REQUESTS OVERLAY ===================== -->
   <div id="bookingOverlay" class="fixed inset-0 z-[70] flex-col" style="background:var(--bg-deep); display:none">
     <div class="flex items-center justify-between px-5 pt-6 pb-3">
-      <h3 class="font-display font-black text-lg" data-i18n="booking_requests">طلبات المواعيد</h3>
+      <h3 class="font-display font-black text-lg" data-i18n="booking_requests">Demandes de rendez-vous</h3>
       <button id="btnCloseBooking" class="w-9 h-9 rounded-full flex items-center justify-center" style="background:var(--surface)">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
       </button>
     </div>
     <div id="bookingList" class="flex-1 overflow-y-auto px-5 pb-8 flex flex-col gap-3"></div>
     <div id="bookingEmptyState" class="hidden flex-1 flex items-center justify-center px-8">
-      <p class="text-sm font-semibold text-center" style="color:var(--text-dim)" data-i18n="no_booking_requests">ما فماش طلبات مواعيد جديدة توة</p>
+      <p class="text-sm font-semibold text-center" style="color:var(--text-dim)" data-i18n="no_booking_requests">Aucune nouvelle demande pour le moment</p>
     </div>
   </div>
 
@@ -701,7 +695,7 @@
   <div id="syncToast" class="fixed top-4 inset-x-0 mx-auto z-50 hidden" style="max-width:480px">
     <div class="mx-5 rounded-full px-4 py-2 flex items-center gap-2 text-xs font-semibold" id="syncToastInner" style="background:var(--surface); border:1px solid var(--line)">
       <span class="status-dot" id="syncDot" style="background:var(--amber)"></span>
-      <span id="syncText" data-i18n="offline_note">غير متصل — التغييرات تتزامن كي يرجع الأنترنت</span>
+      <span id="syncText" data-i18n="offline_note">Hors ligne — synchronisation au retour du réseau</span>
     </div>
   </div>
 
@@ -715,21 +709,21 @@
           <circle cx="31" cy="17" r="2" fill="var(--copper)"/>
           <line x1="9" y1="17" x2="24" y2="17" stroke="var(--line)" stroke-width="2" stroke-linecap="round"/>
         </svg>
-        <h1 class="font-display font-black text-xl mt-3" data-i18n="app_name">تبريد</h1>
-        <p class="text-xs mt-1" style="color:var(--text-dim)" id="authSubtitle" data-i18n="auth_subtitle">سجل الدخول لمتابعة زبائنك</p>
+        <h1 class="font-display font-black text-xl mt-3" data-i18n="app_name">Tabrid</h1>
+        <p class="text-xs mt-1" style="color:var(--text-dim)" id="authSubtitle" data-i18n="auth_subtitle">Connectez-vous pour gérer vos clients</p>
       </div>
 
       <form id="authForm" class="flex flex-col gap-3">
         <div>
-          <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="email">البريد الإلكتروني</label>
+          <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="email">E-mail</label>
           <input required id="authEmail" type="email" placeholder="you@example.com" class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm" style="direction:ltr; text-align:right">
         </div>
         <div>
-          <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="password">كلمة السر</label>
+          <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="password">Mot de passe</label>
           <input required id="authPassword" type="password" placeholder="••••••••" minlength="6" class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm" style="direction:ltr; text-align:right">
         </div>
         <p id="authError" class="hidden text-xs font-semibold" style="color:var(--danger)"></p>
-        <button type="submit" id="authSubmitBtn" class="rounded-xl py-3 font-bold text-sm mt-2" style="background:var(--copper); color:#1A1006" data-i18n="login">دخول</button>
+        <button type="submit" id="authSubmitBtn" class="rounded-xl py-3 font-bold text-sm mt-2" style="background:var(--copper); color:#1A1006" data-i18n="login">Connexion</button>
       </form>
     </div>
   </div>
@@ -739,7 +733,7 @@
 <script type="module">
 /* ============ الترجمة (i18n) — عربي / فرنسي ============ */
 const LANG_KEY = 'tabrid-lang';
-let currentLang = localStorage.getItem(LANG_KEY) || 'ar';
+let currentLang = 'fr'; // التطبيق توة بالفرنسية فقط
 
 const TRANSLATIONS = {
   ar: {
@@ -1055,10 +1049,6 @@ function applyLanguage(){
     el.setAttribute('placeholder', t(key));
   });
   document.title = t('app_title_full');
-
-  document.querySelectorAll('.lang-chip').forEach(chip => {
-    chip.classList.toggle('chip-active', chip.dataset.langPref === currentLang);
-  });
 
   // نعاودو نرسمو كل الشاشات باش المحتوى المتحرك (بادجات، شارطات، تقويم) يتبدل بلغة جديدة
   // كل واحدة معزولة بـ try/catch باش خطأ في وحدة (مثلاً شارط في تبويب مخفي) ما يوقفش الباقي
@@ -2072,10 +2062,6 @@ function setThemePref(pref){
 
 document.querySelectorAll('.theme-chip').forEach(chip => {
   chip.addEventListener('click', () => setThemePref(chip.dataset.themePref));
-});
-
-document.querySelectorAll('.lang-chip').forEach(chip => {
-  chip.addEventListener('click', () => setLangPref(chip.dataset.langPref));
 });
 
 document.querySelectorAll('.font-chip').forEach(chip => {

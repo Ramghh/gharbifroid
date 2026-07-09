@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="fr" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>تبريد | احجز موعدك</title>
+<title>Tabrid | Réserver un rendez-vous</title>
 <meta name="theme-color" content="#0A2E2C">
 <link rel="icon" href="./favicon-32.png" sizes="32x32" type="image/png">
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800;900&family=Cairo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
@@ -34,68 +34,68 @@
       <circle cx="31" cy="17" r="2" fill="var(--copper)"/>
       <line x1="9" y1="17" x2="24" y2="17" stroke="var(--line)" stroke-width="2" stroke-linecap="round"/>
     </svg>
-    <h1 id="pageTitle" class="font-display font-black text-xl mt-3">احجز موعد صيانة أو تركيب</h1>
-    <p class="text-xs mt-1 text-center" style="color:var(--text-dim)">عبي المعلومات، ونتصل بيك نأكد الموعد</p>
+    <h1 id="pageTitle" class="font-display font-black text-xl mt-3">Réserver une maintenance ou installation</h1>
+    <p class="text-xs mt-1 text-center" style="color:var(--text-dim)">Remplissez le formulaire, on vous appelle pour confirmer le rendez-vous</p>
   </div>
 
-  <!-- ============ حالة رابط غير صالح (بلا tech UID) ============ -->
+  <!-- ============ ÉTAT LIEN INVALIDE (sans tech UID) ============ -->
   <div id="invalidLinkState" class="flex-col items-center text-center py-10" style="display:none">
     <div class="w-16 h-16 rounded-full flex items-center justify-center mb-4" style="background:rgba(232,103,74,.15)">
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2.3"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
     </div>
-    <h2 class="font-display font-black text-lg">رابط غير صالح</h2>
-    <p class="text-sm mt-2" style="color:var(--text-dim)">تأكد من الرابط اللي عطاوهولك، أو تواصل مع الفني مباشرة.</p>
+    <h2 class="font-display font-black text-lg">Lien invalide</h2>
+    <p class="text-sm mt-2" style="color:var(--text-dim)">Vérifiez le lien qui vous a été donné, ou contactez le technicien directement.</p>
   </div>
 
-  <!-- ============ FORM ============ -->
+  <!-- ============ FORMULAIRE ============ -->
   <form id="bookingForm" class="flex flex-col gap-4">
     <div>
-      <label class="text-xs font-semibold" style="color:var(--text-dim)">اسمك الكامل</label>
-      <input required id="fName" type="text" placeholder="مثال: سامي بن علي" class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm">
+      <label class="text-xs font-semibold" style="color:var(--text-dim)">Nom complet</label>
+      <input required id="fName" type="text" placeholder="Ex : Sami Ben Ali" class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm">
     </div>
     <div>
-      <label class="text-xs font-semibold" style="color:var(--text-dim)">رقم الهاتف</label>
-      <input required id="fPhone" type="tel" placeholder="+216 XX XXX XXX" class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm font-mono" style="direction:ltr; text-align:right">
+      <label class="text-xs font-semibold" style="color:var(--text-dim)">Téléphone</label>
+      <input required id="fPhone" type="tel" placeholder="+216 XX XXX XXX" class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm font-mono" style="direction:ltr; text-align:left">
     </div>
     <div>
-      <label class="text-xs font-semibold" style="color:var(--text-dim)">العنوان</label>
-      <input id="fAddress" type="text" placeholder="الحي، المدينة" class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm">
+      <label class="text-xs font-semibold" style="color:var(--text-dim)">Adresse</label>
+      <input id="fAddress" type="text" placeholder="Quartier, ville" class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm">
     </div>
     <div>
-      <label class="text-xs font-semibold" style="color:var(--text-dim)">نوع الخدمة</label>
+      <label class="text-xs font-semibold" style="color:var(--text-dim)">Type de service</label>
       <div class="grid grid-cols-3 gap-2 mt-1.5">
-        <div class="chip" data-value="تركيب">تركيب</div>
-        <div class="chip" data-value="صيانة">صيانة</div>
-        <div class="chip" data-value="إصلاح">إصلاح</div>
+        <div class="chip" data-value="تركيب">Installation</div>
+        <div class="chip" data-value="صيانة">Maintenance</div>
+        <div class="chip" data-value="إصلاح">Réparation</div>
       </div>
     </div>
     <div class="grid grid-cols-2 gap-3">
       <div>
-        <label class="text-xs font-semibold" style="color:var(--text-dim)">التاريخ المفضل</label>
+        <label class="text-xs font-semibold" style="color:var(--text-dim)">Date préférée</label>
         <input required id="fDate" type="date" class="w-full rounded-xl px-3 py-3 mt-1.5 text-sm font-mono">
       </div>
       <div>
-        <label class="text-xs font-semibold" style="color:var(--text-dim)">الوقت (اختياري)</label>
+        <label class="text-xs font-semibold" style="color:var(--text-dim)">Heure (optionnel)</label>
         <input id="fTime" type="time" class="w-full rounded-xl px-3 py-3 mt-1.5 text-sm font-mono">
       </div>
     </div>
     <div>
-      <label class="text-xs font-semibold" style="color:var(--text-dim)">ملاحظات</label>
-      <textarea id="fNotes" rows="2" placeholder="نوع المكيف، الطابق، أي تفاصيل تساعدنا..." class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm resize-none"></textarea>
+      <label class="text-xs font-semibold" style="color:var(--text-dim)">Notes</label>
+      <textarea id="fNotes" rows="2" placeholder="Type de clim, étage, tout détail utile..." class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm resize-none"></textarea>
     </div>
 
     <p id="formError" class="hidden text-xs font-semibold" style="color:var(--danger)"></p>
-    <button type="submit" id="submitBtn" class="rounded-xl py-3.5 font-bold text-sm mt-2" style="background:var(--copper); color:#1A1006">إرسال طلب الموعد</button>
-    <p class="text-[11px] text-center" style="color:var(--text-dim)">هذا طلب أولي — نتصل بيك نأكدو الموعد بالضبط.</p>
+    <button type="submit" id="submitBtn" class="rounded-xl py-3.5 font-bold text-sm mt-2" style="background:var(--copper); color:#1A1006">Envoyer la demande</button>
+    <p class="text-[11px] text-center" style="color:var(--text-dim)">Ceci est une demande initiale — on vous appelle pour confirmer le rendez-vous exact.</p>
   </form>
 
-  <!-- ============ SUCCESS STATE ============ -->
+  <!-- ============ ÉTAT SUCCÈS ============ -->
   <div id="successState" class="flex-col items-center text-center py-10" style="display:none">
     <div class="w-16 h-16 rounded-full flex items-center justify-center mb-4" style="background:rgba(79,209,174,.15)">
       <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--mint)" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
     </div>
-    <h2 class="font-display font-black text-lg">توصل طلبك ✓</h2>
-    <p class="text-sm mt-2" style="color:var(--text-dim)">بش نتصلو بيك قريب نأكدو الموعد. شكراً!</p>
+    <h2 class="font-display font-black text-lg">Demande reçue ✓</h2>
+    <p class="text-sm mt-2" style="color:var(--text-dim)">On vous appelle bientôt pour confirmer le rendez-vous. Merci !</p>
   </div>
 
 </div>
@@ -107,7 +107,7 @@ import {
   collection, addDoc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// ⚠️ نفس مشروع MotoTrack (مطابق لـ index.html متاع تطبيق تبريد)
+// ⚠️ Même projet que MotoTrack (identique à index.html de l'app Tabrid)
 const firebaseConfig = {
   apiKey: "AIzaSyBmQqqvfJui-COVWd4fHpBaDwIHDusyPG0",
   authDomain: "mototrack-9c47c.firebaseapp.com",
@@ -117,8 +117,8 @@ const firebaseConfig = {
   appId: "1:976211973529:web:91ad6b7a915276fe71ef08"
 };
 
-// نقراو UID الفني (وإسمو الاختياري) من الرابط نفسو — مثال:
-// book.html?tech=XXXXXXXX&name=رمزي
+// On lit l'UID du technicien (et son nom optionnel) depuis le lien lui-même — exemple :
+// book.html?tech=XXXXXXXX&name=Ramzi
 const params = new URLSearchParams(window.location.search);
 const TECH_UID = params.get('tech');
 const TECH_NAME = params.get('name');
@@ -128,12 +128,12 @@ const db = initializeFirestore(app, {
   localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
 });
 
-// ============ إذا الرابط ناقصو tech=UID، نوقفو هنا ونبينو رسالة بدل الفورم ============
+// ============ Si le lien n'a pas de tech=UID, on arrête ici et on affiche un message ============
 if(!TECH_UID){
   document.getElementById('bookingForm').style.display = 'none';
   document.getElementById('invalidLinkState').style.display = 'flex';
 } else if(TECH_NAME){
-  document.getElementById('pageTitle').textContent = `احجز موعد مع ${TECH_NAME}`;
+  document.getElementById('pageTitle').textContent = `Réserver un rendez-vous avec ${TECH_NAME}`;
 }
 
 let selectedType = null;
@@ -154,10 +154,10 @@ form.addEventListener('submit', async (e) => {
   errorEl.classList.add('hidden');
 
   if(!TECH_UID){
-    return; // الفورم أصلاً مخفي في هذه الحالة، حماية إضافية بس
+    return; // Le formulaire est déjà caché dans ce cas, protection supplémentaire
   }
   if(!selectedType){
-    errorEl.textContent = 'اختار نوع الخدمة';
+    errorEl.textContent = 'Choisissez un type de service';
     errorEl.classList.remove('hidden');
     return;
   }
@@ -181,10 +181,10 @@ form.addEventListener('submit', async (e) => {
     document.getElementById('successState').style.display = 'flex';
   } catch(err){
     console.error(err);
-    errorEl.textContent = 'صار خطأ، عاود جرب من بعد شوية.';
+    errorEl.textContent = "Une erreur est survenue, réessayez dans un instant.";
     errorEl.classList.remove('hidden');
     submitBtn.disabled = false;
-    submitBtn.textContent = 'إرسال طلب الموعد';
+    submitBtn.textContent = 'Envoyer la demande';
   }
 });
 </script>
