@@ -175,6 +175,7 @@
 <style>
   @keyframes splashPulse{ 0%,100%{ transform:scale(1); opacity:1; } 50%{ transform:scale(1.08); opacity:.85; } }
   @keyframes splashSpin{ to{ transform:rotate(360deg); } }
+  @keyframes pullSpin{ to{ transform:rotate(360deg); } }
   #splash.splash-hidden{ opacity:0; visibility:hidden; pointer-events:none; }
 </style>
 <div id="app" class="min-h-screen flex flex-col" style="background:var(--bg)">
@@ -1303,15 +1304,22 @@ function renderList(){
   }
   if(searchQuery.trim()){
     const q = searchQuery.trim();
-    items = items.filter(c => c.name.includes(q) || c.phone.includes(q));
+    items = items.filter(c => (c.name||'').includes(q) || (c.phone||'').includes(q));
   }
-  items.sort((a,b) => a.date.localeCompare(b.date) || (a.time||'99:99').localeCompare(b.time||'99:99'));
+  items.sort((a,b) => (a.date||'').localeCompare(b.date||'') || (a.time||'99:99').localeCompare(b.time||'99:99'));
 
   // كي المستخدم يفلتر يدوياً على "منجز"، نعرضوها عادي في القائمة الرئيسية بلا فصل
   let mainItems = items, doneItems = [];
   if(activeFilter !== 'done'){
     mainItems = items.filter(c => c.status !== 'done');
     doneItems = items.filter(c => c.status === 'done');
+  }
+
+  // حماية: لو صار خطأ غير متوقع في الفلترة وعندك زبائن فعلاً بلا فلتر نشيط، نوريوهم بدل ما نبينو "فارغة" بالغلط
+  if(mainItems.length === 0 && doneItems.length === 0 && customers.length > 0 && activeFilter === 'all' && !searchQuery.trim()){
+    console.warn('renderList: safety fallback triggered — showing unfiltered customers');
+    mainItems = customers.filter(c => c.status !== 'done');
+    doneItems = customers.filter(c => c.status === 'done');
   }
 
   list.innerHTML = '';
@@ -2376,6 +2384,63 @@ function checkAndNotify(){
 document.addEventListener('visibilitychange', () => {
   if(document.visibilityState === 'visible') checkAndNotify();
 });
+
+/* ============ سحب للتحديث (Pull to Refresh) ============ */
+(function setupPullToRefresh(){
+  const THRESHOLD = 78;
+  let startY = 0, pulling = false, triggered = false;
+
+  const indicator = document.createElement('div');
+  indicator.id = 'pullRefreshIndicator';
+  indicator.style.cssText = 'position:fixed; top:0; left:0; right:0; display:flex; justify-content:center; padding-top:14px; z-index:200; pointer-events:none; opacity:0; transition:opacity .15s ease;';
+  indicator.innerHTML = `<div style="width:34px; height:34px; border-radius:50%; background:var(--surface); border:1px solid var(--line); display:flex; align-items:center; justify-content:center; box-shadow:0 4px 14px rgba(0,0,0,.25)">
+    <svg id="pullRefreshIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="2.5"><path d="M21 12a9 9 0 11-3-6.7"/><path d="M21 3v6h-6"/></svg>
+  </div>`;
+  document.body.appendChild(indicator);
+  const icon = document.getElementById('pullRefreshIcon');
+
+  function isBlocked(){
+    // ما نفعلوش السحب-للتحديث كي يكون فيه شيء مفتوح (فورم، مقياس صوت، طلبات حجز، شاشة دخول)
+    const sheetOpen = !sheet.classList.contains('hidden-sheet');
+    const soundOpen = document.getElementById('soundMeterOverlay').style.display === 'flex';
+    const bookingOpen = document.getElementById('bookingOverlay').style.display === 'flex';
+    const authOpen = !document.getElementById('authGate').classList.contains('hidden');
+    return sheetOpen || soundOpen || bookingOpen || authOpen;
+  }
+
+  window.addEventListener('touchstart', (e) => {
+    if(window.scrollY <= 0 && !isBlocked()){
+      startY = e.touches[0].clientY;
+      pulling = true;
+      triggered = false;
+    }
+  }, { passive: true });
+
+  window.addEventListener('touchmove', (e) => {
+    if(!pulling) return;
+    const diff = e.touches[0].clientY - startY;
+    if(diff > 0 && window.scrollY <= 0){
+      const pull = Math.min(diff, 130);
+      indicator.style.opacity = String(Math.min(pull / THRESHOLD, 1));
+      icon.style.transform = `rotate(${pull * 3}deg)`;
+      triggered = pull > THRESHOLD;
+    } else {
+      pulling = false;
+      indicator.style.opacity = '0';
+    }
+  }, { passive: true });
+
+  window.addEventListener('touchend', () => {
+    if(pulling && triggered){
+      indicator.style.opacity = '1';
+      icon.style.animation = 'pullSpin .6s linear infinite';
+      window.location.reload();
+    } else {
+      indicator.style.opacity = '0';
+    }
+    pulling = false;
+  }, { passive: true });
+})();
 
 /* ============ INIT ============ */
 applyLanguage();
