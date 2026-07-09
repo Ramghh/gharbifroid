@@ -624,8 +624,11 @@
       </button>
 
       <div class="flex gap-3 mt-2">
-        <button type="button" id="btnDelete" class="hidden flex-1 rounded-xl py-3 font-bold text-sm" style="background:rgba(232,103,74,.12); color:var(--danger); border:1px solid rgba(232,103,74,.3)" data-i18n="delete">حذف</button>
+        <button type="button" id="btnCancelSheet" class="flex-1 rounded-xl py-3 font-bold text-sm" style="background:var(--surface-2); border:1px solid var(--line); color:var(--text)" data-i18n="cancel">إلغاء</button>
         <button type="submit" class="flex-1 rounded-xl py-3 font-bold text-sm" style="background:var(--copper); color:#1A1006" data-i18n="save">حفظ</button>
+      </div>
+      <div class="flex gap-3">
+        <button type="button" id="btnDelete" class="hidden flex-1 rounded-xl py-3 font-bold text-sm" style="background:rgba(232,103,74,.12); color:var(--danger); border:1px solid rgba(232,103,74,.3)" data-i18n="delete">حذف</button>
       </div>
     </form>
   </div>
@@ -831,6 +834,7 @@ const TRANSLATIONS = {
     booking_rejected: 'تم رفض الطلب',
     confirm_reject_booking: 'تأكد رفض هذا الطلب؟',
     delete: 'حذف',
+    cancel: 'إلغاء',
     save: 'حفظ',
     saving: 'جاري الحفظ...',
     offline_note: 'غير متصل — التغييرات تتزامن كي يرجع الأنترنت',
@@ -971,6 +975,7 @@ const TRANSLATIONS = {
     booking_rejected: 'Demande refusée',
     confirm_reject_booking: 'Confirmer le refus de cette demande ?',
     delete: 'Supprimer',
+    cancel: 'Annuler',
     save: 'Enregistrer',
     saving: 'Enregistrement...',
     offline_note: 'Hors ligne — synchronisation au retour du réseau',
@@ -2125,6 +2130,7 @@ document.getElementById('btnAdd').addEventListener('click', () => {
   openSheet();
 });
 document.getElementById('btnCloseSheet').addEventListener('click', closeSheet);
+document.getElementById('btnCancelSheet').addEventListener('click', closeSheet);
 overlay.addEventListener('click', closeSheet);
 
 /* ============ قياس مستوى الضوضاء (Web Audio API) ============ */
