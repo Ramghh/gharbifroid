@@ -611,7 +611,12 @@
       </div>
       <div>
         <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="price_label">السعر (د.ت)</label>
-        <input name="price" type="number" step="0.5" placeholder="0" class="w-full rounded-xl px-3 py-3 mt-1.5 text-sm font-mono">
+        <input name="price" id="priceInput" type="number" step="0.5" placeholder="0" class="w-full rounded-xl px-3 py-3 mt-1.5 text-sm font-mono">
+      </div>
+      <div>
+        <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="deposit_label">عربون / دفعة أولى (اختياري)</label>
+        <input name="deposit" id="depositInput" type="number" step="0.5" placeholder="0" class="w-full rounded-xl px-3 py-3 mt-1.5 text-sm font-mono">
+        <p id="remainderNote" class="text-xs mt-1.5 hidden" style="color:var(--text-dim)"></p>
       </div>
       <div>
         <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="notes">ملاحظات</label>
@@ -808,6 +813,9 @@ const TRANSLATIONS = {
     appt_date: 'تاريخ الموعد',
     appt_time: 'الوقت (اختياري)',
     price_label: 'السعر (د.ت)',
+    deposit_label: 'عربون / دفعة أولى (اختياري)',
+    remainder_label: 'الباقي',
+    deposit_paid: 'المدفوع',
     notes: 'ملاحظات',
     notes_ph: 'نوع المكيف، الضمان، تفاصيل أخرى...',
     sound_meter: 'قياس مستوى الضوضاء',
@@ -949,6 +957,9 @@ const TRANSLATIONS = {
     appt_date: 'Date du rendez-vous',
     appt_time: 'Heure (optionnel)',
     price_label: 'Prix (DT)',
+    deposit_label: 'Acompte (optionnel)',
+    remainder_label: 'Reste',
+    deposit_paid: 'Payé',
     notes: 'Notes',
     notes_ph: 'Type de clim, garantie, autres détails...',
     sound_meter: 'Mesurer le niveau sonore',
@@ -1484,7 +1495,10 @@ function renderCard(c){
         <span style="word-break:break-word">${escapeHtml(c.notes)}</span>
       </p>` : ''}
       <div class="flex items-center justify-between mt-4">
-        <p class="font-mono font-bold text-base" style="color:var(--mint)">${c.price ? c.price+' '+t('currency') : '—'}</p>
+        <div>
+          <p class="font-mono font-bold text-base" style="color:var(--mint)">${c.price ? c.price+' '+t('currency') : '—'}</p>
+          ${c.deposit > 0 ? `<p class="font-mono text-[10.5px] mt-0.5" style="color:var(--text-dim)">${t('deposit_paid')}: ${c.deposit} · ${t('remainder_label')}: ${Math.max(0, (c.price||0) - c.deposit)}</p>` : ''}
+        </div>
         <div class="flex gap-2">
           <a href="tel:${c.phone}" onclick="event.stopPropagation()" class="w-9 h-9 rounded-full flex items-center justify-center" style="background:rgba(79,209,174,.14)">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--mint)" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
@@ -2127,11 +2141,28 @@ document.getElementById('btnAdd').addEventListener('click', () => {
   document.getElementById('sheetTitle').textContent = t('new_customer');
   document.getElementById('btnDelete').classList.add('hidden');
   form.date.value = todayStr();
+  updateRemainderNote();
   openSheet();
 });
 document.getElementById('btnCloseSheet').addEventListener('click', closeSheet);
 document.getElementById('btnCancelSheet').addEventListener('click', closeSheet);
 overlay.addEventListener('click', closeSheet);
+
+/* ============ عربون / الباقي (Deposit / Remainder) — حساب حي ============ */
+function updateRemainderNote(){
+  const price = parseFloat(document.getElementById('priceInput').value) || 0;
+  const deposit = parseFloat(document.getElementById('depositInput').value) || 0;
+  const note = document.getElementById('remainderNote');
+  if(deposit > 0){
+    const remainder = Math.max(0, price - deposit);
+    note.textContent = `${t('deposit_paid')}: ${deposit} ${t('currency')} · ${t('remainder_label')}: ${remainder} ${t('currency')}`;
+    note.classList.remove('hidden');
+  } else {
+    note.classList.add('hidden');
+  }
+}
+document.getElementById('priceInput').addEventListener('input', updateRemainderNote);
+document.getElementById('depositInput').addEventListener('input', updateRemainderNote);
 
 /* ============ قياس مستوى الضوضاء (Web Audio API) ============ */
 let smAudioCtx = null, smStream = null, smAnalyser = null, smRafId = null;
@@ -2270,8 +2301,10 @@ window.openEdit = function openEdit(id){
   form.date.value = c.date;
   form.time.value = c.time || '';
   form.price.value = c.price || '';
+  form.deposit.value = c.deposit || '';
   form.notes.value = c.notes || '';
   setBtuSelection(c.btu || '');
+  updateRemainderNote();
   document.getElementById('sheetTitle').textContent = t('edit_customer');
   document.getElementById('btnDelete').classList.remove('hidden');
   openSheet();
