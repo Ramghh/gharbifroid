@@ -137,8 +137,13 @@
   }
   .sheet.hidden-sheet{ transform: translateY(100%); }
 
-  .card-press:active{ transform: scale(.985); }
-  .card-press{ transition: transform .12s ease; }
+  .card-press{ transition: transform .1s cubic-bezier(.4,0,.2,1); }
+  .card-press:active{ transform: scale(.965); }
+
+  /* لمسة "هابتيك" خفيفة على أي زر في التطبيق — تأكيد بصري سريع إنو اللمسة توصلت */
+  button{ transition: transform .1s cubic-bezier(.4,0,.2,1); }
+  button:active{ transform: scale(.95); }
+  .chip:active{ transform: scale(.93); }
 
   input, select, textarea{
     background: var(--surface-2);
@@ -1771,7 +1776,7 @@ function renderBookingList(){
 
 function renderBookingCard(r){
   const wrap = document.createElement('div');
-  wrap.className = 'rounded-2xl p-4';
+  wrap.className = 'rounded-2xl p-4 card-press';
   wrap.style.background = 'var(--surface)';
   wrap.style.border = '1px solid var(--line)';
   wrap.innerHTML = `
@@ -1985,7 +1990,7 @@ function renderExpenses(){
 
 function renderExpenseCard(e){
   const wrap = document.createElement('div');
-  wrap.className = 'rounded-2xl p-4 cursor-pointer';
+  wrap.className = 'rounded-2xl p-4 cursor-pointer card-press';
   wrap.style.background = 'var(--surface)';
   wrap.style.border = '1px solid var(--line)';
   wrap.innerHTML = `
