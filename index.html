@@ -7,8 +7,12 @@
   (function(){
     try{
       var pref = localStorage.getItem('tabrid-theme-pref') || 'auto';
-      var wantsLight = pref === 'light' || (pref === 'auto' && !window.matchMedia('(prefers-color-scheme: dark)').matches);
-      if(wantsLight) document.documentElement.setAttribute('data-theme', 'light');
+      if(pref === 'ice'){
+        document.documentElement.setAttribute('data-theme', 'ice');
+      } else {
+        var wantsLight = pref === 'light' || (pref === 'auto' && !window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if(wantsLight) document.documentElement.setAttribute('data-theme', 'light');
+      }
     }catch(e){}
   })();
 </script>
@@ -55,6 +59,21 @@
     --danger: #C6462F;
     --text: #1D2926;
     --text-dim: #6C7B76;
+  }
+  /* ============ ثيم أزرق ثلجي (Ice Blue) — يناسب طبيعة الصيانة والتبريد ============ */
+  :root[data-theme="ice"]{
+    --bg: #0B2338;
+    --bg-deep: #071726;
+    --surface: #0F3049;
+    --surface-2: #123A58;
+    --line: #1E5578;
+    --copper: #3FB6E8;
+    --copper-dim: #2E8FBB;
+    --mint: #4FE0D8;
+    --amber: #F2C14E;
+    --danger: #E86767;
+    --text: #EAF6FC;
+    --text-dim: #7FA9C4;
   }
   *{ -webkit-tap-highlight-color: transparent; }
   html,body{ background: var(--bg-deep); color: var(--text); font-family:'Cairo',sans-serif; overscroll-behavior-y: none; }
@@ -176,6 +195,24 @@
   @keyframes splashPulse{ 0%,100%{ transform:scale(1); opacity:1; } 50%{ transform:scale(1.08); opacity:.85; } }
   @keyframes splashSpin{ to{ transform:rotate(360deg); } }
   @keyframes pullSpin{ to{ transform:rotate(360deg); } }
+
+  @keyframes doneCelebratePulse{
+    0%{ transform:scale(1); box-shadow:0 0 0 0 rgba(79,209,174,.55); }
+    35%{ transform:scale(1.025); box-shadow:0 0 0 10px rgba(79,209,174,0); }
+    100%{ transform:scale(1); box-shadow:0 0 0 0 rgba(79,209,174,0); }
+  }
+  .card-done-celebrate{ animation: doneCelebratePulse .7s ease; position:relative; }
+  @keyframes doneCheckPop{
+    0%{ transform:scale(0) rotate(-20deg); opacity:0; }
+    55%{ transform:scale(1.15) rotate(4deg); opacity:1; }
+    75%{ transform:scale(0.95) rotate(0deg); opacity:1; }
+    100%{ transform:scale(1) rotate(0deg); opacity:0; }
+  }
+  .done-check-badge{
+    position:absolute; top:10px; right:10px; width:34px; height:34px; border-radius:50%;
+    background:var(--mint); display:flex; align-items:center; justify-content:center;
+    animation: doneCheckPop 1.1s ease forwards; pointer-events:none; z-index:2;
+  }
   #splash.splash-hidden{ opacity:0; visibility:hidden; pointer-events:none; }
 </style>
 <div id="app" class="min-h-screen flex flex-col" style="background:var(--bg)">
@@ -386,6 +423,17 @@
       </div>
     </div>
 
+    <div class="grid grid-cols-2 gap-3 mt-3">
+      <button id="btnGoExpensesFromReport" class="rounded-2xl p-4 text-left" style="background:var(--surface); border:1px solid var(--line)">
+        <p class="text-xs" style="color:var(--text-dim)" data-i18n="expenses_label">Dépenses</p>
+        <p class="font-mono font-bold text-2xl mt-1" id="statExpensesTotal" style="color:var(--danger)">0</p>
+      </button>
+      <div class="rounded-2xl p-4" style="background:var(--surface); border:1px solid var(--line)">
+        <p class="text-xs" style="color:var(--text-dim)" data-i18n="net_profit_label">Bénéfice net</p>
+        <p class="font-mono font-bold text-2xl mt-1" id="statNetProfit" style="color:var(--mint)">0</p>
+      </div>
+    </div>
+
     <div class="rounded-2xl p-4 mt-3" style="background:var(--surface); border:1px solid var(--line)">
       <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)" id="chartBarLabel" data-i18n="chart_income_over_time">Revenus dans le temps</p>
       <canvas id="chartBar" style="width:100%; height:150px; display:block"></canvas>
@@ -410,10 +458,13 @@
     <h2 class="font-display font-black text-lg mb-4" data-i18n="settings">Paramètres</h2>
 
     <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)" data-i18n="appearance">Apparence</p>
-    <div class="flex gap-2 mb-5">
+    <div class="flex gap-2 mb-5 flex-wrap">
       <button class="chip theme-chip" data-theme-pref="auto" data-i18n="theme_auto">Auto</button>
       <button class="chip theme-chip" data-theme-pref="light" data-i18n="theme_light">Clair</button>
       <button class="chip theme-chip" data-theme-pref="dark" data-i18n="theme_dark">Sombre</button>
+      <button class="chip theme-chip flex items-center gap-1.5" data-theme-pref="ice" data-i18n="theme_ice">
+        ❄️ Glacé
+      </button>
     </div>
 
     <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)" data-i18n="font_size">Taille du texte</p>
@@ -505,6 +556,111 @@
       </div>
     </div>
   </main>
+
+  <!-- ===================== EXPENSES VIEW ===================== -->
+  <main class="flex-1 px-5 pt-4 pb-28 hidden" id="viewExpenses">
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center gap-3">
+        <button id="btnBackFromExpenses" class="w-9 h-9 rounded-full flex items-center justify-center" style="background:var(--surface); border:1px solid var(--line)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <h2 class="font-display font-black text-lg" data-i18n="expenses">Dépenses</h2>
+      </div>
+      <button id="btnAddExpense" class="w-9 h-9 rounded-full flex items-center justify-center" style="background:var(--copper)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1006" stroke-width="2.3"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3 mb-4">
+      <div class="rounded-2xl p-4" style="background:var(--surface); border:1px solid var(--line)">
+        <p class="text-xs" style="color:var(--text-dim)" data-i18n="expenses_this_month">Dépenses ce mois</p>
+        <p class="font-mono font-bold text-xl mt-1" style="color:var(--danger)" id="expensesMonthTotal">0 DT</p>
+      </div>
+      <div class="rounded-2xl p-4" style="background:var(--surface); border:1px solid var(--line)">
+        <p class="text-xs" style="color:var(--text-dim)" data-i18n="net_profit_month">Bénéfice net (mois)</p>
+        <p class="font-mono font-bold text-xl mt-1" style="color:var(--mint)" id="netProfitMonthTotal">0 DT</p>
+      </div>
+    </div>
+
+    <div class="flex gap-2 mb-4 overflow-x-auto pb-1">
+      <button class="chip expense-filter-chip chip-active" data-cat="all" data-i18n="filter_all">Tous</button>
+      <button class="chip expense-filter-chip" data-cat="gas" data-i18n="cat_gas">Gaz</button>
+      <button class="chip expense-filter-chip" data-cat="parts" data-i18n="cat_parts">Pièces</button>
+      <button class="chip expense-filter-chip" data-cat="fuel" data-i18n="cat_fuel">Carburant</button>
+      <button class="chip expense-filter-chip" data-cat="tools" data-i18n="cat_tools">Outils</button>
+      <button class="chip expense-filter-chip" data-cat="other" data-i18n="cat_other">Autre</button>
+    </div>
+
+    <div id="expenseList" class="flex flex-col gap-3"></div>
+    <div id="expenseEmptyState" class="hidden text-center py-16">
+      <p class="font-display font-bold text-base" style="color:var(--text-dim)" data-i18n="no_expenses_yet">Aucune dépense enregistrée</p>
+      <p class="text-xs mt-1" style="color:var(--text-dim)" data-i18n="add_first_expense">Appuyez sur + pour ajouter une dépense</p>
+    </div>
+  </main>
+
+  <!-- ===================== EXPENSE FORM SHEET ===================== -->
+  <div id="expenseSheetOverlay" class="fixed inset-0 bg-black/60 hidden z-40"></div>
+  <div id="expenseSheet" class="sheet hidden-sheet fixed bottom-0 inset-x-0 mx-auto z-50 rounded-t-3xl px-5 pb-8 max-h-[88vh] overflow-y-auto" style="max-width:480px; background:var(--bg-deep); border:1px solid var(--line); border-bottom:none">
+    <div class="sticky top-0 pt-5 pb-3 -mx-5 px-5" style="background:var(--bg-deep); z-index:5">
+      <div class="w-10 h-1.5 rounded-full mx-auto mb-4" style="background:var(--line)"></div>
+      <div class="flex items-center justify-between">
+        <h3 class="font-display font-black text-lg" data-i18n="new_expense">Nouvelle dépense</h3>
+        <button id="btnCloseExpenseSheet" class="w-8 h-8 rounded-full flex items-center justify-center" style="background:var(--surface)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <form id="expenseForm" class="flex flex-col gap-4">
+      <div>
+        <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="category">Catégorie</label>
+        <input type="hidden" name="category" id="expenseCategoryInput" value="gas">
+        <div class="grid grid-cols-3 gap-2 mt-1.5">
+          <button type="button" class="expense-cat-chip flex flex-col items-center gap-1 py-2.5 rounded-xl" data-cat="gas" style="background:var(--surface-2); border:1px solid var(--line)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10a2 2 0 00-2-2h-1V6a2 2 0 00-2-2H7a2 2 0 00-2 2v14"/><path d="M3 20h14"/><path d="M18 12h1a2 2 0 012 2v3a1.5 1.5 0 01-3 0v-5.5L16 9"/></svg>
+            <span class="text-[10.5px] font-semibold" data-i18n="cat_gas">Gaz</span>
+          </button>
+          <button type="button" class="expense-cat-chip flex flex-col items-center gap-1 py-2.5 rounded-xl" data-cat="parts" style="background:var(--surface-2); border:1px solid var(--line)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+            <span class="text-[10.5px] font-semibold" data-i18n="cat_parts">Pièces</span>
+          </button>
+          <button type="button" class="expense-cat-chip flex flex-col items-center gap-1 py-2.5 rounded-xl" data-cat="fuel" style="background:var(--surface-2); border:1px solid var(--line)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 22h12"/><path d="M6 18V4a1 1 0 011-1h6a1 1 0 011 1v14"/><path d="M14 9h1a2 2 0 012 2v4a1.5 1.5 0 003 0V8l-3-3"/></svg>
+            <span class="text-[10.5px] font-semibold" data-i18n="cat_fuel">Carburant</span>
+          </button>
+          <button type="button" class="expense-cat-chip flex flex-col items-center gap-1 py-2.5 rounded-xl" data-cat="tools" style="background:var(--surface-2); border:1px solid var(--line)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+            <span class="text-[10.5px] font-semibold" data-i18n="cat_tools">Outils</span>
+          </button>
+          <button type="button" class="expense-cat-chip flex flex-col items-center gap-1 py-2.5 rounded-xl" data-cat="other" style="background:var(--surface-2); border:1px solid var(--line)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>
+            <span class="text-[10.5px] font-semibold" data-i18n="cat_other">Autre</span>
+          </button>
+        </div>
+      </div>
+      <div>
+        <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="expense_desc">Description</label>
+        <input required name="description" type="text" placeholder="Ex : Bonbonne de gaz R410A" class="w-full rounded-xl px-4 py-3 mt-1.5 text-sm">
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="expense_amount">Montant (DT)</label>
+          <input required name="amount" type="number" step="0.5" placeholder="0" class="w-full rounded-xl px-3 py-3 mt-1.5 text-sm font-mono">
+        </div>
+        <div>
+          <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="expense_date">Date</label>
+          <input required name="date" type="date" class="w-full rounded-xl px-3 py-3 mt-1.5 text-sm font-mono">
+        </div>
+      </div>
+      <div class="flex gap-3 mt-2">
+        <button type="button" id="btnCancelExpenseSheet" class="flex-1 rounded-xl py-3 font-bold text-sm" style="background:var(--surface-2); border:1px solid var(--line); color:var(--text)" data-i18n="cancel">Annuler</button>
+        <button type="submit" class="flex-1 rounded-xl py-3 font-bold text-sm" style="background:var(--copper); color:#1A1006" data-i18n="save">Enregistrer</button>
+      </div>
+      <div class="flex gap-3">
+        <button type="button" id="btnDeleteExpense" class="hidden flex-1 rounded-xl py-3 font-bold text-sm" style="background:rgba(232,103,74,.12); color:var(--danger); border:1px solid rgba(232,103,74,.3)" data-i18n="delete">Supprimer</button>
+      </div>
+    </form>
+  </div>
 
   <!-- ===================== BOTTOM NAV ===================== -->
   <nav class="fixed bottom-0 inset-x-0 mx-auto px-4 py-3 flex items-center justify-between" style="max-width:480px; background: var(--bg-deep); border-top:1px solid var(--line)">
@@ -755,12 +911,55 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
         <span class="text-sm font-semibold" data-i18n="nav_calendar">Calendrier</span>
       </button>
+      <button id="btnSidebarExpenses" class="w-full flex items-center gap-3 rounded-xl px-3 py-3 mb-1">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16"/></svg>
+        <span class="text-sm font-semibold" data-i18n="expenses">Dépenses</span>
+      </button>
       <button class="sidebar-nav-btn w-full flex items-center gap-3 rounded-xl px-3 py-3 mb-1" data-view="settings">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1 1.55V21a2 2 0 11-4 0v-.09a1.7 1.7 0 00-1-1.55 1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.7 1.7 0 00.34-1.87 1.7 1.7 0 00-1.55-1H3a2 2 0 110-4h.09a1.7 1.7 0 001.55-1 1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06a1.7 1.7 0 001.87.34H9a1.7 1.7 0 001-1.55V3a2 2 0 114 0v.09a1.7 1.7 0 001 1.55 1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06.06a1.7 1.7 0 00-.34 1.87V9a1.7 1.7 0 001.55 1H21a2 2 0 110 4h-.09a1.7 1.7 0 00-1.55 1z"/></svg>
         <span class="text-sm font-semibold" data-i18n="nav_settings">Réglages</span>
       </button>
     </div>
   </div>
+
+  <!-- ===================== CUSTOMER HISTORY OVERLAY ===================== -->
+  <div id="historyOverlay" class="fixed inset-0 z-[75] flex-col" style="background:var(--bg-deep); display:none">
+    <div class="flex items-center justify-between px-5 pt-6 pb-3">
+      <div class="min-w-0">
+        <h3 class="font-display font-black text-lg truncate" id="historyName">—</h3>
+        <p class="text-xs font-mono" style="color:var(--text-dim)" id="historyPhone">—</p>
+      </div>
+      <button id="btnCloseHistory" class="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style="background:var(--surface)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <div class="px-5 pb-3">
+      <div class="grid grid-cols-3 gap-2">
+        <div class="rounded-2xl px-2 py-2.5 text-center" style="background:var(--surface); border:1px solid var(--line)">
+          <p class="text-[10px]" style="color:var(--text-dim)" data-i18n="history_visits">Visites</p>
+          <p class="font-mono font-bold text-base mt-0.5" id="historyVisitCount" style="color:var(--copper)">0</p>
+        </div>
+        <div class="rounded-2xl px-2 py-2.5 text-center" style="background:var(--surface); border:1px solid var(--line)">
+          <p class="text-[10px]" style="color:var(--text-dim)" data-i18n="history_total">Total</p>
+          <p class="font-mono font-bold text-base mt-0.5" id="historyTotalIncome" style="color:var(--mint)">0</p>
+        </div>
+        <div class="rounded-2xl px-2 py-2.5 text-center" style="background:var(--surface); border:1px solid var(--line)">
+          <p class="text-[10px]" style="color:var(--text-dim)" data-i18n="history_since">Client depuis</p>
+          <p class="font-mono font-bold text-[13px] mt-1" id="historyFirstVisit" style="color:var(--text)">—</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="pipe-divider px-5">
+      <span class="joint"></span><span class="seg"></span>
+      <span class="font-display font-bold text-sm" style="color:var(--text-dim)" data-i18n="history_timeline">Historique des interventions</span>
+      <span class="seg"></span><span class="joint"></span>
+    </div>
+
+    <div id="historyList" class="flex-1 overflow-y-auto px-5 pb-8 flex flex-col gap-4"></div>
+  </div>
+
 
   <!-- ===================== SYNC STATUS TOAST ===================== -->
   <div id="syncToast" class="fixed top-4 inset-x-0 mx-auto z-50 hidden" style="max-width:480px">
@@ -844,7 +1043,7 @@ const TRANSLATIONS = {
     donut_caption: 'توزيع المداخيل المنجزة حسب نوع الخدمة للفترة المختارة',
     settings: 'الإعدادات',
     appearance: 'المظهر',
-    theme_auto: 'تلقائي', theme_light: 'فاتح', theme_dark: 'داكن',
+    theme_auto: 'تلقائي', theme_light: 'فاتح', theme_dark: 'داكن', theme_ice: '❄️ جليدي',
     language_section: 'اللغة',
     font_size: 'حجم الخط',
     lang_ar: 'العربية', lang_fr: 'Français',
@@ -896,6 +1095,30 @@ const TRANSLATIONS = {
     sm_saved: 'تمت الإضافة ✓',
     booking_requests: 'طلبات المواعيد',
     quick_reports: 'تقارير سريعة',
+    history_visits: 'الزيارات',
+    history_total: 'المجموع',
+    history_since: 'حريف منذ',
+    history_timeline: 'سجل العمليات',
+    history_no_other: 'ما فماش عمليات أخرى لهذا الحريف',
+    expenses: 'المصاريف',
+    expenses_this_month: 'مصاريف هذا الشهر',
+    net_profit_month: 'صافي الربح (الشهر)',
+    net_profit_label: 'صافي الربح',
+    expenses_label: 'المصاريف',
+    cat_gas: 'غاز',
+    cat_parts: 'قطع غيار',
+    cat_fuel: 'وقود',
+    cat_tools: 'أدوات',
+    cat_other: 'أخرى',
+    no_expenses_yet: 'ما فماش مصاريف مسجلة',
+    add_first_expense: 'اضغط على + باش تزيد مصروف',
+    new_expense: 'مصروف جديد',
+    edit_expense: 'تعديل المصروف',
+    category: 'الصنف',
+    expense_desc: 'الوصف',
+    expense_amount: 'المبلغ (د.ت)',
+    expense_date: 'التاريخ',
+    confirm_delete_expense: 'تأكد حذف هذا المصروف؟',
     monthly_report: 'التقرير الشهري',
     annual_report: 'التقرير السنوي',
     navigation: 'التنقل',
@@ -992,7 +1215,7 @@ const TRANSLATIONS = {
     donut_caption: 'Répartition des revenus terminés par type de service, pour la période choisie',
     settings: 'Paramètres',
     appearance: 'Apparence',
-    theme_auto: 'Auto', theme_light: 'Clair', theme_dark: 'Sombre',
+    theme_auto: 'Auto', theme_light: 'Clair', theme_dark: 'Sombre', theme_ice: '❄️ Glacé',
     language_section: 'Langue',
     font_size: 'Taille du texte',
     lang_ar: 'العربية', lang_fr: 'Français',
@@ -1044,6 +1267,30 @@ const TRANSLATIONS = {
     sm_saved: 'Ajouté ✓',
     booking_requests: 'Demandes de rendez-vous',
     quick_reports: 'Rapports rapides',
+    history_visits: 'Visites',
+    history_total: 'Total',
+    history_since: 'Client depuis',
+    history_timeline: 'Historique des interventions',
+    history_no_other: 'Aucune autre intervention pour ce client',
+    expenses: 'Dépenses',
+    expenses_this_month: 'Dépenses ce mois',
+    net_profit_month: 'Bénéfice net (mois)',
+    net_profit_label: 'Bénéfice net',
+    expenses_label: 'Dépenses',
+    cat_gas: 'Gaz',
+    cat_parts: 'Pièces',
+    cat_fuel: 'Carburant',
+    cat_tools: 'Outils',
+    cat_other: 'Autre',
+    no_expenses_yet: 'Aucune dépense enregistrée',
+    add_first_expense: 'Appuyez sur + pour ajouter une dépense',
+    new_expense: 'Nouvelle dépense',
+    edit_expense: 'Modifier la dépense',
+    category: 'Catégorie',
+    expense_desc: 'Description',
+    expense_amount: 'Montant (DT)',
+    expense_date: 'Date',
+    confirm_delete_expense: 'Confirmer la suppression de cette dépense ?',
     monthly_report: 'Rapport mensuel',
     annual_report: 'Rapport annuel',
     navigation: 'Navigation',
@@ -1245,13 +1492,16 @@ onAuthStateChanged(auth, (user) => {
     authSubmitBtn.disabled = false;
     subscribeToCustomers();
     subscribeToBookingRequests();
+    subscribeToExpenses();
   } else {
     currentUid = null;
     authGate.classList.remove('hidden');
     if(unsubscribeCustomers){ unsubscribeCustomers(); unsubscribeCustomers = null; }
     if(unsubscribeBookings){ unsubscribeBookings(); unsubscribeBookings = null; }
+    if(unsubscribeExpenses){ unsubscribeExpenses(); unsubscribeExpenses = null; }
     customers = [];
     bookingRequests = [];
+    expenses = [];
   }
 });
 
@@ -1308,6 +1558,42 @@ function subscribeToBookingRequests(){
   );
 }
 
+function expensesCol(){
+  return collection(db, 'users', currentUid, 'expenses');
+}
+
+let unsubscribeExpenses = null;
+let expenses = [];
+let editingExpenseId = null;
+let activeExpenseFilter = 'all';
+
+function subscribeToExpenses(){
+  if(unsubscribeExpenses) unsubscribeExpenses();
+  const q = query(expensesCol(), orderBy('date', 'desc'));
+  unsubscribeExpenses = onSnapshot(q,
+    (snap) => {
+      expenses = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderExpenses();
+      renderReport();
+    },
+    (err) => {
+      console.error('Expenses sync error:', err);
+    }
+  );
+}
+
+async function saveExpense(data){
+  if(editingExpenseId){
+    await updateDoc(doc(expensesCol(), editingExpenseId), { ...data, updatedAt: serverTimestamp() });
+  } else {
+    await addDoc(expensesCol(), { ...data, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
+  }
+}
+
+async function removeExpense(id){
+  await deleteDoc(doc(expensesCol(), id));
+}
+
 function subscribeToCustomers(){
   if(unsubscribeCustomers) unsubscribeCustomers();
   const q = query(customersCol(), orderBy('date', 'asc'));
@@ -1355,6 +1641,7 @@ let activeView = 'home';
 let activeFilter = 'all';
 let searchQuery = '';
 let editingId = null;
+let justCompletedId = null; // لتفعيل أنيميشن الاحتفال كي موعد يتحول لـ"منجز"
 
 /* ============ RENDER ============ */
 function fmtDate(iso){
@@ -1407,6 +1694,11 @@ function renderList(){
     doneItems = customers.filter(c => c.status === 'done');
   }
 
+  // كي زبون توة يتحول لـ"منجز" (أنيميشن الاحتفال)، نفتحو قسم "المنجزة" أوتوماتيكياً باش يبان
+  if(justCompletedId && doneItems.some(c => c.id === justCompletedId)){
+    doneSectionOpen = true;
+  }
+
   list.innerHTML = '';
   if(mainItems.length === 0 && doneItems.length === 0){
     empty.classList.remove('hidden');
@@ -1433,6 +1725,11 @@ function renderList(){
   renderCalendar();
   renderCalDayList();
   renderReport();
+
+  if(justCompletedId){
+    const idToClear = justCompletedId;
+    setTimeout(() => { if(justCompletedId === idToClear) justCompletedId = null; }, 900);
+  }
 }
 
 document.getElementById('btnToggleDone').addEventListener('click', () => {
@@ -1530,18 +1827,198 @@ function closeBookingOverlay(){
   document.getElementById('bookingOverlay').style.display = 'none';
 }
 
+/* ============ سجل الحريف (Customer History) ============ */
+window.openCustomerHistory = function openCustomerHistory(phone, name){
+  if(!phone) return;
+  const records = customers
+    .filter(c => c.phone === phone)
+    .sort((a,b) => (b.date||'').localeCompare(a.date||'') || (b.time||'').localeCompare(a.time||''));
+
+  if(records.length === 0) return;
+
+  document.getElementById('historyName').textContent = name || records[0].name || '—';
+  document.getElementById('historyPhone').textContent = phone;
+
+  const doneRecords = records.filter(r => r.status === 'done');
+  const totalIncome = doneRecords.reduce((s,r)=>s+(+r.price||0), 0);
+  const firstVisit = records.reduce((min,r) => (r.date && (!min || r.date < min)) ? r.date : min, null);
+
+  document.getElementById('historyVisitCount').textContent = records.length;
+  document.getElementById('historyTotalIncome').textContent = `${totalIncome} ${t('currency')}`;
+  document.getElementById('historyFirstVisit').textContent = firstVisit ? fmtDate(firstVisit) : '—';
+
+  const list = document.getElementById('historyList');
+  list.innerHTML = '';
+  records.forEach(r => list.appendChild(renderCard(r)));
+
+  document.getElementById('historyOverlay').style.display = 'flex';
+}
+
+function closeCustomerHistory(){
+  document.getElementById('historyOverlay').style.display = 'none';
+}
+
+/* ============ فورم المصروف (Add/Edit) ============ */
+const expenseForm = document.getElementById('expenseForm');
+const expenseSheet = document.getElementById('expenseSheet');
+const expenseSheetOverlay = document.getElementById('expenseSheetOverlay');
+
+function setExpenseCategorySelection(cat){
+  document.getElementById('expenseCategoryInput').value = cat;
+  document.querySelectorAll('.expense-cat-chip').forEach(chip => {
+    const active = chip.dataset.cat === cat;
+    chip.classList.toggle('btu-active', active);
+    chip.style.background = active ? 'var(--copper)' : 'var(--surface-2)';
+    chip.style.color = active ? '#1A1006' : '';
+  });
+}
+document.querySelectorAll('.expense-cat-chip').forEach(chip => {
+  chip.addEventListener('click', () => setExpenseCategorySelection(chip.dataset.cat));
+});
+
+function openExpenseSheet(){
+  expenseSheetOverlay.classList.remove('hidden');
+  expenseSheet.classList.remove('hidden-sheet');
+}
+function closeExpenseSheet(){
+  expenseSheet.classList.add('hidden-sheet');
+  setTimeout(() => expenseSheetOverlay.classList.add('hidden'), 280);
+}
+
+document.getElementById('btnAddExpense').addEventListener('click', () => {
+  editingExpenseId = null;
+  expenseForm.reset();
+  setExpenseCategorySelection('gas');
+  expenseForm.date.value = todayStr();
+  document.getElementById('btnDeleteExpense').classList.add('hidden');
+  document.querySelector('#expenseSheet h3').textContent = t('new_expense');
+  openExpenseSheet();
+});
+document.getElementById('btnCloseExpenseSheet').addEventListener('click', closeExpenseSheet);
+document.getElementById('btnCancelExpenseSheet').addEventListener('click', closeExpenseSheet);
+expenseSheetOverlay.addEventListener('click', closeExpenseSheet);
+
+function openEditExpense(e){
+  editingExpenseId = e.id;
+  expenseForm.description.value = e.description || '';
+  expenseForm.amount.value = e.amount || '';
+  expenseForm.date.value = e.date || todayStr();
+  setExpenseCategorySelection(e.category || 'gas');
+  document.getElementById('btnDeleteExpense').classList.remove('hidden');
+  document.querySelector('#expenseSheet h3').textContent = t('edit_expense');
+  openExpenseSheet();
+}
+
+expenseForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const fd = new FormData(expenseForm);
+  const data = Object.fromEntries(fd.entries());
+  data.amount = data.amount ? +data.amount : 0;
+  saveExpense(data).catch(err => console.error('Save expense error:', err));
+  closeExpenseSheet();
+});
+
+document.getElementById('btnDeleteExpense').addEventListener('click', () => {
+  if(!editingExpenseId) return;
+  if(confirm(t('confirm_delete_expense'))){
+    removeExpense(editingExpenseId).catch(err => console.error('Delete expense error:', err));
+    closeExpenseSheet();
+  }
+});
+
+document.querySelectorAll('.expense-filter-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.expense-filter-chip').forEach(c => c.classList.remove('chip-active'));
+    chip.classList.add('chip-active');
+    activeExpenseFilter = chip.dataset.cat;
+    renderExpenses();
+  });
+});
+
+/* ============ التنقل لشاشة المصاريف (عبر السايد بار) ============ */
+function showExpensesView(){
+  ['viewHome','viewCalendar','viewStats','viewSettings'].forEach(id => document.getElementById(id).classList.add('hidden'));
+  document.getElementById('viewExpenses').classList.remove('hidden');
+  document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('tab-active'); b.style.color = 'var(--text-dim)'; });
+  renderExpenses();
+  closeSidebar();
+}
+function hideExpensesView(){
+  document.getElementById('viewExpenses').classList.add('hidden');
+}
+document.getElementById('btnSidebarExpenses').addEventListener('click', showExpensesView);
+document.getElementById('btnBackFromExpenses').addEventListener('click', () => {
+  hideExpensesView();
+  document.querySelector('.tab-btn[data-view="home"]').click();
+});
+
+/* ============ المصاريف (Expenses) ============ */
+const EXPENSE_CAT_COLORS = { gas:'var(--mint)', parts:'var(--copper)', fuel:'var(--amber)', tools:'var(--danger)', other:'var(--text-dim)' };
+const EXPENSE_CAT_I18N_KEY = { gas:'cat_gas', parts:'cat_parts', fuel:'cat_fuel', tools:'cat_tools', other:'cat_other' };
+function expenseCatLabel(cat){ return t(EXPENSE_CAT_I18N_KEY[cat] || cat); }
+
+function renderExpenses(){
+  const list = document.getElementById('expenseList');
+  const empty = document.getElementById('expenseEmptyState');
+  let items = [...expenses];
+  if(activeExpenseFilter !== 'all'){
+    items = items.filter(e => e.category === activeExpenseFilter);
+  }
+  items.sort((a,b) => (b.date||'').localeCompare(a.date||''));
+
+  list.innerHTML = '';
+  if(items.length === 0){
+    empty.classList.remove('hidden');
+  } else {
+    empty.classList.add('hidden');
+    items.forEach(e => list.appendChild(renderExpenseCard(e)));
+  }
+
+  // ============ ملخص الشهر الحالي (فوق الشاشة) ============
+  const monthPrefix = todayStr().slice(0,7);
+  const monthExpenses = expenses.filter(e => e.date && e.date.startsWith(monthPrefix));
+  const monthExpTotal = monthExpenses.reduce((s,e)=>s+(+e.amount||0), 0);
+  const monthIncome = customers.filter(c => c.status==='done' && c.date && c.date.startsWith(monthPrefix)).reduce((s,c)=>s+(+c.price||0), 0);
+  document.getElementById('expensesMonthTotal').textContent = `${monthExpTotal} ${t('currency')}`;
+  document.getElementById('netProfitMonthTotal').textContent = `${monthIncome - monthExpTotal} ${t('currency')}`;
+}
+
+function renderExpenseCard(e){
+  const wrap = document.createElement('div');
+  wrap.className = 'rounded-2xl p-4 cursor-pointer';
+  wrap.style.background = 'var(--surface)';
+  wrap.style.border = '1px solid var(--line)';
+  wrap.innerHTML = `
+    <div class="flex items-start justify-between">
+      <div class="min-w-0">
+        <p class="font-display font-bold text-sm truncate">${escapeHtml(e.description||'')}</p>
+        <p class="text-xs font-mono mt-0.5" style="color:var(--text-dim)">${fmtDate(e.date)}</p>
+      </div>
+      <span class="badge shrink-0" style="background:${EXPENSE_CAT_COLORS[e.category]}22; color:${EXPENSE_CAT_COLORS[e.category]}">${expenseCatLabel(e.category)}</span>
+    </div>
+    <p class="font-mono font-bold text-base mt-2.5" style="color:var(--danger)">-${e.amount} ${t('currency')}</p>
+  `;
+  wrap.addEventListener('click', () => openEditExpense(e));
+  return wrap;
+}
+
 function renderCard(c){
   const badge = dateBadge(c.date);
+  const isCelebrating = c.id === justCompletedId;
   const wrap = document.createElement('div');
-  wrap.className = 'card-press cursor-pointer';
+  wrap.className = 'card-press cursor-pointer' + (isCelebrating ? ' card-done-celebrate' : '');
   wrap.style.position = 'relative';
   wrap.innerHTML = `
     <div style="position:absolute; top:2px; bottom:2px; right:0; width:5px; border-radius:0 12px 12px 0; background:${SERVICE_COLORS[c.serviceType]}; z-index:1"></div>
+    ${isCelebrating ? `
+    <div class="done-check-badge">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A2E2C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+    </div>` : ''}
     <div class="ticket-top px-4 pt-4"><div class="ticket-perf"></div></div>
     <div class="ticket-bottom px-4 pb-4 -mt-2">
       <div class="flex items-start justify-between">
         <div>
-          <p class="font-display font-bold text-[15px]">${c.name}</p>
+          <p class="font-display font-bold text-[15px] underline decoration-dotted" onclick="event.stopPropagation(); openCustomerHistory('${(c.phone||'').replace(/'/g,"\\'")}', '${(c.name||'').replace(/'/g,"\\'")}')">${c.name}</p>
           <p class="text-xs font-mono mt-0.5" style="color:var(--text-dim)">${c.phone}</p>
         </div>
         <span class="badge" style="background:${badge.color}22; color:${badge.color}">${badge.text}${c.time ? ' · ' + c.time : ''}</span>
@@ -1656,6 +2133,12 @@ function renderReport(){
   document.getElementById('statTotalIncome').textContent = total + ' ' + t('currency');
   document.getElementById('statDoneCount').textContent = doneList.length;
   document.getElementById('statAvgPrice').textContent = doneList.length ? Math.round(total/doneList.length) : 0;
+
+  // ============ المصاريف وصافي الربح للفترة المختارة ============
+  const expensesInRange = expenses.filter(e => !start || (e.date >= start && e.date <= end));
+  const expensesTotal = expensesInRange.reduce((s,e)=>s+(+e.amount||0), 0);
+  document.getElementById('statExpensesTotal').textContent = expensesTotal + ' ' + t('currency');
+  document.getElementById('statNetProfit').textContent = (total - expensesTotal) + ' ' + t('currency');
 
   // ============ مقارنة بالفترة السابقة ============
   const compareBadge = document.getElementById('statCompareBadge');
@@ -1865,6 +2348,7 @@ document.querySelectorAll('.range-chip').forEach(chip => {
 });
 
 document.getElementById('btnPrintReport').addEventListener('click', () => window.print());
+document.getElementById('btnGoExpensesFromReport').addEventListener('click', showExpensesView);
 
 /* ============ CALENDAR ============ */
 let calViewDate = new Date();
@@ -1986,6 +2470,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.getElementById('viewCalendar').classList.toggle('hidden', view!=='calendar');
     document.getElementById('viewStats').classList.toggle('hidden', view!=='stats');
     document.getElementById('viewSettings').classList.toggle('hidden', view!=='settings');
+    document.getElementById('viewExpenses').classList.add('hidden');
     if(view==='calendar') renderCalendar();
     if(view==='stats') renderReport();
     if(view==='settings') renderSettings();
@@ -2113,19 +2598,20 @@ document.getElementById('btnExportBackup').addEventListener('click', () => {
 const THEME_KEY = 'tabrid-theme-pref';
 
 function resolveTheme(pref){
-  if(pref === 'light' || pref === 'dark') return pref;
+  if(pref === 'light' || pref === 'dark' || pref === 'ice') return pref;
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
 function applyTheme(){
   const pref = localStorage.getItem(THEME_KEY) || 'auto';
   const resolved = resolveTheme(pref);
-  if(resolved === 'light'){
-    document.documentElement.setAttribute('data-theme', 'light');
-  } else {
+  if(resolved === 'dark'){
     document.documentElement.removeAttribute('data-theme');
+  } else {
+    document.documentElement.setAttribute('data-theme', resolved);
   }
-  document.querySelector('meta[name="theme-color"]').setAttribute('content', resolved === 'light' ? '#F5F1E8' : '#0A2E2C');
+  const themeColorMap = { light: '#F5F1E8', dark: '#0A2E2C', ice: '#0B2338' };
+  document.querySelector('meta[name="theme-color"]').setAttribute('content', themeColorMap[resolved]);
   document.querySelectorAll('.theme-chip').forEach(chip => {
     chip.classList.toggle('chip-active', chip.dataset.themePref === pref);
   });
@@ -2365,6 +2851,7 @@ function renderSidebarReports(){
 
 document.getElementById('btnOpenSidebar').addEventListener('click', openSidebar);
 document.getElementById('btnCloseSidebar').addEventListener('click', closeSidebar);
+document.getElementById('btnCloseHistory').addEventListener('click', closeCustomerHistory);
 document.getElementById('sidebarOverlay').addEventListener('click', closeSidebar);
 
 function goToReportsWithRange(range){
@@ -2430,6 +2917,14 @@ form.addEventListener('submit', async e => {
   const fd = new FormData(form);
   const data = Object.fromEntries(fd.entries());
   data.price = data.price ? +data.price : 0;
+
+  // نتأكدو واش الحالة تبدلت من "قيد الانتظار" لـ"منجز" باش نطلقو أنيميشن احتفال عند التحديث الجاي
+  if(editingId){
+    const prevCustomer = customers.find(c => c.id === editingId);
+    if(prevCustomer && prevCustomer.status !== 'done' && data.status === 'done'){
+      justCompletedId = editingId;
+    }
+  }
 
   submitBtn.disabled = true;
   const originalLabel = submitBtn.textContent;
