@@ -603,6 +603,39 @@
     </div>
   </main>
 
+  <!-- ===================== ERROR CODES VIEW ===================== -->
+  <main class="flex-1 px-5 pt-4 pb-28 hidden" id="viewErrorCodes">
+    <div class="flex items-center gap-3 mb-4">
+      <button id="btnBackFromCodes" class="w-9 h-9 rounded-full flex items-center justify-center" style="background:var(--surface); border:1px solid var(--line)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <h2 class="font-display font-black text-lg" data-i18n="error_codes">Codes d'erreur</h2>
+    </div>
+
+    <div class="rounded-2xl px-4 py-3 mb-4 flex gap-2.5" style="background:rgba(242,193,78,.1); border:1px solid rgba(242,193,78,.3)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" class="shrink-0 mt-0.5"><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+      <p class="text-[11px] leading-relaxed" style="color:var(--text-dim)" data-i18n="error_codes_disclaimer">Guide indicatif général — les codes varient selon le modèle et la série exacte. Vérifiez toujours avec le manuel de l'unité avant une réparation importante (compresseur, haute tension).</p>
+    </div>
+
+    <div class="relative mb-3">
+      <input id="errorCodeSearch" type="text" placeholder="Rechercher un code (ex: E1, CH05)..." class="w-full rounded-xl px-4 py-2.5 text-sm">
+    </div>
+
+    <div class="flex gap-2 mb-4 overflow-x-auto pb-1">
+      <button class="chip brand-filter-chip chip-active" data-brand="all" data-i18n="filter_all">Tous</button>
+      <button class="chip brand-filter-chip" data-brand="Gree">Gree</button>
+      <button class="chip brand-filter-chip" data-brand="Midea">Midea</button>
+      <button class="chip brand-filter-chip" data-brand="LG">LG</button>
+      <button class="chip brand-filter-chip" data-brand="Daikin">Daikin</button>
+      <button class="chip brand-filter-chip" data-brand="Samsung">Samsung</button>
+    </div>
+
+    <div id="errorCodeList" class="flex flex-col gap-3"></div>
+    <div id="errorCodeEmptyState" class="hidden text-center py-16">
+      <p class="font-display font-bold text-base" style="color:var(--text-dim)" data-i18n="no_codes_found">Aucun résultat</p>
+    </div>
+  </main>
+
   <!-- ===================== EXPENSE FORM SHEET ===================== -->
   <div id="expenseSheetOverlay" class="fixed inset-0 bg-black/60 hidden z-40"></div>
   <div id="expenseSheet" class="sheet hidden-sheet fixed bottom-0 inset-x-0 mx-auto z-50 rounded-t-3xl px-5 pb-8 max-h-[88vh] overflow-y-auto" style="max-width:480px; background:var(--bg-deep); border:1px solid var(--line); border-bottom:none">
@@ -920,6 +953,10 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16"/></svg>
         <span class="text-sm font-semibold" data-i18n="expenses">Dépenses</span>
       </button>
+      <button id="btnSidebarErrorCodes" class="w-full flex items-center gap-3 rounded-xl px-3 py-3 mb-1">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+        <span class="text-sm font-semibold" data-i18n="error_codes">Codes d'erreur</span>
+      </button>
       <button class="sidebar-nav-btn w-full flex items-center gap-3 rounded-xl px-3 py-3 mb-1" data-view="settings">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1 1.55V21a2 2 0 11-4 0v-.09a1.7 1.7 0 00-1-1.55 1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.7 1.7 0 00.34-1.87 1.7 1.7 0 00-1.55-1H3a2 2 0 110-4h.09a1.7 1.7 0 001.55-1 1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06a1.7 1.7 0 001.87.34H9a1.7 1.7 0 001-1.55V3a2 2 0 114 0v.09a1.7 1.7 0 001 1.55 1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06.06a1.7 1.7 0 00-.34 1.87V9a1.7 1.7 0 001.55 1H21a2 2 0 110 4h-.09a1.7 1.7 0 00-1.55 1z"/></svg>
         <span class="text-sm font-semibold" data-i18n="nav_settings">Réglages</span>
@@ -1124,6 +1161,10 @@ const TRANSLATIONS = {
     expense_amount: 'المبلغ (د.ت)',
     expense_date: 'التاريخ',
     confirm_delete_expense: 'تأكد حذف هذا المصروف؟',
+    error_codes: 'رموز الأعطال',
+    error_codes_disclaimer: 'دليل عام تقريبي — الرموز تختلف حسب الموديل والسلسلة بالضبط. تأكد دائماً من دليل الوحدة قبل أي إصلاح مهم (كمبريسور، جهد عالي).',
+    error_code_search_ph: 'ابحث عن رمز (مثال: E1, CH05)...',
+    no_codes_found: 'ما فماش نتيجة',
     monthly_report: 'التقرير الشهري',
     annual_report: 'التقرير السنوي',
     navigation: 'التنقل',
@@ -1296,6 +1337,10 @@ const TRANSLATIONS = {
     expense_amount: 'Montant (DT)',
     expense_date: 'Date',
     confirm_delete_expense: 'Confirmer la suppression de cette dépense ?',
+    error_codes: "Codes d'erreur",
+    error_codes_disclaimer: "Guide indicatif général — les codes varient selon le modèle et la série exacte. Vérifiez toujours avec le manuel de l'unité avant une réparation importante (compresseur, haute tension).",
+    error_code_search_ph: 'Rechercher un code (ex: E1, CH05)...',
+    no_codes_found: 'Aucun résultat',
     monthly_report: 'Rapport mensuel',
     annual_report: 'Rapport annuel',
     navigation: 'Navigation',
@@ -1942,7 +1987,7 @@ document.querySelectorAll('.expense-filter-chip').forEach(chip => {
 
 /* ============ التنقل لشاشة المصاريف (عبر السايد بار) ============ */
 function showExpensesView(){
-  ['viewHome','viewCalendar','viewStats','viewSettings'].forEach(id => document.getElementById(id).classList.add('hidden'));
+  ['viewHome','viewCalendar','viewStats','viewSettings','viewErrorCodes'].forEach(id => document.getElementById(id).classList.add('hidden'));
   document.getElementById('viewExpenses').classList.remove('hidden');
   document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('tab-active'); b.style.color = 'var(--text-dim)'; });
   renderExpenses();
@@ -1955,6 +2000,135 @@ document.getElementById('btnSidebarExpenses').addEventListener('click', showExpe
 document.getElementById('btnBackFromExpenses').addEventListener('click', () => {
   hideExpensesView();
   document.querySelector('.tab-btn[data-view="home"]').click();
+});
+
+function showErrorCodesView(){
+  ['viewHome','viewCalendar','viewStats','viewSettings','viewExpenses'].forEach(id => document.getElementById(id).classList.add('hidden'));
+  document.getElementById('viewErrorCodes').classList.remove('hidden');
+  document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('tab-active'); b.style.color = 'var(--text-dim)'; });
+  renderErrorCodes();
+  closeSidebar();
+}
+function hideErrorCodesView(){
+  document.getElementById('viewErrorCodes').classList.add('hidden');
+}
+document.getElementById('btnSidebarErrorCodes').addEventListener('click', showErrorCodesView);
+document.getElementById('btnBackFromCodes').addEventListener('click', () => {
+  hideErrorCodesView();
+  document.querySelector('.tab-btn[data-view="home"]').click();
+});
+
+/* ============ دليل رموز الأعطال (Error Codes Lookup) — بيانات ثابتة، تخدم أوفلاين مباشرة ============ */
+const ERROR_CODES_DB = [
+  // ---- Gree ----
+  { brand:'Gree', code:'E1', meaning:"Protection haute pression", tip:"Nettoyer le condenseur, vérifier le ventilateur extérieur" },
+  { brand:'Gree', code:'E2', meaning:"Protection anti-gel (givrage évaporateur)", tip:"Vérifier filtre sale ou débit d'air insuffisant" },
+  { brand:'Gree', code:'E3', meaning:"Protection basse pression", tip:"Vérifier fuite de gaz ou filtre bouché" },
+  { brand:'Gree', code:'E4', meaning:"Température de refoulement compresseur trop élevée", tip:"Vérifier charge de gaz et fuites éventuelles" },
+  { brand:'Gree', code:'E5', meaning:"Protection surtension / sous-tension", tip:"Vérifier la stabilité de l'alimentation électrique" },
+  { brand:'Gree', code:'E6', meaning:"Erreur de communication intérieur/extérieur", tip:"Vérifier le câble de communication" },
+  { brand:'Gree', code:'E7', meaning:"Conflit de mode (multi-split)", tip:"Régler toutes les unités sur le même mode" },
+  { brand:'Gree', code:'F1', meaning:"Défaut capteur température ambiante", tip:"Vérifier ou remplacer le capteur (thermistance)" },
+  { brand:'Gree', code:'F2', meaning:"Défaut capteur évaporateur", tip:"Vérifier ou remplacer le capteur" },
+  { brand:'Gree', code:'H3', meaning:"Protection surcharge compresseur", tip:"Vérifier condensateur et charge de gaz" },
+  // ---- Midea ----
+  { brand:'Midea', code:'E1', meaning:"Erreur communication intérieur/extérieur (varie selon série)", tip:"Vérifier le câble de communication" },
+  { brand:'Midea', code:'E2', meaning:"Erreur signal passage par zéro", tip:"Vérifier la carte électronique" },
+  { brand:'Midea', code:'E3', meaning:"Vitesse ventilateur intérieur hors contrôle", tip:"Vérifier le moteur du ventilateur" },
+  { brand:'Midea', code:'E4', meaning:"Défaut capteur température ambiante (T1)", tip:"Vérifier ou remplacer le capteur" },
+  { brand:'Midea', code:'E5', meaning:"Défaut capteur évaporateur (T2) ou protection tension compresseur", tip:"Selon modèle — vérifier capteur et tension" },
+  { brand:'Midea', code:'E6', meaning:"Défaut capteur combiné / module PFC", tip:"Vérifier capteurs et câblage" },
+  { brand:'Midea', code:'F1', meaning:"Défaut capteur extérieur (T4)", tip:"Vérifier ou remplacer le capteur" },
+  { brand:'Midea', code:'F3', meaning:"Défaut capteur refoulement compresseur (TP)", tip:"Vérifier le capteur" },
+  { brand:'Midea', code:'P0', meaning:"Protection IPM/IGBT (surintensité)", tip:"Vérifier le module inverter" },
+  { brand:'Midea', code:'P4', meaning:"Erreur du drive compresseur inverter", tip:"Nécessite un technicien qualifié" },
+  // ---- LG ----
+  { brand:'LG', code:'CH01 / C1', meaning:"Défaut capteur température intérieure", tip:"Vérifier le capteur et le câblage" },
+  { brand:'LG', code:'CH02 / C2', meaning:"Défaut capteur tuyau intérieur", tip:"Vérifier le capteur" },
+  { brand:'LG', code:'CH05 / C5', meaning:"Erreur communication intérieur/extérieur (la plus fréquente)", tip:"Vérifier câble 3 fils et disjoncteur extérieur" },
+  { brand:'LG', code:'CH06 / C6', meaning:"Surintensité circuit DC inverter", tip:"Nécessite un technicien qualifié" },
+  { brand:'LG', code:'CH07 / C7', meaning:"Surintensité compresseur", tip:"Vérifier le compresseur et la charge de gaz" },
+  { brand:'LG', code:'CH09', meaning:"Erreur EEPROM (carte mère)", tip:"Remplacement de la carte nécessaire" },
+  { brand:'LG', code:'CH10 / CA', meaning:"Température de refoulement trop élevée (>130°C)", tip:"Vérifier charge de gaz et filtre" },
+  { brand:'LG', code:'CH32 / CH33', meaning:"Problème de pression (haute/basse)", tip:"Vérifier la charge de réfrigérant" },
+  { brand:'LG', code:'CH38', meaning:"Manque de réfrigérant", tip:"Vérifier fuite et recharger" },
+  // ---- Daikin ----
+  { brand:'Daikin', code:'A1', meaning:"Défaut carte PCB intérieure", tip:"Redémarrer, sinon remplacer la carte" },
+  { brand:'Daikin', code:'A5', meaning:"Surchauffe ou gel échangeur intérieur", tip:"Vérifier filtre sale ou capteur" },
+  { brand:'Daikin', code:'A6', meaning:"Défaut moteur ventilateur intérieur", tip:"Vérifier le moteur, chercher un blocage" },
+  { brand:'Daikin', code:'C4 / C5', meaning:"Défaut capteur échangeur intérieur", tip:"Vérifier le capteur" },
+  { brand:'Daikin', code:'C9', meaning:"Défaut capteur température ambiante", tip:"Vérifier le capteur" },
+  { brand:'Daikin', code:'E1', meaning:"Défaut carte PCB extérieure", tip:"Nécessite un technicien qualifié" },
+  { brand:'Daikin', code:'E3', meaning:"Activation pressostat haute pression", tip:"Nettoyer le condenseur, vérifier la charge" },
+  { brand:'Daikin', code:'E4', meaning:"Activation pressostat basse pression", tip:"Vérifier fuite de gaz" },
+  { brand:'Daikin', code:'E5', meaning:"Surchauffe ou verrouillage compresseur", tip:"Vérifier charge de gaz et câblage UVW" },
+  { brand:'Daikin', code:'E7', meaning:"Défaut moteur ventilateur extérieur", tip:"Vérifier le moteur, chercher un blocage" },
+  { brand:'Daikin', code:'F3', meaning:"Température de refoulement trop élevée", tip:"Vérifier la charge de gaz" },
+  { brand:'Daikin', code:'U0', meaning:"Manque de réfrigérant", tip:"Vérifier fuite et recharger" },
+  { brand:'Daikin', code:'U2', meaning:"Problème d'alimentation électrique", tip:"Vérifier la tension secteur" },
+  { brand:'Daikin', code:'U4', meaning:"Erreur communication intérieur/extérieur", tip:"Vérifier le câblage de communication" },
+  // ---- Samsung ----
+  { brand:'Samsung', code:'E101', meaning:"Erreur communication intérieur/extérieur (timeout)", tip:"Vérifier câblage et disjoncteur" },
+  { brand:'Samsung', code:'E121', meaning:"Défaut capteur température ambiante", tip:"Vérifier le capteur" },
+  { brand:'Samsung', code:'E122', meaning:"Défaut capteur évaporateur (entrée)", tip:"Vérifier le capteur" },
+  { brand:'Samsung', code:'E123', meaning:"Défaut capteur évaporateur (sortie)", tip:"Vérifier le capteur" },
+  { brand:'Samsung', code:'E154', meaning:"Erreur moteur ventilateur intérieur", tip:"Vérifier le moteur" },
+  { brand:'Samsung', code:'E162', meaning:"Erreur EEPROM (mémoire carte)", tip:"Remplacement de la carte nécessaire" },
+  { brand:'Samsung', code:'E422', meaning:"Erreur vanne d'expansion électronique (EEV)", tip:"Vérifier la vanne" },
+  { brand:'Samsung', code:'E464', meaning:"Surcharge module courant", tip:"Nécessite un technicien qualifié" },
+  { brand:'Samsung', code:'E554', meaning:"Fuite de réfrigérant détectée", tip:"Rechercher la fuite et recharger" },
+];
+
+let activeCodeBrand = 'all';
+
+function renderErrorCodes(){
+  const list = document.getElementById('errorCodeList');
+  const empty = document.getElementById('errorCodeEmptyState');
+  const q = document.getElementById('errorCodeSearch').value.trim().toLowerCase();
+
+  let items = [...ERROR_CODES_DB];
+  if(activeCodeBrand !== 'all'){
+    items = items.filter(e => e.brand === activeCodeBrand);
+  }
+  if(q){
+    items = items.filter(e =>
+      e.code.toLowerCase().includes(q) ||
+      e.meaning.toLowerCase().includes(q) ||
+      e.brand.toLowerCase().includes(q)
+    );
+  }
+
+  list.innerHTML = '';
+  if(items.length === 0){
+    empty.classList.remove('hidden');
+  } else {
+    empty.classList.add('hidden');
+    items.forEach(e => {
+      const card = document.createElement('div');
+      card.className = 'rounded-2xl p-4';
+      card.style.background = 'var(--surface)';
+      card.style.border = '1px solid var(--line)';
+      card.innerHTML = `
+        <div class="flex items-center justify-between mb-2">
+          <span class="font-mono font-black text-lg" style="color:var(--copper)">${escapeHtml(e.code)}</span>
+          <span class="badge" style="background:var(--surface-2); color:var(--text-dim)">${escapeHtml(e.brand)}</span>
+        </div>
+        <p class="text-sm font-semibold">${escapeHtml(e.meaning)}</p>
+        <p class="text-xs mt-1.5" style="color:var(--text-dim)">💡 ${escapeHtml(e.tip)}</p>
+      `;
+      list.appendChild(card);
+    });
+  }
+}
+
+document.getElementById('errorCodeSearch').addEventListener('input', renderErrorCodes);
+document.querySelectorAll('.brand-filter-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.brand-filter-chip').forEach(c => c.classList.remove('chip-active'));
+    chip.classList.add('chip-active');
+    activeCodeBrand = chip.dataset.brand;
+    renderErrorCodes();
+  });
 });
 
 /* ============ المصاريف (Expenses) ============ */
@@ -2476,6 +2650,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.getElementById('viewStats').classList.toggle('hidden', view!=='stats');
     document.getElementById('viewSettings').classList.toggle('hidden', view!=='settings');
     document.getElementById('viewExpenses').classList.add('hidden');
+    document.getElementById('viewErrorCodes').classList.add('hidden');
     if(view==='calendar') renderCalendar();
     if(view==='stats') renderReport();
     if(view==='settings') renderSettings();
