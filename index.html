@@ -293,6 +293,16 @@
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg>
     </button>
 
+    <button id="btnDebtBanner" style="display:none; background:linear-gradient(90deg, rgba(232,103,74,.18), rgba(232,103,74,.06)); border:1px solid rgba(232,103,74,.4)" class="w-full flex items-center justify-between rounded-2xl px-4 py-3.5 mb-4">
+      <span class="flex items-center gap-2.5">
+        <span class="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style="background:var(--danger)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        </span>
+        <span class="font-display font-bold text-sm" id="debtBannerText" style="color:var(--text)">Dettes en attente</span>
+      </span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg>
+    </button>
+
     <div class="pipe-divider">
       <span class="joint"></span><span class="seg"></span>
       <span class="font-display font-bold text-sm" style="color:var(--text-dim)" data-i18n="upcoming_appts">Prochains rendez-vous</span>
@@ -442,6 +452,23 @@
     <div class="rounded-2xl p-4 mt-3" style="background:var(--surface); border:1px solid var(--line)">
       <p class="text-xs font-semibold mb-2" style="color:var(--text-dim)" id="chartBarLabel" data-i18n="chart_income_over_time">Revenus dans le temps</p>
       <canvas id="chartBar" style="width:100%; height:150px; display:block"></canvas>
+    </div>
+
+    <div class="rounded-2xl p-4 mt-3" style="background:var(--surface); border:1px solid var(--line)">
+      <div class="flex items-center justify-between mb-2">
+        <p class="text-xs font-semibold" style="color:var(--text-dim)" id="chartProfitLabel" data-i18n="chart_profit_vs_income">Bénéfice net vs Revenu</p>
+        <div class="flex items-center gap-3">
+          <span class="flex items-center gap-1.5 text-[10.5px]" style="color:var(--text-dim)">
+            <span style="width:8px; height:8px; border-radius:2px; background:var(--copper); display:inline-block"></span>
+            <span data-i18n="chart_legend_income">Revenu</span>
+          </span>
+          <span class="flex items-center gap-1.5 text-[10.5px]" style="color:var(--text-dim)">
+            <span style="width:8px; height:8px; border-radius:2px; background:var(--mint); display:inline-block"></span>
+            <span data-i18n="chart_legend_profit">Net</span>
+          </span>
+        </div>
+      </div>
+      <canvas id="chartProfit" style="width:100%; height:150px; display:block"></canvas>
     </div>
 
     <div class="pipe-divider">
@@ -636,6 +663,27 @@
     </div>
   </main>
 
+  <!-- ===================== DEBTS VIEW ===================== -->
+  <main class="flex-1 px-5 pt-4 pb-28 hidden" id="viewDebts">
+    <div class="flex items-center gap-3 mb-4">
+      <button id="btnBackFromDebts" class="w-9 h-9 rounded-full flex items-center justify-center" style="background:var(--surface); border:1px solid var(--line)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <h2 class="font-display font-black text-lg" data-i18n="debts">Dettes en attente</h2>
+    </div>
+
+    <div class="rounded-2xl p-5 mb-4" style="background:var(--surface); border:1px solid var(--line)">
+      <p class="text-xs" style="color:var(--text-dim)" data-i18n="debts_total">Total des dettes</p>
+      <p class="font-mono font-black text-3xl mt-1" style="color:var(--danger)" id="debtsTotalAmount">0 DT</p>
+      <p class="text-xs mt-1" style="color:var(--text-dim)" id="debtsClientCount">0</p>
+    </div>
+
+    <div id="debtsList" class="flex flex-col gap-3"></div>
+    <div id="debtsEmptyState" class="hidden text-center py-16">
+      <p class="font-display font-bold text-base" style="color:var(--mint)" data-i18n="no_debts">Aucune dette en attente 🎉</p>
+    </div>
+  </main>
+
   <!-- ===================== EXPENSE FORM SHEET ===================== -->
   <div id="expenseSheetOverlay" class="fixed inset-0 bg-black/60 hidden z-40"></div>
   <div id="expenseSheet" class="sheet hidden-sheet fixed bottom-0 inset-x-0 mx-auto z-50 rounded-t-3xl px-5 pb-8 max-h-[88vh] overflow-y-auto" style="max-width:480px; background:var(--bg-deep); border:1px solid var(--line); border-bottom:none">
@@ -807,6 +855,14 @@
         <input name="price" id="priceInput" type="number" step="0.5" placeholder="0" class="w-full rounded-xl px-3 py-3 mt-1.5 text-sm font-mono">
       </div>
       <div>
+        <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="payment_status">Statut de paiement</label>
+        <input type="hidden" name="paymentStatus" id="paymentStatusInput" value="paid">
+        <div class="grid grid-cols-2 gap-2 mt-1.5">
+          <button type="button" class="payment-status-chip rounded-xl py-2.5 text-sm font-bold" data-status="paid" style="background:var(--copper); color:#1A1006" data-i18n="paid_full">Payé intégralement</button>
+          <button type="button" class="payment-status-chip rounded-xl py-2.5 text-sm font-bold" data-status="partial" style="background:var(--surface-2); border:1px solid var(--line); color:var(--text)" data-i18n="paid_partial">Paiement partiel</button>
+        </div>
+      </div>
+      <div id="depositFieldWrap" class="hidden">
         <label class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="deposit_label">Acompte (optionnel)</label>
         <input name="deposit" id="depositInput" type="number" step="0.5" placeholder="0" class="w-full rounded-xl px-3 py-3 mt-1.5 text-sm font-mono">
         <p id="remainderNote" class="text-xs mt-1.5 hidden" style="color:var(--text-dim)"></p>
@@ -957,6 +1013,10 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
         <span class="text-sm font-semibold" data-i18n="error_codes">Codes d'erreur</span>
       </button>
+      <button id="btnSidebarDebts" class="w-full flex items-center gap-3 rounded-xl px-3 py-3 mb-1">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        <span class="text-sm font-semibold" data-i18n="debts">Dettes en attente</span>
+      </button>
       <button class="sidebar-nav-btn w-full flex items-center gap-3 rounded-xl px-3 py-3 mb-1" data-view="settings">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1 1.55V21a2 2 0 11-4 0v-.09a1.7 1.7 0 00-1-1.55 1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.7 1.7 0 00.34-1.87 1.7 1.7 0 00-1.55-1H3a2 2 0 110-4h.09a1.7 1.7 0 001.55-1 1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06a1.7 1.7 0 001.87.34H9a1.7 1.7 0 001-1.55V3a2 2 0 114 0v.09a1.7 1.7 0 001 1.55 1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06.06a1.7 1.7 0 00-.34 1.87V9a1.7 1.7 0 001.55 1H21a2 2 0 110 4h-.09a1.7 1.7 0 00-1.55 1z"/></svg>
         <span class="text-sm font-semibold" data-i18n="nav_settings">Réglages</span>
@@ -1081,6 +1141,9 @@ const TRANSLATIONS = {
     chart_income_over_time: 'المداخيل عبر الوقت',
     chart_income_monthly_12: 'المداخيل الشهرية (آخر 12 شهر)',
     chart_income_daily: 'المداخيل اليومية',
+    chart_profit_vs_income: 'صافي الربح مقابل المداخيل',
+    chart_legend_income: 'المداخيل',
+    chart_legend_profit: 'الصافي',
     by_service_type: 'حسب نوع الخدمة',
     donut_caption: 'توزيع المداخيل المنجزة حسب نوع الخدمة للفترة المختارة',
     settings: 'الإعدادات',
@@ -1120,6 +1183,14 @@ const TRANSLATIONS = {
     appt_time: 'الوقت (اختياري)',
     price_label: 'السعر (د.ت)',
     deposit_label: 'عربون / دفعة أولى (اختياري)',
+    payment_status: 'حالة الدفع',
+    paid_full: 'مدفوع بالكامل',
+    paid_partial: 'دفعة جزئية',
+    debts: 'الديون المعلقة',
+    debts_total: 'مجموع الديون',
+    debts_clients: 'حرفاء',
+    no_debts: 'ما فماش ديون معلقة 🎉',
+    debt_banner: (n, total) => `${n} حرفاء عليهم ${total} د.ت`,
     remainder_label: 'الباقي',
     deposit_paid: 'المدفوع',
     notes: 'ملاحظات',
@@ -1257,6 +1328,9 @@ const TRANSLATIONS = {
     chart_income_over_time: 'Revenus dans le temps',
     chart_income_monthly_12: 'Revenus mensuels (12 derniers mois)',
     chart_income_daily: 'Revenus quotidiens',
+    chart_profit_vs_income: 'Bénéfice net vs Revenu',
+    chart_legend_income: 'Revenu',
+    chart_legend_profit: 'Net',
     by_service_type: 'Par type de service',
     donut_caption: 'Répartition des revenus terminés par type de service, pour la période choisie',
     settings: 'Paramètres',
@@ -1296,6 +1370,14 @@ const TRANSLATIONS = {
     appt_time: 'Heure (optionnel)',
     price_label: 'Prix (DT)',
     deposit_label: 'Acompte (optionnel)',
+    payment_status: 'Statut de paiement',
+    paid_full: 'Payé intégralement',
+    paid_partial: 'Paiement partiel',
+    debts: 'Dettes en attente',
+    debts_total: 'Total des dettes',
+    debts_clients: 'clients',
+    no_debts: 'Aucune dette en attente 🎉',
+    debt_banner: (n, total) => `${n} clients doivent ${total} DT au total`,
     remainder_label: 'Reste',
     deposit_paid: 'Payé',
     notes: 'Notes',
@@ -1775,6 +1857,7 @@ function renderList(){
   renderCalendar();
   renderCalDayList();
   renderReport();
+  updateDebtBanner();
 
   if(justCompletedId){
     const idToClear = justCompletedId;
@@ -1987,7 +2070,7 @@ document.querySelectorAll('.expense-filter-chip').forEach(chip => {
 
 /* ============ التنقل لشاشة المصاريف (عبر السايد بار) ============ */
 function showExpensesView(){
-  ['viewHome','viewCalendar','viewStats','viewSettings','viewErrorCodes'].forEach(id => document.getElementById(id).classList.add('hidden'));
+  ['viewHome','viewCalendar','viewStats','viewSettings','viewErrorCodes','viewDebts'].forEach(id => document.getElementById(id).classList.add('hidden'));
   document.getElementById('viewExpenses').classList.remove('hidden');
   document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('tab-active'); b.style.color = 'var(--text-dim)'; });
   renderExpenses();
@@ -2003,7 +2086,7 @@ document.getElementById('btnBackFromExpenses').addEventListener('click', () => {
 });
 
 function showErrorCodesView(){
-  ['viewHome','viewCalendar','viewStats','viewSettings','viewExpenses'].forEach(id => document.getElementById(id).classList.add('hidden'));
+  ['viewHome','viewCalendar','viewStats','viewSettings','viewExpenses','viewDebts'].forEach(id => document.getElementById(id).classList.add('hidden'));
   document.getElementById('viewErrorCodes').classList.remove('hidden');
   document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('tab-active'); b.style.color = 'var(--text-dim)'; });
   renderErrorCodes();
@@ -2017,6 +2100,59 @@ document.getElementById('btnBackFromCodes').addEventListener('click', () => {
   hideErrorCodesView();
   document.querySelector('.tab-btn[data-view="home"]').click();
 });
+
+function showDebtsView(){
+  ['viewHome','viewCalendar','viewStats','viewSettings','viewExpenses','viewErrorCodes'].forEach(id => document.getElementById(id).classList.add('hidden'));
+  document.getElementById('viewDebts').classList.remove('hidden');
+  document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('tab-active'); b.style.color = 'var(--text-dim)'; });
+  renderDebts();
+  closeSidebar();
+}
+function hideDebtsView(){
+  document.getElementById('viewDebts').classList.add('hidden');
+}
+document.getElementById('btnSidebarDebts').addEventListener('click', showDebtsView);
+document.getElementById('btnDebtBanner').addEventListener('click', showDebtsView);
+document.getElementById('btnBackFromDebts').addEventListener('click', () => {
+  hideDebtsView();
+  document.querySelector('.tab-btn[data-view="home"]').click();
+});
+
+/* ============ الديون المعلقة (Outstanding Debts) ============ */
+function getDebtors(){
+  return customers.filter(c => c.paymentStatus === 'partial' && Math.max(0, (c.price||0) - (c.deposit||0)) > 0);
+}
+
+function renderDebts(){
+  const debtors = getDebtors().sort((a,b) => (b.date||'').localeCompare(a.date||''));
+  const total = debtors.reduce((s,c) => s + Math.max(0, (c.price||0) - (c.deposit||0)), 0);
+
+  document.getElementById('debtsTotalAmount').textContent = `${total} ${t('currency')}`;
+  document.getElementById('debtsClientCount').textContent = `${debtors.length} ${t('debts_clients')}`;
+
+  const list = document.getElementById('debtsList');
+  const empty = document.getElementById('debtsEmptyState');
+  list.innerHTML = '';
+  if(debtors.length === 0){
+    empty.classList.remove('hidden');
+  } else {
+    empty.classList.add('hidden');
+    debtors.forEach(c => list.appendChild(renderCard(c)));
+  }
+}
+
+function updateDebtBanner(){
+  const debtors = getDebtors();
+  const btn = document.getElementById('btnDebtBanner');
+  const label = document.getElementById('debtBannerText');
+  if(debtors.length > 0){
+    const total = debtors.reduce((s,c) => s + Math.max(0, (c.price||0) - (c.deposit||0)), 0);
+    btn.style.display = 'flex';
+    label.textContent = t('debt_banner')(debtors.length, total);
+  } else {
+    btn.style.display = 'none';
+  }
+}
 
 /* ============ دليل رموز الأعطال (Error Codes Lookup) — بيانات ثابتة، تخدم أوفلاين مباشرة ============ */
 const ERROR_CODES_DB = [
@@ -2222,7 +2358,7 @@ function renderCard(c){
       <div class="flex items-center justify-between mt-4">
         <div>
           <p class="font-mono font-bold text-base" style="color:var(--mint)">${c.price ? c.price+' '+t('currency') : '—'}</p>
-          ${c.deposit > 0 ? `<p class="font-mono text-[10.5px] mt-0.5" style="color:var(--text-dim)">${t('deposit_paid')}: ${c.deposit} · ${t('remainder_label')}: ${Math.max(0, (c.price||0) - c.deposit)}</p>` : ''}
+          ${(c.paymentStatus === 'partial' && Math.max(0, (c.price||0) - (c.deposit||0)) > 0) ? `<p class="font-mono font-semibold text-[10.5px] mt-0.5" style="color:var(--danger)">${t('remainder_label')}: ${Math.max(0, (c.price||0) - (c.deposit||0))} ${t('currency')}</p>` : ''}
         </div>
         <div class="flex gap-2">
           <a href="tel:${c.phone}" onclick="event.stopPropagation()" class="w-9 h-9 rounded-full flex items-center justify-center" style="background:rgba(79,209,174,.14)">
@@ -2377,6 +2513,9 @@ function renderReport(){
     (activeRange === 'year' || activeRange === 'all') ? t('chart_income_monthly_12') : t('chart_income_daily');
   drawBarChart(document.getElementById('chartBar'), barSeries.labels, barSeries.values);
 
+  const comparisonSeries = buildComparisonSeries(activeRange);
+  drawComparisonChart(document.getElementById('chartProfit'), comparisonSeries.labels, comparisonSeries.incomeValues, comparisonSeries.profitValues);
+
   const donutSegments = Object.keys(SERVICE_COLORS).map(type => ({
     label: type, value: byType[type] || 0, colorVar: SERVICE_COLORS[type]
   }));
@@ -2437,6 +2576,88 @@ function buildBarSeries(range){
     cur.setDate(cur.getDate()+1);
   }
   return { labels, values };
+}
+
+function buildComparisonSeries(range){
+  // نفس منطق buildBarSeries، بس نحسبو معاها المصاريف لكل فترة باش نطلعو صافي الربح
+  if(range === 'year' || range === 'all'){
+    const now = new Date();
+    const labels = [], incomeValues = [], profitValues = [];
+    for(let i=11; i>=0; i--){
+      const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
+      const prefix = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+      const income = customers.filter(c => c.status==='done' && c.date && c.date.startsWith(prefix)).reduce((s,c)=>s+(+c.price||0),0);
+      const exp = expenses.filter(e => e.date && e.date.startsWith(prefix)).reduce((s,e)=>s+(+e.amount||0),0);
+      labels.push(MONTH_NAMES[currentLang][d.getMonth()].slice(0,3));
+      incomeValues.push(income);
+      profitValues.push(income - exp);
+    }
+    return { labels, incomeValues, profitValues };
+  }
+
+  const chartRange = range === 'today' ? 'week' : range;
+  const { start, end } = getRangeBounds(chartRange);
+  const labels = [], incomeValues = [], profitValues = [];
+  let cur = new Date(start + 'T00:00:00');
+  const endD = new Date(end + 'T00:00:00');
+  while(cur <= endD){
+    const iso = cur.toISOString().slice(0,10);
+    const income = customers.filter(c => c.status==='done' && c.date === iso).reduce((s,c)=>s+(+c.price||0),0);
+    const exp = expenses.filter(e => e.date === iso).reduce((s,e)=>s+(+e.amount||0),0);
+    labels.push(String(cur.getDate()));
+    incomeValues.push(income);
+    profitValues.push(income - exp);
+    cur.setDate(cur.getDate()+1);
+  }
+  return { labels, incomeValues, profitValues };
+}
+
+function drawComparisonChart(canvas, labels, incomeValues, profitValues){
+  const rawW = canvas.parentElement.clientWidth - 32;
+  if(rawW <= 0) return;
+  const cssW = rawW;
+  const cssH = 150;
+  const ctx = setupCanvasHiDPI(canvas, cssW, cssH);
+  ctx.clearRect(0, 0, cssW, cssH);
+
+  const copper = cssVar('--copper');
+  const mint = cssVar('--mint');
+  const danger = cssVar('--danger');
+  const line = cssVar('--line');
+  const textDim = cssVar('--text-dim');
+
+  const max = Math.max(1, ...incomeValues, ...profitValues.map(v => Math.abs(v)));
+  const padBottom = 18, padTop = 8;
+  const chartH = cssH - padBottom - padTop;
+  const n = incomeValues.length || 1;
+  const groupGap = n > 15 ? 3 : 6;
+  const barGap = 1.5;
+  const groupW = (cssW - groupGap*(n-1)) / n;
+  const barW = Math.max(1.5, (groupW - barGap) / 2);
+
+  ctx.font = '9px IBM Plex Mono, monospace';
+  ctx.textAlign = 'center';
+
+  incomeValues.forEach((incomeVal, i) => {
+    const profitVal = profitValues[i];
+    const groupX = i * (groupW + groupGap);
+
+    const incomeH = max > 0 ? Math.max((incomeVal/max) * chartH, incomeVal > 0 ? 2 : 0) : 0;
+    ctx.fillStyle = incomeVal > 0 ? copper : line;
+    roundRectPath(ctx, groupX, padTop + (chartH - incomeH), barW, Math.max(incomeH, 2), 2);
+    ctx.fill();
+
+    const profitH = max > 0 ? Math.max((Math.abs(profitVal)/max) * chartH, 2) : 0;
+    ctx.fillStyle = profitVal < 0 ? danger : (profitVal > 0 ? mint : line);
+    roundRectPath(ctx, groupX + barW + barGap, padTop + (chartH - profitH), barW, Math.max(profitH, 2), 2);
+    ctx.fill();
+
+    const showEvery = n > 20 ? 4 : (n > 10 ? 2 : 1);
+    if(i % showEvery === 0){
+      ctx.fillStyle = textDim;
+      ctx.fillText(labels[i], groupX + barW + barGap/2, cssH - 5);
+    }
+  });
 }
 
 function drawBarChart(canvas, labels, values){
@@ -2651,6 +2872,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.getElementById('viewSettings').classList.toggle('hidden', view!=='settings');
     document.getElementById('viewExpenses').classList.add('hidden');
     document.getElementById('viewErrorCodes').classList.add('hidden');
+    document.getElementById('viewDebts').classList.add('hidden');
     if(view==='calendar') renderCalendar();
     if(view==='stats') renderReport();
     if(view==='settings') renderSettings();
@@ -2869,6 +3091,7 @@ document.getElementById('btnAdd').addEventListener('click', () => {
   editingId = null;
   form.reset();
   setBtuSelection('');
+  setPaymentStatus('paid');
   document.getElementById('sheetTitle').textContent = t('new_customer');
   document.getElementById('btnDelete').classList.add('hidden');
   form.date.value = todayStr();
@@ -2879,12 +3102,31 @@ document.getElementById('btnCloseSheet').addEventListener('click', closeSheet);
 document.getElementById('btnCancelSheet').addEventListener('click', closeSheet);
 overlay.addEventListener('click', closeSheet);
 
+/* ============ حالة الدفع (Payé / Partiel) ============ */
+function setPaymentStatus(status){
+  document.getElementById('paymentStatusInput').value = status;
+  document.querySelectorAll('.payment-status-chip').forEach(chip => {
+    const active = chip.dataset.status === status;
+    chip.style.background = active ? 'var(--copper)' : 'var(--surface-2)';
+    chip.style.color = active ? '#1A1006' : 'var(--text)';
+    chip.style.border = active ? 'none' : '1px solid var(--line)';
+  });
+  document.getElementById('depositFieldWrap').classList.toggle('hidden', status !== 'partial');
+  if(status === 'paid'){
+    document.getElementById('depositInput').value = '';
+    document.getElementById('remainderNote').classList.add('hidden');
+  }
+}
+document.querySelectorAll('.payment-status-chip').forEach(chip => {
+  chip.addEventListener('click', () => setPaymentStatus(chip.dataset.status));
+});
+
 /* ============ عربون / الباقي (Deposit / Remainder) — حساب حي ============ */
 function updateRemainderNote(){
   const price = parseFloat(document.getElementById('priceInput').value) || 0;
   const deposit = parseFloat(document.getElementById('depositInput').value) || 0;
   const note = document.getElementById('remainderNote');
-  if(deposit > 0){
+  if(document.getElementById('paymentStatusInput').value === 'partial'){
     const remainder = Math.max(0, price - deposit);
     note.textContent = `${t('deposit_paid')}: ${deposit} ${t('currency')} · ${t('remainder_label')}: ${remainder} ${t('currency')}`;
     note.classList.remove('hidden');
@@ -3084,6 +3326,9 @@ window.openEdit = function openEdit(id){
   form.deposit.value = c.deposit || '';
   form.notes.value = c.notes || '';
   setBtuSelection(c.btu || '');
+  // للزبائن القدام اللي ما فيهمش هذا الحقل، نخمنو الحالة من العربون
+  const inferredStatus = c.paymentStatus || ((c.deposit > 0 && c.deposit < c.price) ? 'partial' : 'paid');
+  setPaymentStatus(inferredStatus);
   updateRemainderNote();
   document.getElementById('sheetTitle').textContent = t('edit_customer');
   document.getElementById('btnDelete').classList.remove('hidden');
@@ -3097,6 +3342,7 @@ form.addEventListener('submit', async e => {
   const fd = new FormData(form);
   const data = Object.fromEntries(fd.entries());
   data.price = data.price ? +data.price : 0;
+  data.deposit = (data.paymentStatus === 'partial' && data.deposit) ? +data.deposit : 0;
 
   // نتأكدو واش الحالة تبدلت من "قيد الانتظار" لـ"منجز" باش نطلقو أنيميشن احتفال عند التحديث الجاي
   if(editingId){
