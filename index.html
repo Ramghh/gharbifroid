@@ -45,20 +45,20 @@
     --text: #EAF3F1;
     --text-dim: #8FADA9;
   }
-  /* ============ وضع فاتح (Light Mode) بتباين عالي ============ */
+  /* ============ وضع فاتح (Light Mode) ============ */
   :root[data-theme="light"]{
     --bg: #F5F1E8;
-    --bg-deep: #E8E0CE;
+    --bg-deep: #ECE5D5;
     --surface: #FFFFFF;
-    --surface-2: #F7F2E4;
-    --line: #C4B8A0;
+    --surface-2: #F1ECDF;
+    --line: #DDD4BE;
     --copper: #C2701F;
     --copper-dim: #A85F17;
-    --mint: #0D8B70;
-    --amber: #A67C0E;
-    --danger: #B83A22;
-    --text: #1A1A1A;
-    --text-dim: #4A4A4A;
+    --mint: #1E9A80;
+    --amber: #B5860F;
+    --danger: #C6462F;
+    --text: #1D2926;
+    --text-dim: #6C7B76;
   }
   /* ============ ثيم أزرق ثلجي (Ice Blue) — يناسب طبيعة الصيانة والتبريد ============ */
   :root[data-theme="ice"]{
@@ -1103,198 +1103,10 @@
 </div>
 
 <script type="module">
-/* ============ الترجمة (i18n) — عربي / فرنسي ============ */
-const LANG_KEY = 'tabrid-lang';
-let currentLang = 'fr'; // التطبيق توة بالفرنسية فقط
+/* ============ الترجمة (i18n) — التطبيق بالفرنسية فقط ============ */
+let currentLang = 'fr';
 
 const TRANSLATIONS = {
-  ar: {
-    app_title_full: 'تبريد | متابعة الصيانة والتركيب',
-    app_name: 'تبريد',
-    app_tagline: 'متابعة الصيانة والتركيب',
-    month_income: 'مداخيل الشهر',
-    today_appts: 'مواعيد اليوم',
-    pending_label: 'قيد الانتظار',
-    search_ph: 'ابحث بالاسم أو الهاتف...',
-    filter_all: 'الكل',
-    type_install: 'تركيب',
-    type_maint: 'صيانة',
-    type_repair: 'إصلاح',
-    status_done: 'منجز',
-    status_cancelled: 'ملغى',
-    upcoming_appts: 'مواعيد قادمة',
-    done_section: 'الخدمات المنجزة',
-    no_customers_yet: 'ما فماش زبائن توة',
-    add_first_customer: 'اضغط على + باش تزيد أول زبون',
-    appts_label: 'مواعيد',
-    income_label: 'مداخيل',
-    wd_sun: 'أحد', wd_mon: 'إثنين', wd_tue: 'ثلاثاء', wd_wed: 'أربعاء',
-    wd_thu: 'خميس', wd_fri: 'جمعة', wd_sat: 'سبت',
-    legend_1: '1 موعد', legend_2_3: '2-3 مواعيد', legend_4plus: '4+ مواعيد',
-    pick_day: 'اختار يوم',
-    no_appts_day: 'لا مواعيد في هذا اليوم',
-    reports: 'التقارير',
-    print: 'طباعة',
-    range_today: 'اليوم', range_week: 'هذا الأسبوع', range_month: 'هذا الشهر', range_year: 'هذي السنة', range_all: 'الكل',
-    done_count_label: 'عدد الخدمات المنجزة',
-    avg_price_label: 'متوسط السعر',
-    chart_income_over_time: 'المداخيل عبر الوقت',
-    chart_income_monthly_12: 'المداخيل الشهرية (آخر 12 شهر)',
-    chart_income_daily: 'المداخيل اليومية',
-    chart_profit_vs_income: 'صافي الربح مقابل المداخيل',
-    chart_legend_income: 'المداخيل',
-    chart_legend_profit: 'الصافي',
-    by_service_type: 'حسب نوع الخدمة',
-    donut_caption: 'توزيع المداخيل المنجزة حسب نوع الخدمة للفترة المختارة',
-    settings: 'الإعدادات',
-    appearance: 'المظهر',
-    theme_auto: 'تلقائي', theme_light: 'فاتح', theme_dark: 'داكن', theme_ice: '❄️ جليدي',
-    language_section: 'اللغة',
-    font_size: 'حجم الخط',
-    lang_ar: 'العربية', lang_fr: 'Français',
-    account: 'الحساب',
-    logged_in_as: 'مسجل بحساب',
-    change_password: 'تغيير كلمة السر',
-    pwd_current_ph: 'كلمة السر الحالية',
-    pwd_new_ph: 'كلمة السر الجديدة (6 خانات فما فوق)',
-    pwd_confirm_ph: 'أعد كتابة كلمة السر الجديدة',
-    update_password: 'تحديث كلمة السر',
-    logout: 'تسجيل الخروج',
-    data_section: 'البيانات',
-    export_backup: 'تصدير نسخة احتياطية (JSON)',
-    backup_note: 'البيانات متزامنة أوتوماتيكياً مع Firebase — هذا الملف نسخة إضافية تحفظها إنت.',
-    notifications: 'التنبيهات',
-    enable_notif: 'تفعيل تنبيهات المواعيد',
-    notif_note: 'كي تفتح التطبيق صباحاً، يعلمك بمواعيد اليوم وأي موعد "قيد الانتظار" فات وقتو. ⚠️ لازم تفتح التطبيق مرة على الأقل كل يوم باش التنبيه يخدم — التطبيق ما ينجمش يبعث تنبيه وهو مسكر كامل بلا سيرفر خاص بيه.',
-    about_app: 'عن التطبيق',
-    version_note: 'الإصدار 1.0 — PWA بلا أنترنت',
-    nav_home: 'الرئيسية', nav_calendar: 'التقويم', nav_reports: 'التقارير', nav_settings: 'الإعدادات',
-    new_customer: 'زبون جديد',
-    edit_customer: 'تعديل الزبون',
-    customer_name: 'اسم الحريف',
-    customer_name_ph: 'مثال: سامي بن علي',
-    phone_number: 'رقم الهاتف',
-    address: 'العنوان',
-    address_ph: 'الحي، المدينة',
-    service_type: 'نوع الخدمة',
-    status: 'الحالة',
-    ac_power: 'قوة المكيف (BTU)',
-    appt_date: 'تاريخ الموعد',
-    appt_time: 'الوقت (اختياري)',
-    price_label: 'السعر (د.ت)',
-    deposit_label: 'عربون / دفعة أولى (اختياري)',
-    payment_status: 'حالة الدفع',
-    paid_full: 'مدفوع بالكامل',
-    paid_partial: 'دفعة جزئية',
-    debts: 'الديون المعلقة',
-    debts_total: 'مجموع الديون',
-    debts_clients: 'حرفاء',
-    no_debts: 'ما فماش ديون معلقة 🎉',
-    debt_banner: (n, total) => `${n} حرفاء عليهم ${total} د.ت`,
-    remainder_label: 'الباقي',
-    deposit_paid: 'المدفوع',
-    notes: 'ملاحظات',
-    notes_ph: 'نوع المكيف، الضمان، تفاصيل أخرى...',
-    sound_meter: 'قياس مستوى الضوضاء',
-    sm_press_start: 'اضغط "ابدأ" باش تبدا القياس',
-    sm_measuring: 'جاري القياس... قرب الهاتف من الوحدة',
-    sm_average: 'المعدل',
-    sm_peak: 'الذروة',
-    sm_disclaimer: 'مؤشر تقريبي غير معتمد — يعتمد على حساسية ميكروفون الهاتف، وما يعوضش جهاز قياس ضوضاء احترافي معاير.',
-    sm_start: 'ابدأ',
-    sm_stop: 'وقف',
-    sm_save_to_notes: 'أضف للملاحظات',
-    sm_mic_denied: 'ما نجمناش نوصلو للميكروفون. تأكد من إذن المتصفح.',
-    sm_saved: 'تمت الإضافة ✓',
-    booking_requests: 'طلبات المواعيد',
-    quick_reports: 'تقارير سريعة',
-    history_visits: 'الزيارات',
-    history_total: 'المجموع',
-    history_since: 'حريف منذ',
-    history_timeline: 'سجل العمليات',
-    history_no_other: 'ما فماش عمليات أخرى لهذا الحريف',
-    expenses: 'المصاريف',
-    expenses_this_month: 'مصاريف هذا الشهر',
-    net_profit_month: 'صافي الربح (الشهر)',
-    net_profit_label: 'صافي الربح',
-    expenses_label: 'المصاريف',
-    cat_gas: 'غاز',
-    cat_parts: 'قطع غيار',
-    cat_fuel: 'وقود',
-    cat_tools: 'أدوات',
-    cat_other: 'أخرى',
-    no_expenses_yet: 'ما فماش مصاريف مسجلة',
-    add_first_expense: 'اضغط على + باش تزيد مصروف',
-    new_expense: 'مصروف جديد',
-    edit_expense: 'تعديل المصروف',
-    category: 'الصنف',
-    expense_desc: 'الوصف',
-    expense_amount: 'المبلغ (د.ت)',
-    expense_date: 'التاريخ',
-    confirm_delete_expense: 'تأكد حذف هذا المصروف؟',
-    error_codes: 'رموز الأعطال',
-    error_codes_disclaimer: 'دليل عام تقريبي — الرموز تختلف حسب الموديل والسلسلة بالضبط. تأكد دائماً من دليل الوحدة قبل أي إصلاح مهم (كمبريسور، جهد عالي).',
-    error_code_search_ph: 'ابحث عن رمز (مثال: E1, CH05)...',
-    no_codes_found: 'ما فماش نتيجة',
-    monthly_report: 'التقرير الشهري',
-    annual_report: 'التقرير السنوي',
-    navigation: 'التنقل',
-    booking_link_section: 'رابط الحجز متاعك',
-    booking_link_note: 'أعطي هذا الرابط لحرفائك — يقدروا يطلبوا موعد بلا ما يحتاجوا حساب.',
-    copy_link: 'نسخ الرابط',
-    link_copied: 'تم النسخ ✓',
-    no_booking_requests: 'ما فماش طلبات مواعيد جديدة توة',
-    new_booking_badge: (n) => `${n} طلبات مواعيد جديدة`,
-    accept: 'قبول',
-    reject: 'رفض',
-    booking_accepted: 'تم قبول الطلب ✓',
-    booking_rejected: 'تم رفض الطلب',
-    confirm_reject_booking: 'تأكد رفض هذا الطلب؟',
-    delete: 'حذف',
-    cancel: 'إلغاء',
-    save: 'حفظ',
-    saving: 'جاري الحفظ...',
-    offline_note: 'غير متصل — التغييرات تتزامن كي يرجع الأنترنت',
-    reconnecting_note: 'تم الاتصال — جاري المزامنة...',
-    offline_stored_note: 'غير متصل — التغييرات تتخزن وتتزامن كي يرجع الأنترنت',
-    auth_subtitle: 'سجل الدخول لمتابعة زبائنك',
-    email: 'البريد الإلكتروني',
-    password: 'كلمة السر',
-    login: 'دخول',
-    currency: 'د.ت',
-    badge_today: 'اليوم', badge_tomorrow: 'غدا', badge_overdue: 'متأخر',
-    period_today: 'مداخيل اليوم', period_week: 'مداخيل هذا الأسبوع', period_month: 'مداخيل هذا الشهر',
-    period_year: 'مداخيل هذي السنة', period_all: 'مجموع المداخيل (كل الوقت)',
-    prev_today: 'مقارنة بالأمس', prev_week: 'مقارنة بالأسبوع الفارط', prev_month: 'مقارنة بالشهر الفارط', prev_year: 'مقارنة بالسنة الفارطة',
-    cmp_new: 'جديد', cmp_dash: '—',
-    confirm_logout: 'تسجيل الخروج من الحساب؟',
-    confirm_delete: 'تأكد الحذف؟',
-    notif_not_supported: 'هذا المتصفح ما يدعمش التنبيهات.',
-    notif_denied_alert: 'التنبيهات مرفوضة من إعدادات المتصفح متاع الهاتف. لازم تفعلها يدوياً من هناك.',
-    notif_enabled_body: 'التنبيهات مفعلة! باش تتوصل بملخص المواعيد كي تفتح التطبيق صباحاً.',
-    notif_summary_title: 'تبريد — ملخص اليوم',
-    notif_today_count: (n) => `${n} موعد اليوم`,
-    notif_overdue_count: (n) => `${n} موعد متأخر`,
-    notif_status_unsupported: 'غير مدعومة',
-    notif_status_granted: 'مفعلة ✓',
-    notif_status_denied: 'مرفوضة (فعلها من إعدادات المتصفح)',
-    notif_status_off: 'غير مفعلة',
-    pwd_mismatch: 'كلمة السر الجديدة وتأكيدها ما يتطابقوش',
-    pwd_too_short: 'كلمة السر الجديدة لازم أكثر من 6 خانات',
-    pwd_success: 'تبدلت كلمة السر بنجاح ✓',
-    pwd_err_wrong: 'كلمة السر الحالية غالطة',
-    pwd_err_weak: 'كلمة السر الجديدة لازم أكثر من 6 خانات',
-    pwd_err_recent_login: 'لازم تسجل خروج وتعاود دخول قبل ما تبدل كلمة السر',
-    pwd_err_too_many: 'محاولات كثيرة، جرب بعد شوية',
-    pwd_err_generic: 'صار خطأ، عاود جرب',
-    auth_err_invalid_email: 'البريد الإلكتروني غير صحيح',
-    auth_err_user_not_found: 'ما فماش حساب بهذا البريد',
-    auth_err_wrong_password: 'كلمة السر غالطة',
-    auth_err_invalid_credential: 'بيانات الدخول غالطة',
-    auth_err_email_in_use: 'هذا البريد مستعمل من قبل',
-    auth_err_weak_password: 'كلمة السر لازم أكثر من 6 خانات',
-    auth_err_generic: 'صار خطأ، عاود جرب',
-  },
   fr: {
     app_title_full: 'Tabrid | Suivi maintenance et installation',
     app_name: 'Tabrid',
@@ -1485,14 +1297,11 @@ const TRANSLATIONS = {
 };
 
 function t(key){
-  const val = (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][key]) ?? TRANSLATIONS.ar[key];
+  const val = TRANSLATIONS.fr[key];
   return val !== undefined ? val : key;
 }
 
-const MONTH_NAMES = {
-  ar: ['جانفي','فيفري','مارس','أفريل','ماي','جوان','جويلية','أوت','سبتمبر','أكتوبر','نوفمبر','ديسمبر'],
-  fr: ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre']
-};
+const MONTH_NAMES = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
 
 function applyLanguage(){
   document.documentElement.setAttribute('lang', currentLang);
@@ -1531,12 +1340,6 @@ function applyFontScale(){
 function setFontScale(scale){
   localStorage.setItem(FONT_SCALE_KEY, scale);
   applyFontScale();
-}
-
-function setLangPref(lang){
-  currentLang = lang;
-  localStorage.setItem(LANG_KEY, lang);
-  applyLanguage();
 }
 
 /* ============ FIREBASE SETUP ============ */
@@ -1769,7 +1572,6 @@ function todayStr(offset=0){
 
 let customers = []; // يتعمر مباشرة (real-time) من Firestore onSnapshot
 
-let activeView = 'home';
 let activeFilter = 'all';
 let searchQuery = '';
 let editingId = null;
@@ -2556,7 +2358,7 @@ function buildBarSeries(range){
       const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
       const prefix = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
       const val = customers.filter(c => c.status==='done' && c.date && c.date.startsWith(prefix)).reduce((s,c)=>s+(+c.price||0),0);
-      labels.push(MONTH_NAMES[currentLang][d.getMonth()].slice(0,3));
+      labels.push(MONTH_NAMES[d.getMonth()].slice(0,3));
       values.push(val);
     }
     return { labels, values };
@@ -2588,7 +2390,7 @@ function buildComparisonSeries(range){
       const prefix = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
       const income = customers.filter(c => c.status==='done' && c.date && c.date.startsWith(prefix)).reduce((s,c)=>s+(+c.price||0),0);
       const exp = expenses.filter(e => e.date && e.date.startsWith(prefix)).reduce((s,e)=>s+(+e.amount||0),0);
-      labels.push(MONTH_NAMES[currentLang][d.getMonth()].slice(0,3));
+      labels.push(MONTH_NAMES[d.getMonth()].slice(0,3));
       incomeValues.push(income);
       profitValues.push(income - exp);
     }
@@ -2757,7 +2559,7 @@ let selectedDate = null;
 function renderCalendar(){
   const y = calViewDate.getFullYear();
   const m = calViewDate.getMonth();
-  document.getElementById('calMonthLabel').textContent = `${MONTH_NAMES[currentLang][m]} ${y}`;
+  document.getElementById('calMonthLabel').textContent = `${MONTH_NAMES[m]} ${y}`;
 
   const firstDay = new Date(y, m, 1);
   const daysInMonth = new Date(y, m+1, 0).getDate();
@@ -2815,7 +2617,7 @@ function renderCalendar(){
     cell.style.border = isToday && !isSelected ? '1.5px solid var(--copper)' : '1px solid var(--line)';
     cell.innerHTML = `
       <span class="text-xs font-mono font-bold" style="color:${textColor}">${d}</span>
-      ${count > 0 ? `<span class="font-mono" style="font-size:9px; color:${textColor}; opacity:.85">${count}${currentLang === 'ar' ? 'م' : ''}</span>` : '<span style="height:11px"></span>'}
+      ${count > 0 ? `<span class="font-mono" style="font-size:9px; color:${textColor}; opacity:.85">${count}</span>` : '<span style="height:11px"></span>'}
       ${dayIncome > 0 ? `<span class="font-mono font-semibold" style="font-size:9px; color:${isSelected || count>=4 ? '#1A1006' : 'var(--mint)'}">+${dayIncome}</span>` : ''}
     `;
     cell.addEventListener('click', () => {
@@ -2881,7 +2683,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 
 function renderSettings(){
   document.getElementById('settingsEmail').textContent = auth.currentUser ? auth.currentUser.email : '—';
-  document.getElementById('backupCount').textContent = customers.length + ' ' + (currentLang === 'ar' ? 'زبون' : (customers.length > 1 ? 'clients' : 'client'));
+  document.getElementById('backupCount').textContent = customers.length + ' ' + (customers.length > 1 ? 'clients' : 'client');
   updateNotifStatusUI();
 
   // نبنيو رابط الحجز أوتوماتيكياً من UID المستخدم الحالي — بلا أي تدخل يدوي
