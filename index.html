@@ -283,6 +283,35 @@
   <!-- ===================== MAIN CONTENT ===================== -->
   <main class="flex-1 px-5 pt-2 pb-28" id="viewHome">
 
+    <!-- ===================== APERÇU RAPIDE (Aujourd'hui / Semaine / Mois) ===================== -->
+    <div class="grid grid-cols-3 gap-2.5 mb-4">
+      <div class="rounded-2xl p-3" style="background:rgba(224,138,60,.1); border:1px solid rgba(224,138,60,.3)">
+        <p class="text-[10px] font-semibold" style="color:var(--copper)" data-i18n="overview_today">Aujourd'hui</p>
+        <p class="font-mono font-bold text-sm mt-1.5" id="ovTodayCount" style="color:var(--text)">0 <span class="text-[10px] font-normal" style="color:var(--text-dim)" data-i18n="overview_sale">vente</span></p>
+        <p class="font-mono font-black text-base mt-0.5" id="ovTodayIncome" style="color:var(--mint)">+0 DT</p>
+      </div>
+      <div class="rounded-2xl p-3" style="background:rgba(79,209,174,.08); border:1px solid rgba(79,209,174,.28)">
+        <p class="text-[10px] font-semibold" style="color:var(--mint)" data-i18n="overview_week">Semaine</p>
+        <p class="font-mono font-bold text-sm mt-1.5" id="ovWeekCount" style="color:var(--text)">0 <span class="text-[10px] font-normal" style="color:var(--text-dim)" data-i18n="overview_sale">vente</span></p>
+        <p class="font-mono font-black text-base mt-0.5" id="ovWeekIncome" style="color:var(--mint)">+0 DT</p>
+        <p class="text-[10px] font-semibold mt-0.5" id="ovWeekTrend"></p>
+      </div>
+      <div class="rounded-2xl p-3" style="background:var(--surface-2); border:1px solid var(--line)">
+        <p class="text-[10px] font-semibold" style="color:var(--text-dim)" data-i18n="overview_month">Ce mois</p>
+        <p class="font-mono font-bold text-sm mt-1.5" id="ovMonthCount" style="color:var(--text)">0 <span class="text-[10px] font-normal" style="color:var(--text-dim)" data-i18n="overview_sale">vente</span></p>
+        <p class="font-mono font-black text-base mt-0.5" id="ovMonthIncome" style="color:var(--mint)">+0 DT</p>
+        <p class="text-[10px] font-semibold mt-0.5" id="ovMonthTrend"></p>
+      </div>
+    </div>
+
+    <div class="rounded-2xl p-4 mb-4" style="background:var(--surface); border:1px solid var(--line)">
+      <div class="flex items-center justify-between mb-3">
+        <p class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="overview_7days">Bénéfice — 7 derniers jours</p>
+        <p class="font-mono font-black text-sm" id="ov7DaysTotal" style="color:var(--mint)">+0 DT</p>
+      </div>
+      <canvas id="chart7Days" style="width:100%; height:110px; display:block"></canvas>
+    </div>
+
     <button id="btnBookingBanner" style="display:none; background:linear-gradient(90deg, rgba(224,138,60,.18), rgba(224,138,60,.06)); border:1px solid rgba(224,138,60,.4)" class="w-full flex items-center justify-between rounded-2xl px-4 py-3.5 mb-4">
       <span class="flex items-center gap-2.5">
         <span class="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style="background:var(--copper)">
@@ -1190,6 +1219,12 @@ const TRANSLATIONS = {
     debts_clients: 'clients',
     no_debts: 'Aucune dette en attente 🎉',
     debt_banner: (n, total) => `${n} clients doivent ${total} DT au total`,
+    overview_today: "Aujourd'hui",
+    overview_week: 'Semaine',
+    overview_month: 'Ce mois',
+    overview_sale: 'vente',
+    overview_sales: 'ventes',
+    overview_7days: 'Bénéfice — 7 derniers jours',
     remainder_label: 'Reste',
     deposit_paid: 'Payé',
     notes: 'Notes',
@@ -1660,6 +1695,7 @@ function renderList(){
   renderCalDayList();
   renderReport();
   updateDebtBanner();
+  renderOverviewCards();
 
   if(justCompletedId){
     const idToClear = justCompletedId;
@@ -2188,6 +2224,108 @@ function updateHomeStats(){
   document.getElementById('statPending').textContent = pendingCount;
 }
 
+/* ============ Aperçu rapide (Aujourd'hui / Semaine / Mois + 7 derniers jours) ============ */
+const DAY_ABBR = ['dim.','lun.','mar.','mer.','jeu.','ven.','sam.'];
+
+function saleWord(n){ return n > 1 ? t('overview_sales') : t('overview_sale'); }
+
+function renderTrendNote(elId, currentVal, prevBounds){
+  const el = document.getElementById(elId);
+  if(!prevBounds){ el.textContent = ''; return; }
+  const prevVal = customers
+    .filter(c => c.status==='done' && c.date >= prevBounds.start && c.date <= prevBounds.end)
+    .reduce((s,c)=>s+(+c.price||0), 0);
+  if(prevVal === 0 && currentVal === 0){ el.textContent = ''; return; }
+  if(prevVal === 0){ el.textContent = '↑ ' + t('cmp_new'); el.style.color = 'var(--mint)'; return; }
+  const pct = Math.round(((currentVal - prevVal) / prevVal) * 100);
+  const arrow = pct > 0 ? '↑' : (pct < 0 ? '↓' : '');
+  el.textContent = pct === 0 ? '' : `${arrow} ${Math.abs(pct)}%`;
+  el.style.color = pct > 0 ? 'var(--mint)' : (pct < 0 ? 'var(--danger)' : 'var(--text-dim)');
+}
+
+function renderOverviewCards(){
+  const today = todayStr();
+
+  const todayDone = customers.filter(c => c.status==='done' && c.date === today);
+  const todayIncome = todayDone.reduce((s,c)=>s+(+c.price||0), 0);
+  document.getElementById('ovTodayCount').innerHTML = `${todayDone.length} <span class="text-[10px] font-normal" style="color:var(--text-dim)">${saleWord(todayDone.length)}</span>`;
+  document.getElementById('ovTodayIncome').textContent = `+${todayIncome} ${t('currency')}`;
+
+  const weekBounds = getRangeBounds('week');
+  const weekDone = customers.filter(c => c.status==='done' && c.date >= weekBounds.start && c.date <= weekBounds.end);
+  const weekIncome = weekDone.reduce((s,c)=>s+(+c.price||0), 0);
+  document.getElementById('ovWeekCount').innerHTML = `${weekDone.length} <span class="text-[10px] font-normal" style="color:var(--text-dim)">${saleWord(weekDone.length)}</span>`;
+  document.getElementById('ovWeekIncome').textContent = `+${weekIncome} ${t('currency')}`;
+  renderTrendNote('ovWeekTrend', weekIncome, getPreviousRangeBounds('week'));
+
+  const monthBounds = getRangeBounds('month');
+  const monthDone = customers.filter(c => c.status==='done' && c.date >= monthBounds.start && c.date <= monthBounds.end);
+  const monthIncome = monthDone.reduce((s,c)=>s+(+c.price||0), 0);
+  document.getElementById('ovMonthCount').innerHTML = `${monthDone.length} <span class="text-[10px] font-normal" style="color:var(--text-dim)">${saleWord(monthDone.length)}</span>`;
+  document.getElementById('ovMonthIncome').textContent = `+${monthIncome} ${t('currency')}`;
+  renderTrendNote('ovMonthTrend', monthIncome, getPreviousRangeBounds('month'));
+
+  draw7DaysChart();
+}
+
+function draw7DaysChart(){
+  const days = [];
+  for(let i=6; i>=0; i--){
+    const d = new Date(); d.setDate(d.getDate()-i);
+    days.push(d);
+  }
+  const labels = days.map((d, idx) => {
+    if(idx === 6) return 'Auj.';
+    if(idx === 5) return 'Hier';
+    return DAY_ABBR[d.getDay()];
+  });
+  const values = days.map(d => {
+    const iso = d.toISOString().slice(0,10);
+    return customers.filter(c => c.status==='done' && c.date === iso).reduce((s,c)=>s+(+c.price||0), 0);
+  });
+  const total = values.reduce((s,v)=>s+v, 0);
+  document.getElementById('ov7DaysTotal').textContent = `+${total} ${t('currency')}`;
+
+  drawSevenDayChart(document.getElementById('chart7Days'), labels, values);
+}
+
+function drawSevenDayChart(canvas, labels, values){
+  const rawW = canvas.parentElement.clientWidth - 32;
+  if(rawW <= 0) return;
+  const cssW = rawW;
+  const cssH = 110;
+  const ctx = setupCanvasHiDPI(canvas, cssW, cssH);
+  ctx.clearRect(0, 0, cssW, cssH);
+
+  const copper = cssVar('--copper');
+  const line = cssVar('--line');
+  const textDim = cssVar('--text-dim');
+  const text = cssVar('--text');
+
+  const max = Math.max(1, ...values);
+  const padBottom = 16, padTop = 6;
+  const chartH = cssH - padBottom - padTop;
+  const n = values.length;
+  const gap = 8;
+  const barW = (cssW - gap*(n-1)) / n;
+
+  ctx.textAlign = 'center';
+
+  values.forEach((v, i) => {
+    const isToday = i === n-1;
+    const barH = max > 0 ? Math.max((v/max) * chartH, v > 0 ? 3 : 2) : 2;
+    const x = i * (barW + gap);
+    const y = padTop + (chartH - barH);
+    ctx.fillStyle = isToday ? copper : (v > 0 ? 'rgba(224,138,60,.35)' : line);
+    roundRectPath(ctx, x, y, barW, Math.max(barH, 2), 4);
+    ctx.fill();
+
+    ctx.font = isToday ? 'bold 9px Cairo, sans-serif' : '9px Cairo, sans-serif';
+    ctx.fillStyle = isToday ? text : textDim;
+    ctx.fillText(labels[i], x + barW/2, cssH - 4);
+  });
+}
+
 /* ============ REPORTS (بتصفية حسب الفترة) ============ */
 let activeRange = 'today';
 const RANGE_TO_PERIOD_KEY = { today:'period_today', week:'period_week', month:'period_month', year:'period_year', all:'period_all' };
@@ -2618,7 +2756,7 @@ function renderCalendar(){
     cell.innerHTML = `
       <span class="text-xs font-mono font-bold" style="color:${textColor}">${d}</span>
       ${count > 0 ? `<span class="font-mono" style="font-size:9px; color:${textColor}; opacity:.85">${count}</span>` : '<span style="height:11px"></span>'}
-      ${dayIncome > 0 ? `<span class="font-mono font-semibold" style="font-size:9px; color:${isSelected || count>=4 ? '#1A1006' : 'var(--mint)'}">+${dayIncome}</span>` : ''}
+      ${dayIncome > 0 ? `<span class="font-mono font-semibold" style="font-size:9px; color:${isSelected || count>=4 ? '#1A1006' : 'var(--mint)'}">+${dayIncome}</span>` : '<span style="height:11px"></span>'}
     `;
     cell.addEventListener('click', () => {
       selectedDate = iso;
