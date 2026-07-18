@@ -239,6 +239,9 @@
         </div>
       </div>
       <div class="flex items-center gap-2">
+        <button id="btnTotalInterventions" class="w-10 h-10 rounded-full flex flex-col items-center justify-center shrink-0" style="background:var(--copper)">
+          <span class="font-mono font-black leading-none" id="totalInterventionsCount" style="color:#1A1006; font-size:13px">0</span>
+        </button>
         <button id="btnOpenSidebar" class="w-10 h-10 rounded-full flex items-center justify-center" style="background:var(--surface); border:1px solid var(--line)">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
         </button>
@@ -391,13 +394,13 @@
     </div>
 
     <div class="grid grid-cols-7 gap-y-2 text-center mb-1">
-      <span class="text-[11px] font-semibold" style="color:var(--text-dim)" data-i18n="wd_sun">Dim</span>
       <span class="text-[11px] font-semibold" style="color:var(--text-dim)" data-i18n="wd_mon">Lun</span>
       <span class="text-[11px] font-semibold" style="color:var(--text-dim)" data-i18n="wd_tue">Mar</span>
       <span class="text-[11px] font-semibold" style="color:var(--text-dim)" data-i18n="wd_wed">Mer</span>
       <span class="text-[11px] font-semibold" style="color:var(--text-dim)" data-i18n="wd_thu">Jeu</span>
       <span class="text-[11px] font-semibold" style="color:var(--text-dim)" data-i18n="wd_fri">Ven</span>
       <span class="text-[11px] font-semibold" style="color:var(--text-dim)" data-i18n="wd_sat">Sam</span>
+      <span class="text-[11px] font-semibold" style="color:var(--text-dim)" data-i18n="wd_sun">Dim</span>
     </div>
     <div id="calGrid" class="grid grid-cols-7 gap-y-2 gap-x-1 text-center"></div>
 
@@ -710,6 +713,23 @@
     <div id="debtsList" class="flex flex-col gap-3"></div>
     <div id="debtsEmptyState" class="hidden text-center py-16">
       <p class="font-display font-bold text-base" style="color:var(--mint)" data-i18n="no_debts">Aucune dette en attente 🎉</p>
+    </div>
+  </main>
+
+  <!-- ===================== CLIENTS DIRECTORY VIEW ===================== -->
+  <main class="flex-1 px-5 pt-4 pb-28 hidden" id="viewClients">
+    <div class="flex items-center gap-3 mb-4">
+      <button id="btnBackFromClients" class="w-9 h-9 rounded-full flex items-center justify-center" style="background:var(--surface); border:1px solid var(--line)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <h2 class="font-display font-black text-lg" data-i18n="clients">Clients</h2>
+    </div>
+
+    <input id="clientsSearch" type="text" placeholder="Rechercher un client..." class="w-full rounded-xl px-4 py-2.5 text-sm mb-4">
+
+    <div id="clientsList" class="flex flex-col gap-3"></div>
+    <div id="clientsEmptyState" class="hidden text-center py-16">
+      <p class="font-display font-bold text-base" style="color:var(--text-dim)" data-i18n="no_clients_found">Aucun client trouvé</p>
     </div>
   </main>
 
@@ -1046,6 +1066,10 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
         <span class="text-sm font-semibold" data-i18n="debts">Dettes en attente</span>
       </button>
+      <button id="btnSidebarClients" class="w-full flex items-center gap-3 rounded-xl px-3 py-3 mb-1">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        <span class="text-sm font-semibold" data-i18n="clients">Clients</span>
+      </button>
       <button class="sidebar-nav-btn w-full flex items-center gap-3 rounded-xl px-3 py-3 mb-1" data-view="settings">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1 1.55V21a2 2 0 11-4 0v-.09a1.7 1.7 0 00-1-1.55 1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.7 1.7 0 00.34-1.87 1.7 1.7 0 00-1.55-1H3a2 2 0 110-4h.09a1.7 1.7 0 001.55-1 1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06a1.7 1.7 0 001.87.34H9a1.7 1.7 0 001-1.55V3a2 2 0 114 0v.09a1.7 1.7 0 001 1.55 1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06.06a1.7 1.7 0 00-.34 1.87V9a1.7 1.7 0 001.55 1H21a2 2 0 110 4h-.09a1.7 1.7 0 00-1.55 1z"/></svg>
         <span class="text-sm font-semibold" data-i18n="nav_settings">Réglages</span>
@@ -1219,6 +1243,11 @@ const TRANSLATIONS = {
     debts_clients: 'clients',
     no_debts: 'Aucune dette en attente 🎉',
     debt_banner: (n, total) => `${n} clients doivent ${total} DT au total`,
+    clients: 'Clients',
+    no_clients_found: 'Aucun client trouvé',
+    clients_search_ph: 'Rechercher un client...',
+    total_interventions: 'Total des interventions',
+    client_visits: (n) => n > 1 ? `${n} visites` : `${n} visite`,
     overview_today: "Aujourd'hui",
     overview_week: 'Semaine',
     overview_month: 'Ce mois',
@@ -1696,6 +1725,7 @@ function renderList(){
   renderReport();
   updateDebtBanner();
   renderOverviewCards();
+  updateTotalInterventionsCounter();
 
   if(justCompletedId){
     const idToClear = justCompletedId;
@@ -1908,7 +1938,7 @@ document.querySelectorAll('.expense-filter-chip').forEach(chip => {
 
 /* ============ التنقل لشاشة المصاريف (عبر السايد بار) ============ */
 function showExpensesView(){
-  ['viewHome','viewCalendar','viewStats','viewSettings','viewErrorCodes','viewDebts'].forEach(id => document.getElementById(id).classList.add('hidden'));
+  ['viewHome','viewCalendar','viewStats','viewSettings','viewErrorCodes','viewDebts','viewClients'].forEach(id => document.getElementById(id).classList.add('hidden'));
   document.getElementById('viewExpenses').classList.remove('hidden');
   document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('tab-active'); b.style.color = 'var(--text-dim)'; });
   renderExpenses();
@@ -1924,7 +1954,7 @@ document.getElementById('btnBackFromExpenses').addEventListener('click', () => {
 });
 
 function showErrorCodesView(){
-  ['viewHome','viewCalendar','viewStats','viewSettings','viewExpenses','viewDebts'].forEach(id => document.getElementById(id).classList.add('hidden'));
+  ['viewHome','viewCalendar','viewStats','viewSettings','viewExpenses','viewDebts','viewClients'].forEach(id => document.getElementById(id).classList.add('hidden'));
   document.getElementById('viewErrorCodes').classList.remove('hidden');
   document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('tab-active'); b.style.color = 'var(--text-dim)'; });
   renderErrorCodes();
@@ -1940,7 +1970,7 @@ document.getElementById('btnBackFromCodes').addEventListener('click', () => {
 });
 
 function showDebtsView(){
-  ['viewHome','viewCalendar','viewStats','viewSettings','viewExpenses','viewErrorCodes'].forEach(id => document.getElementById(id).classList.add('hidden'));
+  ['viewHome','viewCalendar','viewStats','viewSettings','viewExpenses','viewErrorCodes','viewClients'].forEach(id => document.getElementById(id).classList.add('hidden'));
   document.getElementById('viewDebts').classList.remove('hidden');
   document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('tab-active'); b.style.color = 'var(--text-dim)'; });
   renderDebts();
@@ -1953,6 +1983,80 @@ document.getElementById('btnSidebarDebts').addEventListener('click', showDebtsVi
 document.getElementById('btnDebtBanner').addEventListener('click', showDebtsView);
 document.getElementById('btnBackFromDebts').addEventListener('click', () => {
   hideDebtsView();
+  document.querySelector('.tab-btn[data-view="home"]').click();
+});
+
+/* ============ دليل الحرفاء (Clients Directory) ============ */
+function getUniqueClients(){
+  const map = new Map();
+  customers.forEach(c => {
+    if(!c.phone) return;
+    if(!map.has(c.phone)){
+      map.set(c.phone, { phone: c.phone, name: c.name, visits: [] });
+    }
+    map.get(c.phone).visits.push(c);
+  });
+  return Array.from(map.values()).map(entry => {
+    const lastVisit = entry.visits.reduce((max,v) => (v.date && (!max || v.date > max)) ? v.date : max, null);
+    const totalSpent = entry.visits.filter(v => v.status==='done').reduce((s,v)=>s+(+v.price||0), 0);
+    // نستعملو أحدث اسم مسجل (لو تبدل)
+    const latest = entry.visits.reduce((a,b) => (b.date||'') > (a.date||'') ? b : a);
+    return { phone: entry.phone, name: latest.name, visitCount: entry.visits.length, totalSpent, lastVisit };
+  }).sort((a,b) => (b.lastVisit||'').localeCompare(a.lastVisit||''));
+}
+
+function renderClients(){
+  const q = document.getElementById('clientsSearch').value.trim().toLowerCase();
+  let clients = getUniqueClients();
+  if(q){
+    clients = clients.filter(c => (c.name||'').toLowerCase().includes(q) || (c.phone||'').includes(q));
+  }
+
+  const list = document.getElementById('clientsList');
+  const empty = document.getElementById('clientsEmptyState');
+  list.innerHTML = '';
+  if(clients.length === 0){
+    empty.classList.remove('hidden');
+  } else {
+    empty.classList.add('hidden');
+    clients.forEach(c => {
+      const card = document.createElement('div');
+      card.className = 'rounded-2xl p-4 card-press cursor-pointer';
+      card.style.background = 'var(--surface)';
+      card.style.border = '1px solid var(--line)';
+      card.innerHTML = `
+        <div class="flex items-center justify-between">
+          <div class="min-w-0">
+            <p class="font-display font-bold text-[15px] truncate">${escapeHtml(c.name||'')}</p>
+            <p class="text-xs font-mono mt-0.5" style="color:var(--text-dim)">${escapeHtml(c.phone)}</p>
+          </div>
+          <div class="text-right shrink-0">
+            <p class="font-mono font-bold text-sm" style="color:var(--copper)">${t('client_visits')(c.visitCount)}</p>
+            <p class="font-mono text-xs mt-0.5" style="color:var(--mint)">${c.totalSpent} ${t('currency')}</p>
+          </div>
+        </div>
+      `;
+      card.addEventListener('click', () => openCustomerHistory(c.phone, c.name));
+      list.appendChild(card);
+    });
+  }
+}
+
+document.getElementById('clientsSearch').addEventListener('input', renderClients);
+
+function showClientsView(){
+  ['viewHome','viewCalendar','viewStats','viewSettings','viewExpenses','viewErrorCodes','viewDebts'].forEach(id => document.getElementById(id).classList.add('hidden'));
+  document.getElementById('viewClients').classList.remove('hidden');
+  document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('tab-active'); b.style.color = 'var(--text-dim)'; });
+  renderClients();
+  closeSidebar();
+}
+function hideClientsView(){
+  document.getElementById('viewClients').classList.add('hidden');
+}
+document.getElementById('btnSidebarClients').addEventListener('click', showClientsView);
+document.getElementById('btnBackFromClients').addEventListener('click', () => {
+  hideClientsView();
   document.querySelector('.tab-btn[data-view="home"]').click();
 });
 
@@ -2211,6 +2315,11 @@ function renderCard(c){
   `;
   wrap.addEventListener('click', () => openEdit(c.id));
   return wrap;
+}
+
+function updateTotalInterventionsCounter(){
+  const total = customers.filter(c => c.status === 'done').length;
+  document.getElementById('totalInterventionsCount').textContent = total;
 }
 
 function updateHomeStats(){
@@ -2701,7 +2810,7 @@ function renderCalendar(){
 
   const firstDay = new Date(y, m, 1);
   const daysInMonth = new Date(y, m+1, 0).getDate();
-  const leading = firstDay.getDay(); // 0=أحد
+  const leading = (firstDay.getDay() + 6) % 7; // نحولو مرجع 0=أحد إلى 0=إثنين (الأسبوع يبدا بالإثنين)
 
   // اليوم الحالي بصيغة ISO
   const todayIso = todayStr();
@@ -2750,9 +2859,11 @@ function renderCalendar(){
     const finalBg = isSelected ? 'var(--copper)' : bg;
 
     const cell = document.createElement('button');
-    cell.className = 'flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl';
+    cell.className = 'flex flex-col items-center justify-center gap-0.5 rounded-xl';
     cell.style.background = finalBg;
     cell.style.border = isToday && !isSelected ? '1.5px solid var(--copper)' : '1px solid var(--line)';
+    cell.style.aspectRatio = '1 / 1';
+    cell.style.width = '100%';
     cell.innerHTML = `
       <span class="text-xs font-mono font-bold" style="color:${textColor}">${d}</span>
       ${count > 0 ? `<span class="font-mono" style="font-size:9px; color:${textColor}; opacity:.85">${count}</span>` : '<span style="height:11px"></span>'}
@@ -2813,6 +2924,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.getElementById('viewExpenses').classList.add('hidden');
     document.getElementById('viewErrorCodes').classList.add('hidden');
     document.getElementById('viewDebts').classList.add('hidden');
+    document.getElementById('viewClients').classList.add('hidden');
     if(view==='calendar') renderCalendar();
     if(view==='stats') renderReport();
     if(view==='settings') renderSettings();
@@ -2984,6 +3096,9 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () 
 applyTheme();
 
 /* ============ SEARCH / FILTER ============ */
+document.getElementById('btnTotalInterventions').addEventListener('click', () => {
+  alert(`${t('total_interventions')}: ${document.getElementById('totalInterventionsCount').textContent}`);
+});
 document.getElementById('btnSearch').addEventListener('click', () => {
   document.getElementById('searchBar').classList.toggle('hidden');
 });
