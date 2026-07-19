@@ -1647,10 +1647,14 @@ function fmtDate(iso){
   const locale = currentLang === 'fr' ? 'fr-FR' : 'ar-TN';
   return d.toLocaleDateString(locale, { day:'2-digit', month:'2-digit', year:'numeric' });
 }
-function dateBadge(iso){
+function dateBadge(iso, status){
   const diff = Math.round((new Date(iso) - new Date(todayStr()))/86400000);
   if(diff === 0) return {text:t('badge_today'), color:'var(--amber)'};
-  if(diff < 0) return {text:t('badge_overdue'), color:'var(--danger)'};
+  if(diff < 0){
+    // "En retard" ما يلزمش يبان كان الموعد مازال "قيد الانتظار" — موعد "Terminé" أو "Annulé" فات وقتو عادي، ماهوش متأخر
+    if(status === 'pending') return {text:t('badge_overdue'), color:'var(--danger)'};
+    return {text: fmtDate(iso), color:'var(--text-dim)'};
+  }
   if(diff === 1) return {text:t('badge_tomorrow'), color:'var(--mint)'};
   return {text: fmtDate(iso), color:'var(--text-dim)'};
 }
@@ -2260,7 +2264,7 @@ function renderExpenseCard(e){
 }
 
 function renderCard(c){
-  const badge = dateBadge(c.date);
+  const badge = dateBadge(c.date, c.status);
   const isCelebrating = c.id === justCompletedId;
   const wrap = document.createElement('div');
   wrap.className = 'card-press cursor-pointer' + (isCelebrating ? ' card-done-celebrate' : '');
