@@ -268,24 +268,6 @@
     </div>
   </header>
 
-  <!-- ===================== WEATHER BANNER (قليبية 5 أيام) ===================== -->
-  <div id="weatherBanner" class="px-5 pt-3 pb-2">
-    <div class="rounded-2xl p-3 flex items-center gap-3 overflow-x-auto" style="background:var(--surface); border:1px solid var(--line)">
-      <!-- أيقونة الطقس الحالية (تتغير حسب البيانات) -->
-      <div class="flex items-center gap-2.5 shrink-0">
-        <span id="weatherIcon" style="font-size:28px;">☀️</span>
-        <div>
-          <p class="text-sm font-bold" id="weatherCity" style="color:var(--text)">قليبية</p>
-          <p class="text-[10px]" style="color:var(--text-dim)" id="weatherDesc">—</p>
-        </div>
-      </div>
-      <!-- قائمة الأيام الخمسة القادمة -->
-      <div id="weatherForecast" class="flex gap-4 flex-1">
-        <!-- سيتم تعبئتها بـ JS -->
-      </div>
-    </div>
-  </div>
-
   <!-- ===================== SEARCH / FILTER BAR ===================== -->
   <div id="searchBar" class="px-5 hidden">
     <div class="relative">
@@ -303,6 +285,24 @@
 
   <!-- ===================== MAIN CONTENT ===================== -->
   <main class="flex-1 px-5 pt-2 pb-28" id="viewHome">
+
+    <!-- ===================== MÉTÉO (5 jours) ===================== -->
+    <div id="weatherBanner" class="rounded-2xl p-4 mb-4" style="background:var(--surface); border:1px solid var(--line); display:none">
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-1.5 min-w-0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="2" class="shrink-0"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span id="weatherCity" class="text-xs font-bold truncate" style="color:var(--text-dim)">—</span>
+        </div>
+        <button id="btnWeatherRefresh" class="w-7 h-7 rounded-full flex items-center justify-center shrink-0" style="background:var(--surface-2)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="2"><path d="M21 12a9 9 0 11-3-6.7"/><path d="M21 3v6h-6"/></svg>
+        </button>
+      </div>
+      <div id="weatherDaysRow" class="grid grid-cols-5 gap-1.5"></div>
+    </div>
+    <div id="weatherPrompt" class="rounded-2xl p-4 mb-4 flex items-center justify-between" style="background:var(--surface); border:1px solid var(--line); display:none">
+      <span class="text-xs font-semibold" style="color:var(--text-dim)" data-i18n="weather_enable_prompt">Activer la météo locale (5 jours)</span>
+      <button id="btnEnableWeather" class="rounded-xl px-3 py-2 text-xs font-bold" style="background:var(--copper); color:#1A1006" data-i18n="weather_enable_btn">Activer</button>
+    </div>
 
     <!-- ===================== APERÇU RAPIDE (Aujourd'hui / Semaine / Mois) ===================== -->
     <div class="grid grid-cols-3 gap-2.5 mb-4">
@@ -1272,6 +1272,11 @@ const TRANSLATIONS = {
     overview_sale: 'vente',
     overview_sales: 'ventes',
     overview_7days: 'Bénéfice — 7 derniers jours',
+    weather_enable_prompt: 'Activer la météo locale (5 jours)',
+    weather_enable_btn: 'Activer',
+    weather_denied: 'Position refusée — activez-la dans les réglages du navigateur',
+    weather_unavailable: 'Météo indisponible pour le moment',
+    weather_today: "Auj.",
     remainder_label: 'Reste',
     deposit_paid: 'Payé',
     notes: 'Notes',
@@ -3535,103 +3540,6 @@ document.addEventListener('visibilitychange', () => {
   if(document.visibilityState === 'visible') checkAndNotify();
 });
 
-/* ============ الطقس في قليبية (Kelibia) لمدة 5 أيام ============ */
-const WEATHER_CITY = 'Kelibia';
-// استخدام API مفتوح (wttr.in) يجيب بيانات الطقس بصيغة JSON خفيفة، بلا مفتاح (مجاني ويعمل أوفلاين بشكل محدود)
-async function fetchWeather() {
-  try {
-    const res = await fetch(`https://wttr.in/${WEATHER_CITY}?format=j1&lang=fr&m`);
-    if (!res.ok) throw new Error('Weather API error');
-    const data = await res.json();
-
-    const current = data.current_condition[0];
-    const forecast = data.weather; // array length 3-5 أيام
-
-    // تحديث الأيقونة الرئيسية والحالة الحالية
-    const iconCode = current.weatherCode;
-    const iconMap = {
-      '113': '☀️', '116': '⛅', '119': '☁️', '122': '☁️',
-      '143': '🌫️', '176': '🌦️', '179': '🌨️', '182': '🌨️',
-      '185': '🌨️', '200': '⛈️', '227': '❄️', '230': '❄️',
-      '248': '🌫️', '260': '🌫️', '263': '🌦️', '266': '🌧️',
-      '281': '🌧️', '284': '🌧️', '293': '🌦️', '296': '🌧️',
-      '299': '🌧️', '302': '🌧️', '305': '🌧️', '308': '🌧️',
-      '311': '🌧️', '314': '🌧️', '317': '🌧️', '320': '🌨️',
-      '323': '🌨️', '326': '🌨️', '329': '🌨️', '332': '🌨️',
-      '335': '🌨️', '338': '❄️', '350': '🌨️', '353': '🌦️',
-      '356': '🌧️', '359': '🌧️', '362': '🌨️', '365': '🌨️',
-      '368': '🌨️', '371': '🌨️', '374': '🌨️', '377': '🌨️',
-      '386': '⛈️', '389': '⛈️', '392': '⛈️', '395': '❄️'
-    };
-    const weatherIcon = iconMap[iconCode] || '🌡️';
-    document.getElementById('weatherIcon').textContent = weatherIcon;
-    document.getElementById('weatherCity').textContent = 'قليبية';
-    document.getElementById('weatherDesc').textContent = current.lang_fr[0].value || current.weatherDesc[0].value || '—';
-
-    // تعبئة الأيام الخمسة القادمة
-    const forecastContainer = document.getElementById('weatherForecast');
-    forecastContainer.innerHTML = '';
-    const daysToShow = forecast.slice(1, 6); // نتجاوزو اليوم الحالي ونجيبو 5 أيام قادمة
-    const dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
-    const now = new Date();
-
-    daysToShow.forEach((day, index) => {
-      const dateObj = new Date(day.date);
-      const dayName = dayNames[dateObj.getDay()];
-      const minTemp = Math.round(day.mintempC);
-      const maxTemp = Math.round(day.maxtempC);
-      const desc = day.hourly[0]?.lang_fr?.[0]?.value || day.hourly[0]?.weatherDesc?.[0]?.value || '—';
-      // أيقونة مبسطة حسب حالة الطقس لكل يوم
-      const dayIconCode = day.hourly[0]?.weatherCode || '113';
-      const dayIcon = iconMap[dayIconCode] || '🌡️';
-
-      const el = document.createElement('div');
-      el.className = 'flex flex-col items-center shrink-0';
-      el.style.minWidth = '52px';
-      el.innerHTML = `
-        <span class="text-[10px] font-semibold" style="color:var(--text-dim)">${dayName}</span>
-        <span style="font-size:22px; line-height:1.4">${dayIcon}</span>
-        <span class="text-[10px] font-mono font-bold" style="color:var(--text)">${maxTemp}°</span>
-        <span class="text-[9px] font-mono" style="color:var(--text-dim)">${minTemp}°</span>
-      `;
-      forecastContainer.appendChild(el);
-    });
-
-  } catch (err) {
-    console.warn('Weather fetch failed, using fallback data:', err);
-    // بيانات احتياطية (fallback) في حالة عدم وجود اتصال أو فشل API
-    const fallbackContainer = document.getElementById('weatherForecast');
-    fallbackContainer.innerHTML = '';
-    const dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu'];
-    const now = new Date();
-    for (let i = 1; i <= 5; i++) {
-      const d = new Date(now);
-      d.setDate(d.getDate() + i);
-      const dayName = dayNames[d.getDay()];
-      const el = document.createElement('div');
-      el.className = 'flex flex-col items-center shrink-0';
-      el.style.minWidth = '52px';
-      el.innerHTML = `
-        <span class="text-[10px] font-semibold" style="color:var(--text-dim)">${dayName}</span>
-        <span style="font-size:22px; line-height:1.4">🌡️</span>
-        <span class="text-[10px] font-mono font-bold" style="color:var(--text)">--°</span>
-        <span class="text-[9px] font-mono" style="color:var(--text-dim)">--°</span>
-      `;
-      fallbackContainer.appendChild(el);
-    }
-    document.getElementById('weatherIcon').textContent = '🌡️';
-    document.getElementById('weatherDesc').textContent = 'Données météo indisponibles';
-  }
-}
-
-// جلب الطقس عند تحميل الصفحة، ثم كل ساعة (3600000 مللي)
-fetchWeather();
-setInterval(fetchWeather, 3600000);
-// نعاودو نجيبو الطقس كي المستخدم يرجع للتبويب (على سبيل المثال بعد ما كان في الخلفية)
-document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible') fetchWeather();
-});
-
 /* ============ سحب للتحديث (Pull to Refresh) ============ */
 (function setupPullToRefresh(){
   const THRESHOLD = 78;
@@ -3688,6 +3596,124 @@ document.addEventListener('visibilitychange', () => {
     pulling = false;
   }, { passive: true });
 })();
+
+/* ============ Météo locale (5 jours) — géolocalisation + Open-Meteo (API gratuite بلا مفتاح) ============ */
+const WEATHER_COORDS_KEY = 'tabrid-weather-coords';
+const WEATHER_CACHE_KEY = 'tabrid-weather-cache';
+const WEATHER_DAY_ABBR = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+
+function weatherEmoji(code){
+  if(code === 0) return '☀️';
+  if([1,2].includes(code)) return '🌤️';
+  if(code === 3) return '☁️';
+  if([45,48].includes(code)) return '🌫️';
+  if([51,53,55,56,57].includes(code)) return '🌦️';
+  if([61,63,65,66,67,80,81,82].includes(code)) return '🌧️';
+  if([71,73,75,77,85,86].includes(code)) return '🌨️';
+  if([95,96,99].includes(code)) return '⛈️';
+  return '🌡️';
+}
+
+async function fetchWeatherForecast(lat, lon){
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto&forecast_days=5`;
+  const res = await fetch(url);
+  if(!res.ok) throw new Error('weather fetch failed');
+  return res.json();
+}
+
+async function fetchCityName(lat, lon){
+  try{
+    const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=fr`);
+    if(!res.ok) return null;
+    const data = await res.json();
+    return data.city || data.locality || data.principalSubdivision || null;
+  } catch(e){ return null; }
+}
+
+function renderWeatherBanner(cityName, forecast){
+  document.getElementById('weatherPrompt').style.display = 'none';
+  document.getElementById('weatherBanner').style.display = 'block';
+  document.getElementById('weatherCity').textContent = cityName || '—';
+
+  const row = document.getElementById('weatherDaysRow');
+  row.innerHTML = '';
+  const { time, temperature_2m_max, temperature_2m_min, weathercode } = forecast.daily;
+  time.forEach((dateStr, i) => {
+    const d = new Date(dateStr + 'T00:00:00');
+    const label = i === 0 ? t('weather_today') : WEATHER_DAY_ABBR[d.getDay()];
+    const cell = document.createElement('div');
+    cell.className = 'flex flex-col items-center gap-0.5 rounded-xl py-2';
+    cell.style.background = i === 0 ? 'rgba(224,138,60,.12)' : 'var(--surface-2)';
+    cell.innerHTML = `
+      <span class="text-[10px] font-semibold" style="color:${i===0?'var(--copper)':'var(--text-dim)'}">${label}</span>
+      <span style="font-size:15px">${weatherEmoji(weathercode[i])}</span>
+      <span class="font-mono font-bold text-[11px]" style="color:var(--text)">${Math.round(temperature_2m_max[i])}°</span>
+      <span class="font-mono text-[9.5px]" style="color:var(--text-dim)">${Math.round(temperature_2m_min[i])}°</span>
+    `;
+    row.appendChild(cell);
+  });
+}
+
+async function loadWeather(forceRefresh){
+  const coordsRaw = localStorage.getItem(WEATHER_COORDS_KEY);
+  if(!coordsRaw) return; // ما فماش موقع محفوظ، نخليو زر "Activer" يبان
+  const { lat, lon } = JSON.parse(coordsRaw);
+
+  // نبينو أول حاجة الكاش (يخدم أوفلاين) وقت ما ننتظروش النتورك
+  const cacheRaw = localStorage.getItem(WEATHER_CACHE_KEY);
+  let cache = cacheRaw ? JSON.parse(cacheRaw) : null;
+  const cacheAge = cache ? (Date.now() - cache.fetchedAt) : Infinity;
+
+  if(cache && (!forceRefresh || !navigator.onLine)){
+    renderWeatherBanner(cache.city, cache.forecast);
+  }
+
+  // نحدثو من النتورك إذا onLine و(الكاش قديم أكثر من ساعة أو forceRefresh)
+  if(navigator.onLine && (forceRefresh || cacheAge > 60*60*1000)){
+    try{
+      const [forecast, city] = await Promise.all([
+        fetchWeatherForecast(lat, lon),
+        fetchCityName(lat, lon)
+      ]);
+      const finalCity = city || (cache && cache.city) || '—';
+      localStorage.setItem(WEATHER_CACHE_KEY, JSON.stringify({ city: finalCity, forecast, fetchedAt: Date.now() }));
+      renderWeatherBanner(finalCity, forecast);
+    } catch(err){
+      console.error('Weather fetch error:', err);
+      if(!cache) document.getElementById('weatherCity').textContent = t('weather_unavailable');
+    }
+  }
+}
+
+function requestWeatherLocation(){
+  if(!('geolocation' in navigator)){
+    alert(t('weather_unavailable'));
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const lat = pos.coords.latitude.toFixed(3);
+      const lon = pos.coords.longitude.toFixed(3);
+      localStorage.setItem(WEATHER_COORDS_KEY, JSON.stringify({ lat, lon }));
+      loadWeather(true);
+    },
+    (err) => {
+      console.error('Geolocation error:', err);
+      alert(t('weather_denied'));
+    },
+    { enableHighAccuracy: false, timeout: 10000, maximumAge: 600000 }
+  );
+}
+
+document.getElementById('btnEnableWeather').addEventListener('click', requestWeatherLocation);
+document.getElementById('btnWeatherRefresh').addEventListener('click', () => loadWeather(true));
+
+// عند التحميل: إذا عندنا موقع محفوظ نبينو الطقس، وإلا نبينو زر "Activer"
+if(localStorage.getItem(WEATHER_COORDS_KEY)){
+  loadWeather(false);
+} else {
+  document.getElementById('weatherPrompt').style.display = 'flex';
+}
 
 /* ============ INIT ============ */
 applyLanguage();
