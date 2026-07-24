@@ -167,15 +167,50 @@
   .btu-chip{ color: var(--text-dim); transition: background .15s ease, color .15s ease, border-color .15s ease; }
   .btu-chip.btu-active{ background: var(--copper) !important; border-color: var(--copper) !important; color:#1A1006 !important; }
 
-  @media (min-width:640px){
+  /* ============ تحسين العرض على التابلات ============ */
+  @media (min-width: 640px) and (max-width: 1023px){
     body{ display:flex; justify-content:center; }
-    #app{ max-width: 480px; width:100%; min-height:100vh; box-shadow: 0 0 60px rgba(0,0,0,.4); }
+    #app{ max-width: 480px; width:100%; min-height:100vh; box-shadow: 0 0 60px rgba(0,0,0,.4); margin:0 auto; }
   }
-  @media (min-width:820px){
-    #app{ max-width: 640px; }
-  }
-  @media (min-width:1100px){
-    #app{ max-width: 760px; }
+  
+  @media (min-width: 1024px){
+    body{ 
+      display:flex; 
+      justify-content:center; 
+      align-items:center; 
+      min-height:100vh;
+      background: var(--bg-deep);
+      padding: 20px;
+    }
+    #app{ 
+      max-width: 560px; 
+      width:100%; 
+      min-height: auto;
+      max-height: 98vh;
+      overflow-y: auto;
+      border-radius: 32px;
+      box-shadow: 0 20px 80px rgba(0,0,0,.6), 0 0 0 1px var(--line);
+      margin:0 auto;
+      position: relative;
+    }
+    /* نمنع overflow الزايد */
+    #app > * { max-width: 100%; }
+    /* الـ bottom nav يبقى ثابت في الحجم الصغير */
+    nav.fixed { 
+      max-width: 560px; 
+      left: 50% !important;
+      transform: translateX(-50%);
+      border-radius: 0 0 32px 32px;
+    }
+    /* الصفحات الداخلية ما تخرجش من الكارد */
+    .sheet, #expenseSheet { max-width: 560px; left: 50% !important; transform: translateX(-50%) !important; }
+    .sheet.hidden-sheet { transform: translateX(-50%) translateY(100%) !important; }
+    #expenseSheet.hidden-sheet { transform: translateX(-50%) translateY(100%) !important; }
+    #sidebar { max-width: 340px; border-radius: 0 24px 24px 0; }
+    #splash { border-radius: 32px; }
+    /* التابلات الكبيرة */
+    #app .grid.grid-cols-3 { gap: 10px; }
+    #app .grid.grid-cols-2 { gap: 10px; }
   }
 
   @media print{
@@ -2983,7 +3018,7 @@ document.getElementById('btnCopyBookingLink').addEventListener('click', async ()
   try{
     await navigator.clipboard.writeText(input.value);
   } catch(err){
-    // بعض المتصفحات القديمة ما يدعموش navigator.clipboard — نستعملو طريقة احتياطية
+    // بعض المتصفحات القديمة ما تدعموش navigator.clipboard — نستعملو طريقة احتياطية
     input.removeAttribute('readonly');
     input.select();
     document.execCommand('copy');
