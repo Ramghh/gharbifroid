@@ -1,6 +1,6 @@
 // ⚠️ لازم نزيدو CACHE_NAME (نبدلو الرقم) كل مرة نبدلو فيها index.html أو أي ملف من app-shell
 // هذا يجبر الأجهزة تجيب النسخة الجديدة بدل ما تخدم بالقديمة المخزنة (cache).
-const CACHE_NAME = 'tabrid-cache-v40';
+const CACHE_NAME = 'tabrid-cache-v41';
 const RUNTIME_CACHE = 'tabrid-runtime-v1'; // كاش منفصل للخطوط وTailwind (موارد خارجية)
 
 const APP_SHELL = [
