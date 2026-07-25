@@ -286,9 +286,6 @@
         <button id="btnOpenSidebar" class="w-10 h-10 rounded-full flex items-center justify-center" style="background:var(--surface); border:1px solid var(--line)">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
         </button>
-        <button id="btnSearch" class="w-10 h-10 rounded-full flex items-center justify-center" style="background:var(--surface); border:1px solid var(--line)">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-        </button>
       </div>
     </div>
 
@@ -3172,11 +3169,7 @@ applyTheme();
 document.getElementById('btnTotalInterventions').addEventListener('click', () => {
   alert(`${t('total_interventions')}: ${document.getElementById('totalInterventionsCount').textContent}`);
 });
-document.getElementById('btnSearch').addEventListener('click', () => {
-  const inp = document.getElementById('searchInput');
-  inp.scrollIntoView({behavior:'smooth', block:'center'});
-  inp.focus();
-});
+
 document.getElementById('searchInput').addEventListener('input', e => { searchQuery = e.target.value; renderList(); });
 document.querySelectorAll('.chip').forEach(chip => {
   chip.addEventListener('click', () => {
