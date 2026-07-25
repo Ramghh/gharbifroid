@@ -18,7 +18,7 @@
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title data-i18n="app_title_full">Tabrid | Suivi maintenance et installation</title>
-<meta name="theme-color" content="#0A2E2C">
+<meta name="theme-color" content="#000000">
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" href="./favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="./favicon-16.png" sizes="16x16" type="image/png">
@@ -32,18 +32,18 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
   :root{
-    --bg: #0A2E2C;
-    --bg-deep: #071F1D;
-    --surface: #0F3D3A;
-    --surface-2: #124743;
-    --line: #1D5450;
+    --bg: #000000;
+    --bg-deep: #000000;
+    --surface: #141416;
+    --surface-2: #1c1c1f;
+    --line: #ffffff14;
     --copper: #E08A3C;
     --copper-dim: #B5691F;
     --mint: #4FD1AE;
     --amber: #F2C14E;
     --danger: #E8674A;
-    --text: #EAF3F1;
-    --text-dim: #8FADA9;
+    --text: #F5F5F7;
+    --text-dim: #8A8A95;
   }
   /* ============ وضع فاتح (Light Mode) ============ */
   :root[data-theme="light"]{
@@ -3132,7 +3132,7 @@ function applyTheme(){
   } else {
     document.documentElement.setAttribute('data-theme', resolved);
   }
-  const themeColorMap = { light: '#F5F1E8', dark: '#0A2E2C', ice: '#0B2338' };
+  const themeColorMap = { light: '#F5F1E8', dark: '#000000', ice: '#0B2338' };
   document.querySelector('meta[name="theme-color"]').setAttribute('content', themeColorMap[resolved]);
   document.querySelectorAll('.theme-chip').forEach(chip => {
     chip.classList.toggle('chip-active', chip.dataset.themePref === pref);
